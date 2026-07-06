@@ -87,9 +87,19 @@ public class HeartOfTheSea {
         }
 
         if (!hasHeart) {
-            ItemStack heartItem = create(player, heart.getAspect());
-            player.getInventory().addItem(heartItem);
-            player.updateInventory();
+            ItemStack offHand = player.getInventory().getItemInOffHand();
+            if (isHeartOfTheSea(offHand)) {
+                if (!isBoundToPlayer(offHand, player)) {
+                    ItemStack newHeart = create(player, heart.getAspect());
+                    player.getInventory().setItemInOffHand(newHeart);
+                } else {
+                    updateAspectName(offHand, heart.getAspect());
+                }
+            } else {
+                ItemStack heartItem = create(player, heart.getAspect());
+                player.getInventory().addItem(heartItem);
+                player.updateInventory();
+            }
         }
     }
 }
