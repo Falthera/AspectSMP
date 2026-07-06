@@ -36,7 +36,7 @@ public class RevivalShieldAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         player.getWorld().spawnParticle(Particle.HEART, player.getLocation().add(0, 1, 0), 100, 1, 1, 1);
-        playSound(player, Sound.ENTITY_TOTEM_USE, 1.0f, 1.0f);
+        playSound(player, Sound.ITEM_TOTEM_USE, 1.0f, 1.0f);
         
         player.setMetadata("revival_shield", new FixedMetadataValue(com.aspectsmp.AspectSMP.getInstance(), 
             System.currentTimeMillis() + 300000));

@@ -61,7 +61,12 @@ public class YAMLProvider implements StorageProvider {
             boolean dormant = config.getBoolean(path + ".dormant", false);
             
             Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
-            heart.getCooldowns().putAll(config.getMap(path + ".cooldowns"));
+            heart.getCooldowns().putAll(config.getConfigurationSection(path + ".cooldowns") != null ? 
+                config.getConfigurationSection(path + ".cooldowns").getValues(false).entrySet().stream()
+                    .collect(java.util.stream.Collectors.toMap(
+                        e -> e.getKey(),
+                        e -> ((Number) e.getValue()).longValue())) : 
+                new java.util.HashMap<>());
             return heart;
         });
     }

@@ -20,7 +20,7 @@ public class TideRuleModifier implements RuleModifier {
     public void modifyMovement(Player player) {
         if (player.getLocation().getBlock().getType().toString().contains("WATER")) {
             player.setWalkSpeed(Math.min(player.getWalkSpeed() + 0.02f, 0.45f));
-            player.setHealth(Math.min(player.getHealth() + 0.5, player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()));
+            player.setHealth(Math.min(player.getHealth() + 0.5, player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH).getValue()));
         }
     }
 

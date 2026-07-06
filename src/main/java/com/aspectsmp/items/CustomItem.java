@@ -7,7 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.UUID;
+import net.kyori.adventure.text.Component;
 
 public class CustomItem {
 
@@ -34,7 +34,7 @@ public class CustomItem {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§f" + displayName);
-            meta.lore(java.util.List.of("§7" + description));
+            meta.lore(java.util.List.of(Component.text("§7" + description)));
             PersistentDataContainer pdc = meta.getPersistentDataContainer();
             pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, id);
             item.setItemMeta(meta);

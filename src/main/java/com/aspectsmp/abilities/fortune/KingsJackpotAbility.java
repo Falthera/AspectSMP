@@ -34,7 +34,7 @@ public class KingsJackpotAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.HAPPY_HONEY, player.getLocation(), 200, 5, 5, 5);
+        player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, player.getLocation(), 200, 5, 5, 5);
         playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 2.0f, 1.0f);
         
         long essence = (long) (25 * getPowerMultiplier(heart));

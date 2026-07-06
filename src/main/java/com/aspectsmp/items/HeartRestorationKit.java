@@ -6,6 +6,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import net.kyori.adventure.text.Component;
+
 import java.util.List;
 
 public class HeartRestorationKit extends CustomItem {
@@ -19,7 +21,7 @@ public class HeartRestorationKit extends CustomItem {
         ItemStack item = new ItemStack(Material.BEACON);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b§lHeart Restoration Kit");
-        meta.lore(List.of("§7Restore a Dormant Heart to Stable", "§7Right-click to repair your Heart"));
+        meta.lore(List.of(Component.text("§7Restore a Dormant Heart to Stable"), Component.text("§7Right-click to repair your Heart")));
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "heart_restoration_kit");
         item.setItemMeta(meta);

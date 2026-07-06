@@ -35,7 +35,7 @@ public class TidalPrisonAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         org.bukkit.Location loc = player.getLocation();
-        player.getWorld().spawnParticle(Particle.WATER_BUBBLE, loc, 50, 2, 2, 2);
+        player.getWorld().spawnParticle(Particle.BUBBLE, loc, 50, 2, 2, 2);
         playSound(player, Sound.ENTITY_DOLPHIN_PLAY, 1.0f, 1.0f);
 
         player.getWorld().getEntities().stream()

@@ -37,7 +37,7 @@ public class MaelstromAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.WATER_BUBBLE_COLUMN_UP, player.getLocation().add(0, 1, 0), 200, 3, 3, 3);
+        player.getWorld().spawnParticle(Particle.BUBBLE_COLUMN_UP, player.getLocation().add(0, 1, 0), 200, 3, 3, 3);
         playSound(player, Sound.ENTITY_DOLPHIN_SPLASH, 2.0f, 0.5f);
 
         List<Entity> nearby = player.getWorld().getEntities().stream()
@@ -46,7 +46,7 @@ public class MaelstromAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                target.damage(8 * getPowerMultiplier(heart), player);
+                target.damage(8 * getPowerMultiplier(heart));
                 target.setVelocity(target.getLocation().subtract(player.getLocation()).toVector().normalize().multiply(-1.2));
             }
         }

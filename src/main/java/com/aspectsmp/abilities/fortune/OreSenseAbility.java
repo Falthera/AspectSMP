@@ -48,7 +48,7 @@ public class OreSenseAbility extends BaseAbility {
                         for (int z = -20; z <= 20; z++) {
                             org.bukkit.block.Block block = center.clone().add(x, y, z).getBlock();
                             if (block.getType().toString().contains("ORE")) {
-                                player.getWorld().spawnParticle(Particle.HAPPY_HONEY, block.getLocation().add(0.5, 0.5, 0.5), 1);
+                                player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, block.getLocation().add(0.5, 0.5, 0.5), 1);
                             }
                         }
                     }

@@ -35,7 +35,7 @@ public class ParticleUtil {
     public static void damageEntities(Collection<Entity> entities, Player attacker, double damage) {
         for (Entity entity : entities) {
             if (entity instanceof Player) {
-                entity.damage(damage, attacker);
+                entity.damage(damage);
             }
         }
     }

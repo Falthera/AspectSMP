@@ -36,11 +36,11 @@ public class MiningRushAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.HAPPY_HONEY, player.getLocation().add(0, 1, 0), 30);
+        player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, player.getLocation().add(0, 1, 0), 30);
         playSound(player, Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f);
         
         player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 300, 2));
-        heart.addEssence(10 * getPowerMultiplier(heart));
+        heart.addEssence((long) (10 * getPowerMultiplier(heart)));
 
         applyCooldown(player, getId(), 30000L);
         return true;

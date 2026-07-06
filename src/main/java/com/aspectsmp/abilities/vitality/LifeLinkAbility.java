@@ -36,7 +36,7 @@ public class LifeLinkAbility extends BaseAbility {
 
         org.bukkit.Location loc = player.getLocation();
         player.getWorld().spawnParticle(Particle.HEART, loc.add(0, 1, 0), 50);
-        playSound(player, Sound.ENTITY_WITCH_CAST_SPELL, 1.0f, 1.0f);
+        playSound(player, Sound.ENTITY_WITCH_CAST, 1.0f, 1.0f);
 
         org.bukkit.entity.Entity target = loc.getWorld().getEntities().stream()
             .filter(e -> e instanceof Player && e != player)
@@ -45,8 +45,8 @@ public class LifeLinkAbility extends BaseAbility {
             .orElse(null);
 
         if (target instanceof Player p) {
-            player.setHealth(Math.min(player.getHealth() + 4, player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()));
-            p.damage(2 * getPowerMultiplier(heart), player);
+            player.setHealth(Math.min(player.getHealth() + 4, player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH).getValue()));
+            p.damage(2 * getPowerMultiplier(heart));
         }
 
         applyCooldown(player, getId(), 12000L);

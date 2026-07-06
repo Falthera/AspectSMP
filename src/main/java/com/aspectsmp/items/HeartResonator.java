@@ -6,6 +6,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import net.kyori.adventure.text.Component;
+
 import java.util.List;
 
 public class HeartResonator extends CustomItem {
@@ -19,7 +21,7 @@ public class HeartResonator extends CustomItem {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§d§lHeart Resonator");
-        meta.lore(List.of("§7Unlock Tier 3 abilities and Ultimate", "§7Right-click to upgrade your Heart"));
+        meta.lore(List.of(Component.text("§7Unlock Tier 3 abilities and Ultimate"), Component.text("§7Right-click to upgrade your Heart")));
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "heart_resonator");
         item.setItemMeta(meta);

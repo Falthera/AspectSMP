@@ -134,7 +134,12 @@ public class Heart {
         boolean dormant = section.getBoolean("dormant", false);
         
         Heart heart = new Heart(UUID.fromString(section.getName()), aspect, tier, stability, essence, dormant);
-        heart.getCooldowns().putAll(section.getMap("cooldowns"));
+        heart.getCooldowns().putAll(section.getConfigurationSection("cooldowns") != null ? 
+            section.getConfigurationSection("cooldowns").getValues(false).entrySet().stream()
+                .collect(java.util.stream.Collectors.toMap(
+                    e -> e.getKey(),
+                    e -> ((Number) e.getValue()).longValue())) : 
+            new java.util.HashMap<>());
         return heart;
     }
 }

@@ -39,7 +39,7 @@ public class OceanSurgeAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         Vector direction = player.getLocation().getDirection().multiply(2.5);
-        player.getWorld().spawnParticle(Particle.WATER_SPLASH, player.getLocation(), 100, 1, 1, 1);
+        player.getWorld().spawnParticle(Particle.BUBBLE, player.getLocation(), 100, 1, 1, 1);
         playSound(player, Sound.ENTITY_DOLPHIN_SPLASH, 1.0f, 1.0f);
 
         List<Entity> nearby = player.getWorld().getEntities().stream()

@@ -106,6 +106,10 @@ public class ListenerManager implements Listener {
             player.getInventory().getItemInMainHand().getAmount() - 1);
     }
 
+    private void handleReforgingCore(Player player) {
+        player.sendMessage("§cReforging Core not implemented yet!");
+    }
+
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof org.bukkit.entity.Player player) {

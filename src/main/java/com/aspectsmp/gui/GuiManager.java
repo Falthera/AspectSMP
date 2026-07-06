@@ -14,7 +14,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.Map;
 
 public class GuiManager implements Listener {
@@ -43,7 +44,7 @@ public class GuiManager implements Listener {
         ItemStack essenceDisplay = createEssenceDisplay(heart);
         inv.setItem(40, essenceDisplay);
         
-        playerPages.put(player, InventoryPage.values());
+        playerPages.put(player, InventoryPage.HEART_OVERVIEW);
         player.openInventory(inv);
     }
 
@@ -64,7 +65,7 @@ public class GuiManager implements Listener {
         ItemStack item = new ItemStack(Material.BEACON);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§f" + heart.getAspect().getDisplayName() + " Heart");
-        meta.lore(java.util.List.of("§7Tier: " + heart.getTier(), "§7Stability: " + heart.getStability()));
+        meta.lore(java.util.List.of(Component.text("§7Tier: " + heart.getTier()), Component.text("§7Stability: " + heart.getStability())));
         item.setItemMeta(meta);
         return item;
     }
@@ -87,7 +88,7 @@ public class GuiManager implements Listener {
         ItemStack item = new ItemStack(Material.REDSTONE);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§cStability: " + heart.getStability());
-        meta.setLore(java.util.List.of("§7State: " + heart.getStabilityState().getDisplayName()));
+        meta.setLore(java.util.List.of(Component.text("§7State: " + heart.getStabilityState().getDisplayName())));
         item.setItemMeta(meta);
         return item;
     }
