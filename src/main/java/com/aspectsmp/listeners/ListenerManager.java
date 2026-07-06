@@ -69,9 +69,10 @@ public class ListenerManager implements Listener {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
 
-        if (item != null && HeartOfTheSea.isHeartOfTheSea(item)) {
+        boolean holdingHeart = item != null && HeartOfTheSea.isHeartOfTheSea(item);
+
+        if (holdingHeart) {
             event.setCancelled(true);
-            return;
         }
 
         boolean isCustomItem = item != null && (
@@ -88,11 +89,14 @@ public class ListenerManager implements Listener {
 
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null || heart.isDormant()) return;
+        
+        if (!holdingHeart) return;
 
         boolean sneaking = player.isSneaking();
         Action action = event.getAction();
 
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+            event.setCancelled(true);
             if (!sneaking && heart.getTier() >= 1) {
                 plugin.getAbilityManager().handleTier1Ability(player, heart);
             } else if (sneaking && heart.getTier() >= 2) {
