@@ -12,7 +12,6 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class ListenerManager implements Listener {
@@ -108,9 +107,7 @@ public class ListenerManager implements Listener {
         ItemStack cursor = event.getCursor();
         
         if (current != null && HeartOfTheSea.isHeartOfTheSea(current)) {
-            if (event.getSlotType() == Inventory.SlotType.OUTSIDE && cursor == null) {
-                event.setCancelled(true);
-            }
+            event.setCancelled(true);
         }
         
         if (cursor != null && HeartOfTheSea.isHeartOfTheSea(cursor)) {
