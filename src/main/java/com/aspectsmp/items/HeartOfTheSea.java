@@ -81,6 +81,7 @@ public class HeartOfTheSea {
         if (!hasHeart) {
             ItemStack heartItem = create(player, heart.getAspect());
             player.getInventory().addItem(heartItem);
+            player.updateInventory();
         }
     }
 }

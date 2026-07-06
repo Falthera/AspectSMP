@@ -29,18 +29,28 @@ public class ListenerManager implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        plugin.getHeartManager().getOrCreateHeart(player.getUniqueId());
+        Heart heart = plugin.getHeartManager().getOrCreateHeart(player.getUniqueId());
+        
+        if (player.isOnline()) {
+            player.sendMessage("§d§lWelcome to Aspect SMP!");
+            player.sendMessage("§7You are bound to the §b" + heart.getAspect().getDisplayName() + " §7Heart.");
+            player.sendMessage("§8Your Heart of the Sea will appear shortly...");
+        }
         
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            HeartOfTheSea.ensureBound(player);
-        }, 5L);
+            if (player.isOnline()) {
+                HeartOfTheSea.ensureBound(player);
+            }
+        }, 20L);
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            HeartOfTheSea.ensureBound(event.getPlayer());
-        }, 2L);
+            if (event.getPlayer().isOnline()) {
+                HeartOfTheSea.ensureBound(event.getPlayer());
+            }
+        }, 20L);
     }
 
     @EventHandler
