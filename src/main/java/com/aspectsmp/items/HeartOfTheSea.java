@@ -23,9 +23,12 @@ public class HeartOfTheSea {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             meta.setDisplayName("§dHeart of the Sea §7(" + aspect.getDisplayName() + " Heart)");
+            Heart heart = AspectSMP.getInstance().getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+            int stability = heart != null ? heart.getStability() : 100;
             meta.lore(java.util.List.of(
                 Component.text("§7This heart pulses with the power of the §b" + aspect.getDisplayName() + " Aspect§7."),
-                Component.text("§8Bound to " + player.getName())
+                Component.text("§8Bound to " + player.getName()),
+                Component.text("§cStability: " + stability)
             ));
             PersistentDataContainer pdc = meta.getPersistentDataContainer();
             pdc.set(HEART_OF_THE_SEA_KEY, PersistentDataType.STRING, "heart_of_the_sea");
@@ -42,9 +45,18 @@ public class HeartOfTheSea {
         if (!pdc.has(HEART_OF_THE_SEA_KEY, PersistentDataType.STRING)) return;
         
         meta.setDisplayName("§dHeart of the Sea §7(" + aspect.getDisplayName() + " Heart)");
+        String ownerName = pdc.get(BOUND_PLAYER_KEY, PersistentDataType.STRING);
+        Heart heart = null;
+        if (ownerName != null) {
+            try {
+                heart = AspectSMP.getInstance().getHeartManager().getHeart(java.util.UUID.fromString(ownerName)).orElse(null);
+            } catch (IllegalArgumentException ignored) {}
+        }
+        int stability = heart != null ? heart.getStability() : 100;
         meta.lore(java.util.List.of(
             Component.text("§7This heart pulses with the power of the §b" + aspect.getDisplayName() + " Aspect§7."),
-            Component.text("§8Bound to your soul")
+            Component.text("§8Bound to your soul"),
+            Component.text("§cStability: " + stability)
         ));
         item.setItemMeta(meta);
     }

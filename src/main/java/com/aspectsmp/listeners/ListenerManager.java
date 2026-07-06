@@ -82,7 +82,8 @@ public class ListenerManager implements Listener {
             CustomItem.isCustomItem(item, "heart_catalyst") || 
             CustomItem.isCustomItem(item, "heart_resonator") ||
             CustomItem.isCustomItem(item, "heart_restoration_kit") ||
-            CustomItem.isCustomItem(item, "reforging_core")
+            CustomItem.isCustomItem(item, "reforging_core") ||
+            CustomItem.isCustomItem(item, "stability_bottle")
         );
         
         if (isCustomItem) {
@@ -167,6 +168,8 @@ public class ListenerManager implements Listener {
             handleHeartRestorationKit(event.getPlayer(), event);
         } else if (CustomItem.isCustomItem(item, "reforging_core")) {
             handleReforgingCore(event.getPlayer());
+        } else if (CustomItem.isCustomItem(item, "stability_bottle")) {
+            handleStabilityBottle(event.getPlayer(), event);
         }
     }
 
@@ -192,7 +195,12 @@ public class ListenerManager implements Listener {
             player.sendMessage("§cAlready at Tier 2 or higher!");
             return;
         }
+        if (heart.getEssence() < 20) {
+            player.sendMessage("§cYou need 20 Essence to upgrade!");
+            return;
+        }
         heart.setTier(2);
+        heart.addEssence(-20);
         player.sendMessage("§6Heart upgraded to Tier 2!");
         consumeOneItem(player, event);
         plugin.getScoreboardManager().updatePlayer(player);
@@ -209,7 +217,12 @@ public class ListenerManager implements Listener {
             player.sendMessage("§cYou need Tier 2 first!");
             return;
         }
+        if (heart.getEssence() < 50) {
+            player.sendMessage("§cYou need 50 Essence to upgrade!");
+            return;
+        }
         heart.setTier(3);
+        heart.addEssence(-50);
         player.sendMessage("§dHeart upgraded to Tier 3!");
         consumeOneItem(player, event);
         plugin.getScoreboardManager().updatePlayer(player);
@@ -222,8 +235,13 @@ public class ListenerManager implements Listener {
             player.sendMessage("§cHeart is not dormant!");
             return;
         }
+        if (heart.getEssence() < 30) {
+            player.sendMessage("§cYou need 30 Essence to restore your Heart!");
+            return;
+        }
         heart.setDormant(false);
         heart.setStability(50);
+        heart.addEssence(-30);
         player.sendMessage("§bHeart restored!");
         consumeOneItem(player, event);
         plugin.getScoreboardManager().updatePlayer(player);
@@ -231,6 +249,24 @@ public class ListenerManager implements Listener {
 
     private void handleReforgingCore(Player player) {
         player.sendMessage("§cReforging Core not implemented yet!");
+    }
+
+    private void handleStabilityBottle(Player player, PlayerInteractEvent event) {
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null) return;
+        if (heart.getStability() >= 100) {
+            player.sendMessage("§cYour Stability is already full!");
+            return;
+        }
+        if (heart.getEssence() < 10) {
+            player.sendMessage("§cYou need 10 Essence to use this!");
+            return;
+        }
+        heart.addStability(50);
+        heart.addEssence(-10);
+        player.sendMessage("§aStability restored by 50!");
+        consumeOneItem(player, event);
+        plugin.getScoreboardManager().updatePlayer(player);
     }
 
     @EventHandler

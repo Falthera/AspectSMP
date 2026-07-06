@@ -3,6 +3,7 @@ package com.aspectsmp.util;
 import com.aspectsmp.AspectSMP;
 import com.aspectsmp.core.AspectType;
 import com.aspectsmp.core.Heart;
+import com.aspectsmp.core.StabilityState;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -59,10 +60,13 @@ public class ScoreboardManager {
         if (heart.getTier() >= 3) {
             actionBar.append(" §d| /ability3");
         }
-        actionBar.append(" §c| /ultimate");
+        actionBar.append(" §c| /ultimate §7| ");
+        actionBar.append(getStabilityColor(heart)).append(getStabilityStateDisplay(heart)).append(" §7| ");
+        actionBar.append("§bEssence: ").append(heart.getEssence());
 
         player.sendActionBar(net.kyori.adventure.text.Component.text(actionBar.toString()));
     }
+
     private void createScoreboard(Player player) {
         if (playerScoreboards.containsKey(player)) return;
 
@@ -121,7 +125,7 @@ public class ScoreboardManager {
 
         int scoreValue = 6;
         String tierLine = ChatColor.GOLD + "Tier: " + heart.getTier();
-        String stabilityLine = ChatColor.RED + "Stability: " + heart.getStability();
+        String stabilityLine = getStabilityColor(heart) + getStabilityStateDisplay(heart) + ": " + heart.getStability();
         String essenceLine = ChatColor.AQUA + "Essence: " + heart.getEssence();
 
         obj.getScore(tierLine).setScore(scoreValue--);
@@ -131,6 +135,21 @@ public class ScoreboardManager {
         oldEntries.add(tierLine);
         oldEntries.add(stabilityLine);
         oldEntries.add(essenceLine);
+    }
+
+    private String getStabilityStateDisplay(Heart heart) {
+        return heart.getStabilityState().getDisplayName();
+    }
+
+    private ChatColor getStabilityColor(Heart heart) {
+        return switch (heart.getStabilityState()) {
+            case AWAKENED -> ChatColor.GREEN;
+            case STABLE -> ChatColor.DARK_GREEN;
+            case FRACTURED -> ChatColor.YELLOW;
+            case FADED -> ChatColor.GOLD;
+            case CRITICAL -> ChatColor.RED;
+            case DORMANT -> ChatColor.DARK_GRAY;
+        };
     }
 
     private ChatColor getAspectColor(AspectType aspect) {

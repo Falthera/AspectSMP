@@ -167,8 +167,11 @@ public class AbilityManager {
             .orElse(null);
             
         if (tier1Ability != null && canUseAbility(player, tier1Ability)) {
-            Bukkit.getScheduler().runTask(plugin, () -> 
-                tier1Ability.execute(player, heart, null));
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                tier1Ability.execute(player, heart, null);
+                heart.addEssence(5);
+                player.sendMessage("§b+5 Essence");
+            });
         } else if (tier1Ability != null) {
             player.sendMessage("§cAbility is on cooldown!");
         }
@@ -187,8 +190,11 @@ public class AbilityManager {
             .orElse(null);
             
         if (tier2Ability != null && canUseAbility(player, tier2Ability)) {
-            Bukkit.getScheduler().runTask(plugin, () -> 
-                tier2Ability.execute(player, heart, null));
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                tier2Ability.execute(player, heart, null);
+                heart.addEssence(10);
+                player.sendMessage("§b+10 Essence");
+            });
         } else if (tier2Ability != null) {
             player.sendMessage("§cAbility is on cooldown!");
         }
@@ -212,8 +218,11 @@ public class AbilityManager {
             .orElse(null);
             
         if (tier3Ability != null && canUseAbility(player, tier3Ability)) {
-            Bukkit.getScheduler().runTask(plugin, () -> 
-                tier3Ability.execute(player, heart, null));
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                tier3Ability.execute(player, heart, null);
+                heart.addEssence(15);
+                player.sendMessage("§b+15 Essence");
+            });
         } else if (tier3Ability != null) {
             player.sendMessage("§cAbility is on cooldown or not unlocked!");
         } else {
@@ -238,8 +247,11 @@ public class AbilityManager {
             .orElse(null);
             
         if (ultimate != null && canUseAbility(player, ultimate)) {
-            Bukkit.getScheduler().runTask(plugin, () -> 
-                ultimate.execute(player, heart, null));
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                ultimate.execute(player, heart, null);
+                heart.addEssence(25);
+                player.sendMessage("§b+25 Essence");
+            });
         } else {
             player.sendMessage("§cUltimate is on cooldown or not unlocked!");
         }

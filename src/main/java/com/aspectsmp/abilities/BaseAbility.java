@@ -50,4 +50,11 @@ public abstract class BaseAbility implements Ability {
         int passiveLevel = heart.getPassiveLevel();
         return 1.0 + (passiveLevel * 0.1);
     }
+
+    protected void generateEssence(Player player, int amount) {
+        Heart heart = com.aspectsmp.AspectSMP.getInstance().getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart != null) {
+            heart.addEssence(amount);
+        }
+    }
 }

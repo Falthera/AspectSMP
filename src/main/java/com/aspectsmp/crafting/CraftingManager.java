@@ -29,6 +29,7 @@ public class CraftingManager {
         registerHeartResonator();
         registerHeartRestorationKit();
         registerReforgingCore();
+        registerStabilityBottle();
     }
 
     private void registerHeartCatalyst() {
@@ -65,6 +66,15 @@ public class CraftingManager {
         recipe.shape("DAD", " A ", "DAD");
         recipe.setIngredient('D', Material.DIAMOND);
         recipe.setIngredient('A', Material.AMETHYST_SHARD);
+        Bukkit.addRecipe(recipe);
+        registeredRecipes.add(recipe.getKey());
+    }
+
+    private void registerStabilityBottle() {
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "stability_bottle"), new StabilityBottle().createItemStack());
+        recipe.shape("DDD", "DGD", "DDD");
+        recipe.setIngredient('D', Material.DIAMOND_BLOCK);
+        recipe.setIngredient('G', Material.GOLDEN_APPLE);
         Bukkit.addRecipe(recipe);
         registeredRecipes.add(recipe.getKey());
     }
