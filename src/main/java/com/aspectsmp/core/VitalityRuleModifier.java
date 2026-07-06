@@ -12,8 +12,8 @@ public class VitalityRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
-        if (player.getHealth() < player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH).getValue()) {
-            player.setHealth(Math.min(player.getHealth() + 0.1, player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH).getValue()));
+        if (player.getHealth() < player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()) {
+            player.setHealth(Math.min(player.getHealth() + 0.1, player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()));
         }
     }
 

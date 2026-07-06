@@ -45,7 +45,7 @@ public class LifeLinkAbility extends BaseAbility {
             .orElse(null);
 
         if (target instanceof Player p) {
-            player.setHealth(Math.min(player.getHealth() + 4, player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH).getValue()));
+            player.setHealth(Math.min(player.getHealth() + 4, player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()));
             p.damage(2 * getPowerMultiplier(heart));
         }
 
