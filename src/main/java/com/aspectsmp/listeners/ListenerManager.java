@@ -132,8 +132,7 @@ public class ListenerManager implements Listener {
             return;
         }
         
-        if (event.getClick() == org.bukkit.event.inventory.ClickType.DROP || 
-            event.getClick() == org.bukkit.event.inventory.ClickType.CTRL_DROP) {
+        if (event.getClick() == org.bukkit.event.inventory.ClickType.DROP) {
             event.setCancelled(true);
         }
     }

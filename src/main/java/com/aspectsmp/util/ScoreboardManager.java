@@ -47,27 +47,27 @@ public class ScoreboardManager {
     private void createScoreboard(Player player) {
         if (playerScoreboards.containsKey(player)) return;
 
-        ScoreboardManager manager = player.getServer().getScoreboardManager();
+        org.bukkit.scoreboard.ScoreboardManager manager = player.getServer().getScoreboardManager();
         if (manager == null) return;
 
         org.bukkit.scoreboard.Scoreboard scoreboard = manager.getNewScoreboard();
         player.setScoreboard(scoreboard);
         playerScoreboards.put(player, scoreboard);
-        playerEntries.put(player, new HashSet<>());
+        playerEntries.put(player, new java.util.HashSet<>());
     }
 
     private void removeScoreboard(Player player) {
         playerScoreboards.remove(player);
         playerEntries.remove(player);
         if (player.isOnline()) {
-            ScoreboardManager manager = player.getServer().getScoreboardManager();
+            org.bukkit.scoreboard.ScoreboardManager manager = player.getServer().getScoreboardManager();
             if (manager != null) {
                 player.setScoreboard(manager.getNewScoreboard());
             }
         }
     }
 
-    private void updatePlayer(Player player) {
+    public void updatePlayer(Player player) {
         org.bukkit.scoreboard.Scoreboard scoreboard = playerScoreboards.get(player);
         if (scoreboard == null) return;
 
