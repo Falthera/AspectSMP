@@ -207,6 +207,7 @@ public class AbilityManager {
         Ability tier3Ability = abilities.stream()
             .filter(a -> !a.isPassive())
             .filter(a -> a.getTier() == 3)
+            .filter(a -> !a.isUltimate())
             .findFirst()
             .orElse(null);
             
@@ -215,13 +216,15 @@ public class AbilityManager {
                 tier3Ability.execute(player, heart, null));
         } else if (tier3Ability != null) {
             player.sendMessage("§cAbility is on cooldown or not unlocked!");
+        } else {
+            player.sendMessage("§cNo Tier 3 ability available!");
         }
     }
 
     public void handleUltimate(Player player) {
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
-        if (heart == null || heart.isDormant()) {
-            player.sendMessage("§cYour Heart is not responsive!");
+        if (heart == null || heart.isDormant() || heart.getTier() < 3) {
+            player.sendMessage("§cYour Heart is not responsive or not Tier 3!");
             return;
         }
         

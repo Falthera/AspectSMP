@@ -59,6 +59,7 @@ public class ScoreboardManager {
         if (heart.getTier() >= 3) {
             actionBar.append(" §d| /ability3");
         }
+        actionBar.append(" §c| /ultimate");
 
         player.sendActionBar(net.kyori.adventure.text.Component.text(actionBar.toString()));
     }

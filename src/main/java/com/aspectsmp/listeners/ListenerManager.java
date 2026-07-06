@@ -205,6 +205,10 @@ public class ListenerManager implements Listener {
             player.sendMessage("§cAlready at Tier 3!");
             return;
         }
+        if (heart.getTier() < 2) {
+            player.sendMessage("§cYou need Tier 2 first!");
+            return;
+        }
         heart.setTier(3);
         player.sendMessage("§dHeart upgraded to Tier 3!");
         consumeOneItem(player, event);
