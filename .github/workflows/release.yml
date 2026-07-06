@@ -28,18 +28,19 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           
-      - name: Bump version
-        id: bump
-        run: |
-          CURRENT=${GITHUB_REF_NAME}
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            NEW_VERSION="${{ github.event.inputs.version }}"
-          else
-            IFS='.' read -ra PARTS <<< "$CURRENT"
-            NEW_VERSION="${PARTS[0]}.${PARTS[1]}.$((PARTS[2] + 1))"
-          fi
-          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+       - name: Bump version
+         id: bump
+         run: |
+           LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+           CURRENT=${LATEST_TAG#v}
+           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+             NEW_VERSION="${{ github.event.inputs.version }}"
+           else
+             IFS='.' read -ra PARTS <<< "$CURRENT"
+             NEW_VERSION="${PARTS[0]}.${PARTS[1]}.$((PARTS[2] + 1))"
+           fi
+           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
       
       - name: Build with Maven
         run: mvn -B package --file pom.xml
