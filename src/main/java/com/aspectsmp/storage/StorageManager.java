@@ -44,15 +44,10 @@ public class StorageManager {
     }
 
     public Heart loadHeart(UUID playerId) {
-        try {
-            return provider.loadHeart(playerId).join();
-        } catch (Exception e) {
-            plugin.getLogger().severe("Failed to load heart for " + playerId + ": " + e.getMessage());
-            return null;
-        }
+        return provider.loadHeart(playerId);
     }
 
     public CompletableFuture<Heart> loadHeartAsync(UUID playerId) {
-        return CompletableFuture.supplyAsync(() -> provider.loadHeart(playerId).join(), asyncExecutor);
+        return CompletableFuture.supplyAsync(() -> provider.loadHeart(playerId), asyncExecutor);
     }
 }

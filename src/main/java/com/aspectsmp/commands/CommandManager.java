@@ -117,23 +117,24 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return;
         }
         
-        Heart heart = plugin.getHeartManager().getHeart(target);
-        if (heart == null) {
+        java.util.Optional<Heart> heartOptional = plugin.getHeartManager().getHeart(target.getUniqueId());
+        if (heartOptional.isEmpty()) {
             sender.sendMessage("§cPlayer has no Heart.");
             return;
         }
         
-        AspectType previousAspect = heart.getAspect();
-        heart.setPreviousAspect(previousAspect);
-        heart.setRetainPreviousRules(true);
+        Heart heart = heartOptional.get();
+        AspectType newAspect;
+        do {
+            newAspect = AspectType.values()[(int) (Math.random() * AspectType.values().length)];
+        } while (newAspect == heart.getAspect() && AspectType.values().length > 1);
         
-        AspectType newAspect = AspectType.values()[(int) (Math.random() * AspectType.values().length)];
         heart.setAspect(newAspect);
         plugin.getHeartManager().saveHeart(heart);
         
         if (target.isOnline()) {
             HeartOfTheSea.ensureBound(target);
-            target.sendMessage("§eYour Aspect has been rerolled to " + newAspect.getDisplayName() + " §7(previous rules retained)");
+            target.sendMessage("§eYour Aspect has been rerolled to " + newAspect.getDisplayName());
         }
         
         sender.sendMessage("§eRerolled " + target.getName() + "'s Aspect to " + newAspect.getDisplayName());
@@ -146,12 +147,13 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return;
         }
         
-        Heart heart = plugin.getHeartManager().getHeart(target);
-        if (heart == null) {
+        java.util.Optional<Heart> heartOptional = plugin.getHeartManager().getHeart(target.getUniqueId());
+        if (heartOptional.isEmpty()) {
             sender.sendMessage("§cPlayer has no Heart.");
             return;
         }
         
+        Heart heart = heartOptional.get();
         heart.setDormant(false);
         heart.setStability(50);
         plugin.getHeartManager().saveHeart(heart);

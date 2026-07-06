@@ -12,7 +12,7 @@ public class WarRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
-        player.setWalkSpeed(Math.min(player.getWalkSpeed() + 0.02f, 0.45f));
+        player.setWalkSpeed(0.25f);
     }
 
     @Override

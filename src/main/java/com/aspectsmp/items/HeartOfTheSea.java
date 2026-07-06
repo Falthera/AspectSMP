@@ -71,9 +71,17 @@ public class HeartOfTheSea {
 
         boolean hasHeart = false;
         for (ItemStack item : player.getInventory().getContents()) {
-            if (isHeartOfTheSea(item) && isBoundToPlayer(item, player)) {
+            if (isHeartOfTheSea(item)) {
                 hasHeart = true;
-                updateAspectName(item, heart.getAspect());
+                if (isBoundToPlayer(item, player)) {
+                    updateAspectName(item, heart.getAspect());
+                } else {
+                    ItemStack newHeart = create(player, heart.getAspect());
+                    int slot = player.getInventory().first(item);
+                    if (slot >= 0) {
+                        player.getInventory().setItem(slot, newHeart);
+                    }
+                }
                 break;
             }
         }

@@ -12,7 +12,7 @@ public class TempestRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
-        player.setWalkSpeed(Math.min(player.getWalkSpeed() + 0.01f, 0.45f));
+        player.setWalkSpeed(0.22f);
     }
 
     @Override

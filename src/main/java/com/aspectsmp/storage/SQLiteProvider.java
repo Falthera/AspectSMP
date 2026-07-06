@@ -64,28 +64,26 @@ public class SQLiteProvider implements StorageProvider {
 
     @Override
     public CompletableFuture<Heart> loadHeart(UUID playerId) {
-        return CompletableFuture.supplyAsync(() -> {
-            try (Connection conn = dataSource.getConnection()) {
-                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM hearts WHERE uuid = ?");
-                stmt.setString(1, playerId.toString());
-                ResultSet rs = stmt.executeQuery();
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM hearts WHERE uuid = ?");
+            stmt.setString(1, playerId.toString());
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                AspectType aspect = AspectType.fromName(rs.getString("aspect"));
+                int tier = rs.getInt("tier");
+                int stability = rs.getInt("stability");
+                long essence = rs.getLong("essence");
+                boolean dormant = rs.getInt("dormant") == 1;
                 
-                if (rs.next()) {
-                    AspectType aspect = AspectType.fromName(rs.getString("aspect"));
-                    int tier = rs.getInt("tier");
-                    int stability = rs.getInt("stability");
-                    long essence = rs.getLong("essence");
-                    boolean dormant = rs.getInt("dormant") == 1;
-                    
-                    Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
-                    heart.getCooldowns().putAll(deserializeCooldowns(rs.getString("cooldowns")));
-                    return heart;
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+                Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
+                heart.getCooldowns().putAll(deserializeCooldowns(rs.getString("cooldowns")));
+                return CompletableFuture.completedFuture(heart);
             }
-            return null;
-        });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return CompletableFuture.completedFuture(null);
     }
 
     private String serializeCooldowns(java.util.Map<String, Long> cooldowns) {

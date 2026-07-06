@@ -361,23 +361,6 @@ public class GuiManager implements Listener {
         if (playerPages.get(player) == null) return;
         event.setCancelled(true);
     }
-        } else if (currentPage == InventoryPage.ASPECT_LIST) {
-            if (clicked.getType() == Material.ENCHANTED_BOOK && 
-                clicked.getItemMeta().getDisplayName().contains("Aspect")) {
-                for (AspectType aspect : AspectType.values()) {
-                    if (clicked.getItemMeta().getDisplayName().contains(aspect.getDisplayName())) {
-                        openAspectDetailGUI(player, aspect);
-                        return;
-                    }
-                }
-            }
-        } else if (currentPage == InventoryPage.ASPECT_DETAIL) {
-            if (clicked.getType() == Material.ARROW && 
-                clicked.getItemMeta().getDisplayName().equals("§cBack to Overview")) {
-                openHeartGUI(player);
-            }
-        }
-    }
 
     public enum InventoryPage {
         HEART_OVERVIEW, ASPECT_LIST, ASPECT_DETAIL, ABILITY_VIEW, UPGRADE, REForge

@@ -3,7 +3,13 @@ package com.aspectsmp.core;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class TideRuleModifier implements RuleModifier {
+
+    private final Map<java.util.UUID, Long> lastHeal = new ConcurrentHashMap<>();
+    private static final long HEAL_COOLDOWN_MS = 1000;
 
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
@@ -19,8 +25,13 @@ public class TideRuleModifier implements RuleModifier {
     @Override
     public void modifyMovement(Player player) {
         if (player.getLocation().getBlock().getType().toString().contains("WATER")) {
-            player.setWalkSpeed(Math.min(player.getWalkSpeed() + 0.02f, 0.45f));
-            player.setHealth(Math.min(player.getHealth() + 0.5, player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()));
+            player.setWalkSpeed(0.25f);
+            long now = System.currentTimeMillis();
+            Long last = lastHeal.get(player.getUniqueId());
+            if (last == null || now - last > HEAL_COOLDOWN_MS) {
+                player.setHealth(Math.min(player.getHealth() + 1, player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()));
+                lastHeal.put(player.getUniqueId(), now);
+            }
         }
     }
 

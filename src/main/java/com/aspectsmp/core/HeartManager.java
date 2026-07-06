@@ -42,8 +42,7 @@ public class HeartManager {
 
     public void saveAll() {
         heartCache.values().forEach(heart -> {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> 
-                plugin.getStorageManager().saveHeart(heart));
+            plugin.getStorageManager().saveHeart(heart);
         });
     }
 

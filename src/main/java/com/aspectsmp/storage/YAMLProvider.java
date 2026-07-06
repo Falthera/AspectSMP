@@ -49,26 +49,24 @@ public class YAMLProvider implements StorageProvider {
 
     @Override
     public CompletableFuture<Heart> loadHeart(UUID playerId) {
-        return CompletableFuture.supplyAsync(() -> {
-            String path = playerId.toString();
-            if (!config.isConfigurationSection(path)) {
-                return null;
-            }
-            AspectType aspect = AspectType.fromName(config.getString(path + ".aspect", "INFERNO"));
-            int tier = config.getInt(path + ".tier", 1);
-            int stability = config.getInt(path + ".stability", 100);
-            long essence = config.getLong(path + ".essence", 0);
-            boolean dormant = config.getBoolean(path + ".dormant", false);
-            
-            Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
-            heart.getCooldowns().putAll(config.getConfigurationSection(path + ".cooldowns") != null ? 
-                config.getConfigurationSection(path + ".cooldowns").getValues(false).entrySet().stream()
-                    .collect(java.util.stream.Collectors.toMap(
-                        e -> e.getKey(),
-                        e -> ((Number) e.getValue()).longValue())) : 
+        String path = playerId.toString();
+        if (!config.isConfigurationSection(path)) {
+            return CompletableFuture.completedFuture(null);
+        }
+        AspectType aspect = AspectType.fromName(config.getString(path + ".aspect", "INFERNO"));
+        int tier = config.getInt(path + ".tier", 1);
+        int stability = config.getInt(path + ".stability", 100);
+        long essence = config.getLong(path + ".essence", 0);
+        boolean dormant = config.getBoolean(path + ".dormant", false);
+        
+        Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
+        heart.getCooldowns().putAll(config.getConfigurationSection(path + ".cooldowns") != null ? 
+            config.getConfigurationSection(path + ".cooldowns").getValues(false).entrySet().stream()
+                .collect(java.util.stream.Collectors.toMap(
+                    e -> e.getKey(),
+                    e -> ((Number) e.getValue()).longValue())) : 
                 new java.util.HashMap<>());
-            return heart;
-        });
+        return CompletableFuture.completedFuture(heart);
     }
 
     @Override

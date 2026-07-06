@@ -52,6 +52,9 @@ public class AspectSMP extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (heartManager != null) {
+            heartManager.saveAll();
+        }
         if (storageManager != null) {
             storageManager.shutdown();
         }
