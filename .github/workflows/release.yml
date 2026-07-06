@@ -25,11 +25,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           
-      - name: Extract version
-        id: version
+      - name: Bump version
+        id: bump
         run: |
-          VERSION=$(mvn -q -Dexec.executable=echo help:evaluate -DforceStdout | grep -v "^\[")
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          CURRENT=${GITHUB_REF_NAME}
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            NEW_VERSION="${{ github.event.inputs.version }}"
+          else
+            IFS='.' read -ra PARTS <<< "$CURRENT"
+            NEW_VERSION="${PARTS[0]}.${PARTS[1]}.$((PARTS[2] + 1))"
+          fi
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
       
       - name: Build with Maven
         run: mvn -B package --file pom.xml
@@ -48,39 +55,29 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: aspect-smp
       
-      - name: Create/Update Release Tag
+      - name: Create Release Tag
         id: tag
         run: |
-          NEW_VERSION="${{ github.event.inputs.version }}"
-          if [[ -n "$NEW_VERSION" ]]; then
-            VERSION="$NEW_VERSION"
-          else
-            MAJOR=$(echo "${{ github.ref_name }}" | cut -d. -f1)
-            MINOR=$(echo "${{ github.ref_name }}" | cut -d. -f2)
-            PATCH=$(echo "${{ github.ref_name }}" | cut -d. -f3)
-            PATCH=$((PATCH + 1))
-            VERSION="${MAJOR}.${MINOR}.${PATCH}"
-          fi
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git tag "v$VERSION"
-          git push origin "v$VERSION"
+          git tag "v${{ steps.bump.outputs.version }}"
+          git push origin "v${{ steps.bump.outputs.version }}"
           
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.tag.outputs.VERSION }}
-          name: Release v${{ steps.tag.outputs.VERSION }}
+          tag_name: v${{ steps.bump.outputs.version }}
+          name: Release v${{ steps.bump.outputs.version }}
           files: target/*.jar
           body: |
-            ## Aspect SMP v${{ steps.tag.outputs.VERSION }}
+            ## Aspect SMP v${{ steps.bump.outputs.version }}
             
             ### Features
             - 8 Aspect classes with 4 abilities each (32 total)
@@ -93,7 +90,6 @@ jobs:
             
             ### Compatibility
             - Paper 1.21.1
-            - Purpur compatible
           draft: false
           prerelease: false
           generate_release_notes: true
