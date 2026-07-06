@@ -190,6 +190,7 @@ public class ListenerManager implements Listener {
         heart.setTier(2);
         player.sendMessage("§6Heart upgraded to Tier 2!");
         consumeOneItem(player, event);
+        plugin.getScoreboardManager().updatePlayer(player);
     }
 
     private void handleHeartResonator(Player player, PlayerInteractEvent event) {
@@ -202,6 +203,7 @@ public class ListenerManager implements Listener {
         heart.setTier(3);
         player.sendMessage("§dHeart upgraded to Tier 3!");
         consumeOneItem(player, event);
+        plugin.getScoreboardManager().updatePlayer(player);
     }
 
     private void handleHeartRestorationKit(Player player, PlayerInteractEvent event) {
@@ -215,6 +217,7 @@ public class ListenerManager implements Listener {
         heart.setStability(50);
         player.sendMessage("§bHeart restored!");
         consumeOneItem(player, event);
+        plugin.getScoreboardManager().updatePlayer(player);
     }
 
     private void handleReforgingCore(Player player) {

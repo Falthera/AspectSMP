@@ -100,17 +100,35 @@ public class ScoreboardManager {
         }
         oldEntries.clear();
 
-        String tierLine = color + "Tier: " + heart.getTier();
+        int scoreValue = 6;
+        String tierLine = ChatColor.GOLD + "Tier: " + heart.getTier();
         String stabilityLine = ChatColor.RED + "Stability: " + heart.getStability();
         String essenceLine = ChatColor.AQUA + "Essence: " + heart.getEssence();
+        String ability1Line = ChatColor.YELLOW + "Right Click: Ability 1";
+        String ability2Line = ChatColor.DARK_PURPLE + "Shift+Right Click: Ability 2";
+        String ability3Line = ChatColor.LIGHT_PURPLE + "/ability3: Tier 3";
 
-        obj.getScore(tierLine).setScore(3);
-        obj.getScore(stabilityLine).setScore(2);
-        obj.getScore(essenceLine).setScore(1);
+        obj.getScore(tierLine).setScore(scoreValue--);
+        obj.getScore(stabilityLine).setScore(scoreValue--);
+        obj.getScore(essenceLine).setScore(scoreValue--);
+        obj.getScore(ability1Line).setScore(scoreValue--);
+        if (heart.getTier() >= 2) {
+            obj.getScore(ability2Line).setScore(scoreValue--);
+        }
+        if (heart.getTier() >= 3) {
+            obj.getScore(ability3Line).setScore(scoreValue--);
+        }
 
         oldEntries.add(tierLine);
         oldEntries.add(stabilityLine);
         oldEntries.add(essenceLine);
+        oldEntries.add(ability1Line);
+        if (heart.getTier() >= 2) {
+            oldEntries.add(ability2Line);
+        }
+        if (heart.getTier() >= 3) {
+            oldEntries.add(ability3Line);
+        }
     }
 
     private ChatColor getAspectColor(AspectType aspect) {
