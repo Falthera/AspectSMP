@@ -44,6 +44,24 @@ public class ScoreboardManager {
         });
     }
 
+    public void updateActionBar(Player player) {
+        if (!player.isOnline()) return;
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null || heart.isDormant()) return;
+
+        StringBuilder actionBar = new StringBuilder();
+        actionBar.append(getAspectColor(heart.getAspect()).toString()).append("§l").append(heart.getAspect().getDisplayName()).append(" Heart\n");
+        actionBar.append("§7Tier: ").append(heart.getTier()).append("\n");
+        actionBar.append("§7Right Click: Ability 1\n");
+        if (heart.getTier() >= 2) {
+            actionBar.append("§8Shift+Right Click: Ability 2\n");
+        }
+        if (heart.getTier() >= 3) {
+            actionBar.append("§d/ability3: Tier 3");
+        }
+
+        player.sendActionBar(net.kyori.adventure.text.Component.text(actionBar.toString()));
+    }
     private void createScoreboard(Player player) {
         if (playerScoreboards.containsKey(player)) return;
 
@@ -104,31 +122,14 @@ public class ScoreboardManager {
         String tierLine = ChatColor.GOLD + "Tier: " + heart.getTier();
         String stabilityLine = ChatColor.RED + "Stability: " + heart.getStability();
         String essenceLine = ChatColor.AQUA + "Essence: " + heart.getEssence();
-        String ability1Line = ChatColor.YELLOW + "Right Click: Ability 1";
-        String ability2Line = ChatColor.DARK_PURPLE + "Shift+Right Click: Ability 2";
-        String ability3Line = ChatColor.LIGHT_PURPLE + "/ability3: Tier 3";
 
         obj.getScore(tierLine).setScore(scoreValue--);
         obj.getScore(stabilityLine).setScore(scoreValue--);
         obj.getScore(essenceLine).setScore(scoreValue--);
-        obj.getScore(ability1Line).setScore(scoreValue--);
-        if (heart.getTier() >= 2) {
-            obj.getScore(ability2Line).setScore(scoreValue--);
-        }
-        if (heart.getTier() >= 3) {
-            obj.getScore(ability3Line).setScore(scoreValue--);
-        }
 
         oldEntries.add(tierLine);
         oldEntries.add(stabilityLine);
         oldEntries.add(essenceLine);
-        oldEntries.add(ability1Line);
-        if (heart.getTier() >= 2) {
-            oldEntries.add(ability2Line);
-        }
-        if (heart.getTier() >= 3) {
-            oldEntries.add(ability3Line);
-        }
     }
 
     private ChatColor getAspectColor(AspectType aspect) {

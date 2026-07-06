@@ -50,6 +50,7 @@ public class AspectSMP extends JavaPlugin {
         
         getServer().getScheduler().runTaskTimerAsynchronously(this, heartManager::saveAll, 6000L, 6000L);
         getServer().getScheduler().runTaskTimer(this, scoreboardManager::updateAll, 20L, 20L);
+        getServer().getScheduler().runTaskTimer(this, this::updateAllActionBars, 20L, 20L);
         
         getLogger().info("Aspect SMP enabled!");
     }
@@ -99,5 +100,11 @@ public class AspectSMP extends JavaPlugin {
 
     public ScoreboardManager getScoreboardManager() {
         return scoreboardManager;
+    }
+
+    private void updateAllActionBars() {
+        for (org.bukkit.entity.Player player : getServer().getOnlinePlayers()) {
+            scoreboardManager.updateActionBar(player);
+        }
     }
 }
