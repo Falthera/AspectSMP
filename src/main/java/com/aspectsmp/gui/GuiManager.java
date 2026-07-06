@@ -16,6 +16,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class GuiManager implements Listener {
@@ -25,7 +27,7 @@ public class GuiManager implements Listener {
 
     public GuiManager(AspectSMP plugin) {
         this.plugin = plugin;
-        this.playerPages = new HashMap<>();
+        this.playerPages = new java.util.HashMap<>();
     }
 
     public void openHeartGUI(Player player) {
@@ -88,7 +90,9 @@ public class GuiManager implements Listener {
         ItemStack item = new ItemStack(Material.REDSTONE);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§cStability: " + heart.getStability());
-        meta.setLore(java.util.List.of(Component.text("§7State: " + heart.getStabilityState().getDisplayName())));
+        List<Component> lore = new ArrayList<>();
+        lore.add(Component.text("§7State: " + heart.getStabilityState().getDisplayName()));
+        meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
     }
