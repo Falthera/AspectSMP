@@ -1,0 +1,28 @@
+package com.aspectsmp.core;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+
+public class InfernoRuleModifier implements RuleModifier {
+
+    @Override
+    public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
+        if (cause == EntityDamageEvent.DamageCause.ENTITY_ATTACK || cause == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
+            return damage * 1.15;
+        }
+        if (cause == EntityDamageEvent.DamageCause.FIRE || cause == EntityDamageEvent.DamageCause.FIRE_TICK) {
+            return damage * 0.5;
+        }
+        return damage;
+    }
+
+    @Override
+    public void modifyMovement(Player player) {
+        player.setFireTicks(Math.min(player.getFireTicks(), 40));
+    }
+
+    @Override
+    public double modifyKnockback(Player player, double knockback) {
+        return knockback;
+    }
+}

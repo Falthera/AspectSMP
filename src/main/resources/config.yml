@@ -1,0 +1,19 @@
+storage:
+  type: sqlite
+  mysql:
+    host: localhost
+    port: 3306
+    database: aspectsmp
+    username: root
+    password: ""
+
+cooldowns:
+  base: 5000
+
+stability:
+  kill_bonus: 5
+  death_penalty: 10
+  
+essence:
+  pvp_kill: 10
+  combat_damage: 2

@@ -1,0 +1,17 @@
+name: AspectSMP
+main: com.aspectsmp.AspectSMP
+version: 1.0.0-SNAPSHOT
+api-version: 1.21
+author: Aspect SMP Team
+description: Ability-based PvP RPG survival system
+commands:
+  aspect:
+    description: Aspect SMP main command
+    usage: /<command> [args]
+permissions:
+  aspect.use:
+    description: Access to basic aspect commands
+    default: true
+  aspect.admin:
+    description: Admin access to aspect commands
+    default: op
