@@ -11,8 +11,8 @@
     <name>Aspect SMP</name>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <paper.api.version>1.21.1-R0.1-SNAPSHOT</paper.api.version>
     </properties>
