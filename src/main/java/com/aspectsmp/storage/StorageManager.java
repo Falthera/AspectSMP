@@ -43,7 +43,7 @@ public class StorageManager {
         return CompletableFuture.runAsync(() -> provider.saveHeart(heart), asyncExecutor);
     }
 
-    public Heart loadHeart(UUID playerId) {
+    public CompletableFuture<Heart> loadHeart(UUID playerId) {
         return provider.loadHeart(playerId);
     }
 

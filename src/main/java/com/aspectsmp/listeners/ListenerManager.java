@@ -146,7 +146,7 @@ public class ListenerManager implements Listener {
         }
     }
 
-    private void consumeOneItem(PlayerInteractEvent event) {
+    private void consumeOneItem(Player player, PlayerInteractEvent event) {
         ItemStack used = event.getItem();
         if (used == null) return;
         int newAmount = used.getAmount() - 1;
@@ -170,7 +170,7 @@ public class ListenerManager implements Listener {
         }
         heart.setTier(2);
         player.sendMessage("§6Heart upgraded to Tier 2!");
-        consumeOneItem(event);
+        consumeOneItem(player, event);
     }
 
     private void handleHeartResonator(Player player, PlayerInteractEvent event) {
@@ -182,7 +182,7 @@ public class ListenerManager implements Listener {
         }
         heart.setTier(3);
         player.sendMessage("§dHeart upgraded to Tier 3!");
-        consumeOneItem(event);
+        consumeOneItem(player, event);
     }
 
     private void handleHeartRestorationKit(Player player, PlayerInteractEvent event) {
@@ -195,7 +195,7 @@ public class ListenerManager implements Listener {
         heart.setDormant(false);
         heart.setStability(50);
         player.sendMessage("§bHeart restored!");
-        consumeOneItem(event);
+        consumeOneItem(player, event);
     }
 
     private void handleReforgingCore(Player player) {
