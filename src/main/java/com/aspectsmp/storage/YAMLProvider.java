@@ -8,7 +8,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class YAMLProvider implements StorageProvider {
 
@@ -48,10 +47,10 @@ public class YAMLProvider implements StorageProvider {
     }
 
     @Override
-    public CompletableFuture<Heart> loadHeart(UUID playerId) {
+    public Heart loadHeart(UUID playerId) {
         String path = playerId.toString();
         if (!config.isConfigurationSection(path)) {
-            return CompletableFuture.completedFuture(null);
+            return null;
         }
         AspectType aspect = AspectType.fromName(config.getString(path + ".aspect", "INFERNO"));
         int tier = config.getInt(path + ".tier", 1);
@@ -66,7 +65,7 @@ public class YAMLProvider implements StorageProvider {
                     e -> e.getKey(),
                     e -> ((Number) e.getValue()).longValue())) : 
                 new java.util.HashMap<>());
-        return CompletableFuture.completedFuture(heart);
+        return heart;
     }
 
     @Override

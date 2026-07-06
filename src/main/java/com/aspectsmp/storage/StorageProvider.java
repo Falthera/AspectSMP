@@ -9,6 +9,6 @@ import java.util.concurrent.CompletableFuture;
 public interface StorageProvider {
     void initialize(AspectSMP plugin);
     CompletableFuture<Void> saveHeart(Heart heart);
-    CompletableFuture<Heart> loadHeart(UUID playerId);
+    Heart loadHeart(UUID playerId);
     void shutdown();
 }

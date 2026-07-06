@@ -7,7 +7,6 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.*;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class SQLiteProvider implements StorageProvider {
 
@@ -63,7 +62,7 @@ public class SQLiteProvider implements StorageProvider {
     }
 
     @Override
-    public CompletableFuture<Heart> loadHeart(UUID playerId) {
+    public Heart loadHeart(UUID playerId) {
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM hearts WHERE uuid = ?");
             stmt.setString(1, playerId.toString());
@@ -78,12 +77,12 @@ public class SQLiteProvider implements StorageProvider {
                 
                 Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
                 heart.getCooldowns().putAll(deserializeCooldowns(rs.getString("cooldowns")));
-                return CompletableFuture.completedFuture(heart);
+                return heart;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return CompletableFuture.completedFuture(null);
+        return null;
     }
 
     private String serializeCooldowns(java.util.Map<String, Long> cooldowns) {
