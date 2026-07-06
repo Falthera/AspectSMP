@@ -323,21 +323,44 @@ public class GuiManager implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        if (event.getCurrentItem() == null) return;
-        
-        event.setCancelled(true);
         
         InventoryPage currentPage = playerPages.get(player);
         if (currentPage == null) return;
         
+        event.setCancelled(true);
+        
         ItemStack clicked = event.getCurrentItem();
-        if (clicked.getType() == Material.GRAY_STAINED_GLASS_PANE) return;
+        if (clicked == null || clicked.getType() == Material.GRAY_STAINED_GLASS_PANE) return;
         
         if (currentPage == InventoryPage.HEART_OVERVIEW) {
             if (clicked.getType() == Material.ENCHANTED_BOOK && 
                 clicked.getItemMeta().getDisplayName().contains("Aspect")) {
                 openAspectListGUI(player);
             }
+        } else if (currentPage == InventoryPage.ASPECT_LIST) {
+            if (clicked.getType() == Material.ENCHANTED_BOOK && 
+                clicked.getItemMeta().getDisplayName().contains("Aspect")) {
+                for (AspectType aspect : AspectType.values()) {
+                    if (clicked.getItemMeta().getDisplayName().contains(aspect.getDisplayName())) {
+                        openAspectDetailGUI(player, aspect);
+                        return;
+                    }
+                }
+            }
+        } else if (currentPage == InventoryPage.ASPECT_DETAIL) {
+            if (clicked.getType() == Material.ARROW && 
+                clicked.getItemMeta().getDisplayName().equals("§cBack to Overview")) {
+                openHeartGUI(player);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (playerPages.get(player) == null) return;
+        event.setCancelled(true);
+    }
         } else if (currentPage == InventoryPage.ASPECT_LIST) {
             if (clicked.getType() == Material.ENCHANTED_BOOK && 
                 clicked.getItemMeta().getDisplayName().contains("Aspect")) {
