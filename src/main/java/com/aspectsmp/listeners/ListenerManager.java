@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
@@ -66,19 +67,21 @@ public class ListenerManager implements Listener {
         if (event.useItemInHand() == org.bukkit.event.Event.Result.DENY) return;
         
         ItemStack item = event.getItem();
-        if (item == null) return;
+        Player player = event.getPlayer();
 
-        if (HeartOfTheSea.isHeartOfTheSea(item)) {
+        if (item != null && HeartOfTheSea.isHeartOfTheSea(item)) {
             event.setCancelled(true);
             return;
         }
 
-        Player player = event.getPlayer();
-        
-        if (CustomItem.isCustomItem(item, "heart_catalyst") || 
+        boolean isCustomItem = item != null && (
+            CustomItem.isCustomItem(item, "heart_catalyst") || 
             CustomItem.isCustomItem(item, "heart_resonator") ||
             CustomItem.isCustomItem(item, "heart_restoration_kit") ||
-            CustomItem.isCustomItem(item, "reforging_core")) {
+            CustomItem.isCustomItem(item, "reforging_core")
+        );
+        
+        if (isCustomItem) {
             handleCustomItemUse(event, item);
             return;
         }
@@ -87,9 +90,9 @@ public class ListenerManager implements Listener {
         if (heart == null || heart.isDormant()) return;
 
         boolean sneaking = player.isSneaking();
-        boolean rightClick = event.getAction().toString().contains("RIGHT_CLICK");
+        Action action = event.getAction();
 
-        if (rightClick && event.getHand() == EquipmentSlot.HAND) {
+        if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
             if (!sneaking && heart.getTier() >= 1) {
                 plugin.getAbilityManager().handleTier1Ability(player, heart);
             } else if (sneaking && heart.getTier() >= 2) {
