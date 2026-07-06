@@ -41,6 +41,7 @@ public class ListenerManager implements Listener {
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (player.isOnline()) {
                 HeartOfTheSea.ensureBound(player);
+                plugin.getScoreboardManager().updatePlayer(player);
             }
         }, 20L);
     }
@@ -50,6 +51,7 @@ public class ListenerManager implements Listener {
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (event.getPlayer().isOnline()) {
                 HeartOfTheSea.ensureBound(event.getPlayer());
+                plugin.getScoreboardManager().updatePlayer(event.getPlayer());
             }
         }, 20L);
     }
@@ -60,6 +62,7 @@ public class ListenerManager implements Listener {
         if (heart != null) {
             plugin.getHeartManager().saveHeart(heart);
         }
+        plugin.getScoreboardManager().onPlayerQuit(event.getPlayer());
     }
 
     @EventHandler
@@ -119,12 +122,18 @@ public class ListenerManager implements Listener {
         
         ItemStack current = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
+        boolean heartCurrent = current != null && HeartOfTheSea.isHeartOfTheSea(current);
+        boolean heartCursor = cursor != null && HeartOfTheSea.isHeartOfTheSea(cursor);
         
-        if (current != null && HeartOfTheSea.isHeartOfTheSea(current)) {
+        if (!heartCurrent && !heartCursor) return;
+        
+        if (event.getClickedInventory() != null && !(event.getClickedInventory().getHolder() instanceof Player)) {
             event.setCancelled(true);
+            return;
         }
         
-        if (cursor != null && HeartOfTheSea.isHeartOfTheSea(cursor)) {
+        if (event.getClick() == org.bukkit.event.inventory.ClickType.DROP || 
+            event.getClick() == org.bukkit.event.inventory.ClickType.CTRL_DROP) {
             event.setCancelled(true);
         }
     }
@@ -133,12 +142,15 @@ public class ListenerManager implements Listener {
     public void onInventoryDrag(InventoryDragEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         
-        for (ItemStack item : event.getNewItems().values()) {
-            if (HeartOfTheSea.isHeartOfTheSea(item)) {
-                event.setCancelled(true);
-                return;
-            }
+        boolean hasHeart = event.getNewItems().values().stream()
+            .anyMatch(HeartOfTheSea::isHeartOfTheSea);
+        if (!hasHeart) return;
+        
+        if (event.getInventory().getHolder() instanceof Player) {
+            return;
         }
+        
+        event.setCancelled(true);
     }
 
     private void handleCustomItemUse(PlayerInteractEvent event, ItemStack item) {

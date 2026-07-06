@@ -7,6 +7,7 @@ import com.aspectsmp.core.RuleModifierManager;
 import com.aspectsmp.gui.GuiManager;
 import com.aspectsmp.listeners.ListenerManager;
 import com.aspectsmp.storage.StorageManager;
+import com.aspectsmp.util.ScoreboardManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AspectSMP extends JavaPlugin {
@@ -20,6 +21,7 @@ public class AspectSMP extends JavaPlugin {
     private ListenerManager listenerManager;
     private CommandManager commandManager;
     private RuleModifierManager ruleModifierManager;
+    private ScoreboardManager scoreboardManager;
 
     @Override
     public void onEnable() {
@@ -41,11 +43,13 @@ public class AspectSMP extends JavaPlugin {
         craftingManager.initialize();
         
         listenerManager.registerAll();
+        scoreboardManager = new ScoreboardManager(this);
         getServer().getPluginManager().registerEvents(ruleModifierManager, this);
         getServer().getPluginManager().registerEvents(guiManager, this);
         commandManager.registerCommands();
         
         getServer().getScheduler().runTaskTimerAsynchronously(this, heartManager::saveAll, 6000L, 6000L);
+        getServer().getScheduler().runTaskTimer(this, scoreboardManager::updateAll, 20L, 20L);
         
         getLogger().info("Aspect SMP enabled!");
     }
@@ -91,5 +95,9 @@ public class AspectSMP extends JavaPlugin {
 
     public CommandManager getCommandManager() {
         return commandManager;
+    }
+
+    public ScoreboardManager getScoreboardManager() {
+        return scoreboardManager;
     }
 }
