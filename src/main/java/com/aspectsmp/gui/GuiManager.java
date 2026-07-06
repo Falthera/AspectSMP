@@ -92,7 +92,7 @@ public class GuiManager implements Listener {
         meta.setDisplayName("§cStability: " + heart.getStability());
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text("§7State: " + heart.getStabilityState().getDisplayName()));
-        meta.setLore(lore);
+        meta.lore(lore);
         item.setItemMeta(meta);
         return item;
     }

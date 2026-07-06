@@ -34,8 +34,8 @@ public class ParticleUtil {
 
     public static void damageEntities(Collection<Entity> entities, Player attacker, double damage) {
         for (Entity entity : entities) {
-            if (entity instanceof Player) {
-                entity.damage(damage, attacker);
+            if (entity instanceof org.bukkit.entity.Damageable target) {
+                target.damage(damage, attacker);
             }
         }
     }

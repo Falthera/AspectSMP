@@ -89,7 +89,7 @@ jobs:
             - Event-driven rule modifiers
             
             ### Compatibility
-            - Paper 1.21.1
+            - Paper 1.21.11
           draft: false
           prerelease: false
           generate_release_notes: true

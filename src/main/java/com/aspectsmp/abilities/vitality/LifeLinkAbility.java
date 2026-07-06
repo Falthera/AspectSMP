@@ -36,7 +36,7 @@ public class LifeLinkAbility extends BaseAbility {
 
         org.bukkit.Location loc = player.getLocation();
         player.getWorld().spawnParticle(Particle.HEART, loc.add(0, 1, 0), 50);
-        playSound(player, Sound.ENTITY_WITCH_CAST_SPELL, 1.0f, 1.0f);
+        playSound(player, Sound.ENTITY_WITCH_THROW, 1.0f, 1.0f);
 
         org.bukkit.entity.Entity target = loc.getWorld().getEntities().stream()
             .filter(e -> e instanceof Player && e != player)
