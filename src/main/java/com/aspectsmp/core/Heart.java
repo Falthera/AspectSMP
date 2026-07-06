@@ -9,6 +9,8 @@ public class Heart {
 
     private final UUID owner;
     private AspectType aspect;
+    private AspectType previousAspect;
+    private boolean retainPreviousRules;
     private int tier;
     private int stability;
     private long essence;
@@ -18,6 +20,8 @@ public class Heart {
     public Heart(UUID owner, AspectType aspect) {
         this.owner = owner;
         this.aspect = aspect;
+        this.previousAspect = null;
+        this.retainPreviousRules = false;
         this.tier = 1;
         this.stability = 100;
         this.essence = 0;
@@ -28,6 +32,8 @@ public class Heart {
     public Heart(UUID owner, AspectType aspect, int tier, int stability, long essence, boolean dormant) {
         this.owner = owner;
         this.aspect = aspect;
+        this.previousAspect = null;
+        this.retainPreviousRules = false;
         this.tier = tier;
         this.stability = stability;
         this.essence = essence;
@@ -45,6 +51,22 @@ public class Heart {
 
     public void setAspect(AspectType aspect) {
         this.aspect = aspect;
+    }
+
+    public AspectType getPreviousAspect() {
+        return previousAspect;
+    }
+
+    public void setPreviousAspect(AspectType previousAspect) {
+        this.previousAspect = previousAspect;
+    }
+
+    public boolean isRetainPreviousRules() {
+        return retainPreviousRules;
+    }
+
+    public void setRetainPreviousRules(boolean retainPreviousRules) {
+        this.retainPreviousRules = retainPreviousRules;
     }
 
     public int getTier() {

@@ -154,6 +154,88 @@ public class AbilityManager {
         });
     }
 
+    public void handleTier1Ability(Player player, Heart heart) {
+        if (!heart.canUseAbilities()) return;
+        
+        Set<Ability> abilities = aspectAbilities.get(heart.getAspect());
+        if (abilities == null) return;
+        
+        Ability tier1Ability = abilities.stream()
+            .filter(a -> !a.isPassive())
+            .filter(a -> a.getTier() == 1)
+            .findFirst()
+            .orElse(null);
+            
+        if (tier1Ability != null && canUseAbility(player, tier1Ability)) {
+            Bukkit.getScheduler().runTask(plugin, () -> 
+                tier1Ability.execute(player, heart, null));
+        }
+    }
+
+    public void handleTier2Ability(Player player, Heart heart) {
+        if (!heart.canUseAbilities() || heart.getTier() < 2) return;
+        
+        Set<Ability> abilities = aspectAbilities.get(heart.getAspect());
+        if (abilities == null) return;
+        
+        Ability tier2Ability = abilities.stream()
+            .filter(a -> !a.isPassive())
+            .filter(a -> a.getTier() == 2)
+            .findFirst()
+            .orElse(null);
+            
+        if (tier2Ability != null && canUseAbility(player, tier2Ability)) {
+            Bukkit.getScheduler().runTask(plugin, () -> 
+                tier2Ability.execute(player, heart, null));
+        }
+    }
+
+    public void handleTier3Ability(Player player) {
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null || heart.isDormant() || heart.getTier() < 3) {
+            player.sendMessage("§cYou need Tier 3 to use this ability!");
+            return;
+        }
+        
+        Set<Ability> abilities = aspectAbilities.get(heart.getAspect());
+        if (abilities == null) return;
+        
+        Ability tier3Ability = abilities.stream()
+            .filter(a -> !a.isPassive())
+            .filter(a -> a.getTier() == 3)
+            .findFirst()
+            .orElse(null);
+            
+        if (tier3Ability != null && canUseAbility(player, tier3Ability)) {
+            Bukkit.getScheduler().runTask(plugin, () -> 
+                tier3Ability.execute(player, heart, null));
+        }
+    }
+
+    public void handleUltimate(Player player) {
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null || heart.isDormant()) {
+            player.sendMessage("§cYour Heart is not responsive!");
+            return;
+        }
+        
+        Set<Ability> abilities = aspectAbilities.get(heart.getAspect());
+        if (abilities == null) return;
+        
+        Ability ultimate = abilities.stream()
+            .filter(a -> !a.isPassive())
+            .filter(a -> a.isUltimate())
+            .findFirst()
+            .orElse(null);
+            
+        if (ultimate != null && canUseAbility(player, ultimate)) {
+            Bukkit.getScheduler().runTask(plugin, () -> 
+                ultimate.execute(player, heart, null));
+        } else {
+            player.sendMessage("§cUltimate is on cooldown or not unlocked!");
+        }
+    }
+
     private boolean canUseAbility(Player player, Ability ability) {
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return false;

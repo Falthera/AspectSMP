@@ -42,6 +42,7 @@ public class AspectSMP extends JavaPlugin {
         
         listenerManager.registerAll();
         getServer().getPluginManager().registerEvents(ruleModifierManager, this);
+        getServer().getPluginManager().registerEvents(guiManager, this);
         commandManager.registerCommands();
         
         getServer().getScheduler().runTaskTimerAsynchronously(this, heartManager::saveAll, 6000L, 6000L);

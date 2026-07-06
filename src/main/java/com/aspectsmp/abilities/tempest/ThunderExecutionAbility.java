@@ -33,6 +33,11 @@ public class ThunderExecutionAbility extends BaseAbility {
     }
 
     @Override
+    public boolean isUltimate() {
+        return true;
+    }
+
+    @Override
     public boolean execute(Player player, Heart heart, Event triggerEvent) {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;

@@ -44,6 +44,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             case "repair" -> handleRepair(sender, args);
             case "reload" -> handleReload(sender);
             case "gui" -> handleGui(sender);
+            case "ability3" -> handleAbility3(sender);
+            case "ultimate" -> handleUltimate(sender);
             default -> sendUsage(sender);
         }
         return true;
@@ -121,12 +123,20 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return;
         }
         
+        AspectType previousAspect = heart.getAspect();
+        heart.setPreviousAspect(previousAspect);
+        heart.setRetainPreviousRules(true);
+        
         AspectType newAspect = AspectType.values()[(int) (Math.random() * AspectType.values().length)];
         heart.setAspect(newAspect);
         plugin.getHeartManager().saveHeart(heart);
         
+        if (target.isOnline()) {
+            HeartOfTheSea.ensureBound(target);
+            target.sendMessage("§eYour Aspect has been rerolled to " + newAspect.getDisplayName() + " §7(previous rules retained)");
+        }
+        
         sender.sendMessage("§eRerolled " + target.getName() + "'s Aspect to " + newAspect.getDisplayName());
-        target.sendMessage("§eYour Aspect has been rerolled to " + newAspect.getDisplayName());
     }
 
     private void handleRepair(CommandSender sender, String[] args) {
@@ -163,7 +173,23 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             sender.sendMessage("§cOnly players can use this.");
             return;
         }
-        plugin.getGuiManager().openHeartGUI(player);
+        plugin.getGuiManager().openAspectListGUI(player);
+    }
+
+    private void handleAbility3(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("§cOnly players can use this.");
+            return;
+        }
+        plugin.getAbilityManager().handleTier3Ability(player);
+    }
+
+    private void handleUltimate(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("§cOnly players can use this.");
+            return;
+        }
+        plugin.getAbilityManager().handleUltimate(player);
     }
 
     private void sendUsage(CommandSender sender) {
@@ -171,6 +197,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         sender.sendMessage("§f/aspect info [player] - View Heart info");
         sender.sendMessage("§f/aspect list - List Aspects");
         sender.sendMessage("§f/aspect gui - Open Heart GUI");
+        sender.sendMessage("§f/aspect ability3 - Use Tier 3 ability");
+        sender.sendMessage("§f/aspect ultimate - Use Ultimate ability");
         if (sender.hasPermission("aspect.admin")) {
             sender.sendMessage("§f/aspect give <player> <item> - Give item");
             sender.sendMessage("§f/aspect reroll <player> - Reroll Aspect");
@@ -184,7 +212,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
         
         if (args.length == 1) {
-            completions.addAll(List.of("info", "list", "gui"));
+            completions.addAll(List.of("info", "list", "gui", "ability3", "ultimate"));
             if (sender.hasPermission("aspect.admin")) {
                 completions.addAll(List.of("give", "reroll", "repair", "reload"));
             }

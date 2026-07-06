@@ -9,6 +9,7 @@ public interface Ability {
     String getName();
     int getTier();
     boolean isPassive();
+    default boolean isUltimate() { return false; }
     
     default boolean canExecute(Player player, Heart heart) {
         if (heart.isDormant()) return false;
