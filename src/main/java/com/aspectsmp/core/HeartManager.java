@@ -26,7 +26,7 @@ public class HeartManager {
         return heartCache.computeIfAbsent(playerId, id -> {
             Heart heart = plugin.getStorageManager().loadHeart(id);
             if (heart == null) {
-                heart = new Heart(id, AspectType.INFERNO);
+                heart = new Heart(id, AspectType.TIDE);
             }
             return heart;
         });
