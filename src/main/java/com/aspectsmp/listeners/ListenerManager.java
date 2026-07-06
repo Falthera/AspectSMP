@@ -91,9 +91,15 @@ public class ListenerManager implements Listener {
         }
 
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
-        if (heart == null || heart.isDormant()) return;
+        if (heart == null || heart.isDormant()) {
+            player.sendMessage("§cYour Heart is not available or is dormant!");
+            return;
+        }
         
-        if (!holdingHeart) return;
+        if (!holdingHeart) {
+            player.sendMessage("§cHold your Heart of the Sea to use abilities!");
+            return;
+        }
 
         boolean sneaking = player.isSneaking();
         Action action = event.getAction();

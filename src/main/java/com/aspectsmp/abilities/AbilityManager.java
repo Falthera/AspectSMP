@@ -169,6 +169,8 @@ public class AbilityManager {
         if (tier1Ability != null && canUseAbility(player, tier1Ability)) {
             Bukkit.getScheduler().runTask(plugin, () -> 
                 tier1Ability.execute(player, heart, null));
+        } else if (tier1Ability != null) {
+            player.sendMessage("§cAbility is on cooldown!");
         }
     }
 
@@ -187,6 +189,8 @@ public class AbilityManager {
         if (tier2Ability != null && canUseAbility(player, tier2Ability)) {
             Bukkit.getScheduler().runTask(plugin, () -> 
                 tier2Ability.execute(player, heart, null));
+        } else if (tier2Ability != null) {
+            player.sendMessage("§cAbility is on cooldown!");
         }
     }
 
@@ -209,6 +213,8 @@ public class AbilityManager {
         if (tier3Ability != null && canUseAbility(player, tier3Ability)) {
             Bukkit.getScheduler().runTask(plugin, () -> 
                 tier3Ability.execute(player, heart, null));
+        } else if (tier3Ability != null) {
+            player.sendMessage("§cAbility is on cooldown or not unlocked!");
         }
     }
 

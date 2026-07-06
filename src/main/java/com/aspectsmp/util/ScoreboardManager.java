@@ -50,14 +50,14 @@ public class ScoreboardManager {
         if (heart == null || heart.isDormant()) return;
 
         StringBuilder actionBar = new StringBuilder();
-        actionBar.append(getAspectColor(heart.getAspect()).toString()).append("§l").append(heart.getAspect().getDisplayName()).append(" Heart\n");
-        actionBar.append("§7Tier: ").append(heart.getTier()).append("\n");
-        actionBar.append("§7Right Click: Ability 1\n");
+        actionBar.append(getAspectColor(heart.getAspect())).append("§l").append(heart.getAspect().getDisplayName()).append(" Heart §7| ");
+        actionBar.append("§6Tier: ").append(heart.getTier()).append(" §7| ");
+        actionBar.append("§aRight Click: Ability 1");
         if (heart.getTier() >= 2) {
-            actionBar.append("§8Shift+Right Click: Ability 2\n");
+            actionBar.append(" §8| §5Shift+Right: Ability 2");
         }
         if (heart.getTier() >= 3) {
-            actionBar.append("§d/ability3: Tier 3");
+            actionBar.append(" §d| /ability3");
         }
 
         player.sendActionBar(net.kyori.adventure.text.Component.text(actionBar.toString()));
