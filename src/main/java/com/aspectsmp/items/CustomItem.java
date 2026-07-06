@@ -1,5 +1,7 @@
 package com.aspectsmp.items;
 
+import java.util.UUID;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
