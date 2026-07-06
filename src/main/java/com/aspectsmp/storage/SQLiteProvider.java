@@ -7,6 +7,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.*;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class SQLiteProvider implements StorageProvider {
 
