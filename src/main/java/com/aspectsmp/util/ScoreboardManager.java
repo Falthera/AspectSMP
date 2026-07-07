@@ -1,5 +1,7 @@
 package com.aspectsmp.util;
 
+import com.aspectsmp.abilities.Ability;
+import com.aspectsmp.abilities.AbilityManager;
 import com.aspectsmp.AspectSMP;
 import com.aspectsmp.core.AspectType;
 import com.aspectsmp.core.Heart;
@@ -51,18 +53,25 @@ public class ScoreboardManager {
         if (heart == null || heart.isDormant()) return;
 
         StringBuilder actionBar = new StringBuilder();
-        actionBar.append(getAspectColor(heart.getAspect())).append("§l").append(heart.getAspect().getDisplayName()).append(" Heart §7| ");
-        actionBar.append("§6Tier: ").append(heart.getTier()).append(" §7| ");
-        actionBar.append("§aRight Click: Ability 1");
-        if (heart.getTier() >= 2) {
-            actionBar.append(" §8| §5Shift+Right: Ability 2");
+        actionBar.append(getAspectColor(heart.getAspect())).append("§l").append(heart.getAspect().getDisplayName()).append(" §7| §6Tier ").append(heart.getTier()).append(" §7| ");
+
+        Set<Ability> abilities = plugin.getAbilityManager().getAbilitiesForAspect(heart.getAspect());
+        boolean first = true;
+        for (Ability ability : abilities) {
+            if (ability.isPassive()) continue;
+            if (ability.getTier() > heart.getTier()) continue;
+            long cooldownEnd = heart.getCooldowns().getOrDefault(ability.getId(), 0L);
+            String status;
+            if (cooldownEnd > System.currentTimeMillis()) {
+                long seconds = Math.max(1, (cooldownEnd - System.currentTimeMillis() + 999) / 1000);
+                status = "§c" + seconds + "s";
+            } else {
+                status = "§aREADY";
+            }
+            if (!first) actionBar.append(" §8| ");
+            first = false;
+            actionBar.append(ability.getName()).append(": ").append(status);
         }
-        if (heart.getTier() >= 3) {
-            actionBar.append(" §d| /ability3");
-        }
-        actionBar.append(" §c| /ultimate §7| ");
-        actionBar.append(getStabilityColor(heart)).append(getStabilityStateDisplay(heart)).append(" §7| ");
-        actionBar.append("§bEssence: ").append(heart.getEssence());
 
         player.sendActionBar(net.kyori.adventure.text.Component.text(actionBar.toString()));
     }
