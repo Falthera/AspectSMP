@@ -63,7 +63,9 @@ public class GenesisFieldAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                target.heal(10 * getPowerMultiplier(heart));
+                if (target == player || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(player.getUniqueId(), target.getUniqueId()) || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(target.getUniqueId(), player.getUniqueId())) {
+                    target.heal(10 * getPowerMultiplier(heart));
+                }
             }
         }
 
