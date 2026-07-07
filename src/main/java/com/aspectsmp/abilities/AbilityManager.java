@@ -137,26 +137,6 @@ public class AbilityManager {
         return new HashSet<>(aspectAbilities.getOrDefault(type, Collections.emptySet()));
     }
 
-    public void handleAbilityTrigger(Player player, Heart heart, EquipmentSlot slot) {
-        if (slot != EquipmentSlot.OFF_HAND) return;
-        if (!heart.canUseAbilities()) return;
-        
-        Set<Ability> abilities = aspectAbilities.get(heart.getAspect());
-        if (abilities == null) return;
-        
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            abilities.stream()
-                .filter(a -> !a.isPassive())
-                .filter(a -> a.getTier() <= heart.getTier())
-                .forEach(ability -> {
-                    if (canUseAbility(player, ability)) {
-                        Bukkit.getScheduler().runTask(plugin, () -> 
-                            ability.execute(player, heart, null));
-                    }
-                });
-        });
-    }
-
     public void handleTier1Ability(Player player, Heart heart) {
         if (!heart.canUseAbilities()) return;
         

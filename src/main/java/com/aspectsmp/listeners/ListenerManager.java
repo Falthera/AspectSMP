@@ -107,25 +107,34 @@ public class ListenerManager implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.useItemInHand() == org.bukkit.event.Event.Result.DENY) return;
         
-        ItemStack item = event.getItem();
+        ItemStack usedItem = event.getItem();
         Player player = event.getPlayer();
 
-        boolean holdingHeart = item != null && HeartOfTheSea.isHeartOfTheSea(item);
+        ItemStack mainHandItem = player.getInventory().getItemInMainHand();
+        ItemStack offHandItem = player.getInventory().getItemInOffHand();
 
-        if (holdingHeart) {
-            event.setCancelled(true);
+        boolean hasHeart = (mainHandItem != null && HeartOfTheSea.isHeartOfTheSea(mainHandItem)) ||
+                           (offHandItem != null && HeartOfTheSea.isHeartOfTheSea(offHandItem));
+
+        if (!hasHeart) {
+            player.sendMessage("§cHold your Heart of the Sea to use abilities!");
+            return;
         }
 
-        boolean isCustomItem = item != null && (
-            CustomItem.isCustomItem(item, "heart_catalyst") || 
-            CustomItem.isCustomItem(item, "heart_resonator") ||
-            CustomItem.isCustomItem(item, "heart_restoration_kit") ||
-            CustomItem.isCustomItem(item, "reforging_core") ||
-            CustomItem.isCustomItem(item, "stability_bottle")
+        if (usedItem != null && usedItem.getType().isBlock()) {
+            return;
+        }
+
+        boolean isCustomItem = usedItem != null && (
+            CustomItem.isCustomItem(usedItem, "heart_catalyst") || 
+            CustomItem.isCustomItem(usedItem, "heart_resonator") ||
+            CustomItem.isCustomItem(usedItem, "heart_restoration_kit") ||
+            CustomItem.isCustomItem(usedItem, "reforging_core") ||
+            CustomItem.isCustomItem(usedItem, "stability_bottle")
         );
         
         if (isCustomItem) {
-            handleCustomItemUse(event, item);
+            handleCustomItemUse(event, usedItem);
             return;
         }
 
@@ -134,17 +143,13 @@ public class ListenerManager implements Listener {
             player.sendMessage("§cYour Heart is not available or is dormant!");
             return;
         }
-        
-        if (!holdingHeart) {
-            player.sendMessage("§cHold your Heart of the Sea to use abilities!");
-            return;
-        }
+
+        event.setCancelled(true);
 
         boolean sneaking = player.isSneaking();
         Action action = event.getAction();
 
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-            event.setCancelled(true);
             if (!sneaking && heart.getTier() >= 1) {
                 plugin.getAbilityManager().handleTier1Ability(player, heart);
             } else if (sneaking && heart.getTier() >= 2) {
