@@ -330,7 +330,7 @@ public class ListenerManager implements Listener {
         
         if (player.hasMetadata("berserker") && event.getEntity() instanceof org.bukkit.entity.LivingEntity living) {
             double healAmount = event.getFinalDamage() * 0.2;
-            player.setHealth(Math.min(player.getAttribute(Attribute.MAX_HEALTH).getValue(), player.getHealth() + healAmount));
+            player.heal(healAmount);
         }
     }
 
