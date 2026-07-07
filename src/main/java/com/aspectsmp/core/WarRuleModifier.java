@@ -11,9 +11,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WarRuleModifier implements RuleModifier {
 
     private final Map<UUID, Long> lastKnockback = new ConcurrentHashMap<>();
+    private final Map<UUID, Long> lastCombat = new ConcurrentHashMap<>();
+    private static final long COMBAT_DURATION = 5000;
 
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
+        long now = System.currentTimeMillis();
+        if (lastCombat.containsKey(player.getUniqueId()) && now - lastCombat.get(player.getUniqueId()) < COMBAT_DURATION) {
+            return damage * 0.9;
+        }
         if (cause == EntityDamageEvent.DamageCause.ENTITY_ATTACK || cause == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
             return damage * 1.2;
         }
@@ -22,7 +28,7 @@ public class WarRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
-        player.setWalkSpeed(0.25f);
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 40, 0, false, false, true), true);
     }
 
     @Override
@@ -34,5 +40,14 @@ public class WarRuleModifier implements RuleModifier {
         }
         lastKnockback.put(player.getUniqueId(), now);
         return knockback * 0.2;
+    }
+
+    @Override
+    public void applyPassive(Player player) {
+    }
+
+    @Override
+    public void recordCombat(UUID uuid) {
+        lastCombat.put(uuid, System.currentTimeMillis());
     }
 }

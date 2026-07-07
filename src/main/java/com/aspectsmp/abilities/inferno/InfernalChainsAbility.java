@@ -39,14 +39,14 @@ public class InfernalChainsAbility extends BaseAbility {
 
         Entity target = player.getWorld().getEntities().stream()
             .filter(e -> e instanceof Player && e != player)
-            .min((a, b) -> Double.compare(a.getLocation().distanceSquared(player.getLocation()), 
+            .min((a, b) -> Double.compare(a.getLocation().distanceSquared(player.getLocation()),
                   b.getLocation().distanceSquared(player.getLocation())))
             .orElse(null);
 
         if (target instanceof Player p) {
             p.damage(4 * getPowerMultiplier(heart), player);
             p.setFireTicks(p.getFireTicks() + 80);
-            
+
             player.getWorld().spawnParticle(Particle.FLAME, p.getLocation().add(0, 1, 0), 20, 0.5, 0.5, 0.5);
             playSound(player, Sound.ENTITY_BLAZE_SHOOT, 1.0f, 1.0f);
         }

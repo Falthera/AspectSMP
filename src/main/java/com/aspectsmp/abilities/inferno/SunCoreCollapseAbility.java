@@ -52,7 +52,7 @@ public class SunCoreCollapseAbility extends BaseAbility {
             };
             runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), (long) d * 5);
         }
-        
+
         playSound(player, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 0.5f);
 
         List<Entity> nearby = player.getWorld().getEntities().stream()

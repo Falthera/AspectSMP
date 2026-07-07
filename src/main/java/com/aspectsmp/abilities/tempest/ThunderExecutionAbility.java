@@ -8,6 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class ThunderExecutionAbility extends BaseAbility {
@@ -42,16 +43,15 @@ public class ThunderExecutionAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        Entity target = player.getWorld().getEntities().stream()
-            .filter(e -> e instanceof Player && e != player)
-            .filter(e -> ((Player) e).getHealth() <= 10)
-            .min((a, b) -> Double.compare(a.getLocation().distanceSquared(player.getLocation()),
-                  b.getLocation().distanceSquared(player.getLocation())))
-            .orElse(null);
+        List<Player> nearby = player.getWorld().getPlayers().stream()
+            .filter(e -> e != player && e.getLocation().distanceSquared(player.getLocation()) <= 100)
+            .filter(e -> e.getHealth() <= 10)
+            .min(Comparator.comparingDouble(e -> e.getLocation().distanceSquared(player.getLocation())))
+            .stream().toList();
 
-        if (target instanceof Player p && p.getHealth() <= 10) {
-            p.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, p.getLocation().add(0, 1, 0), 100);
-            p.damage(20 * getPowerMultiplier(heart), player);
+        for (Player target : nearby) {
+            target.damage(20 * getPowerMultiplier(heart), player);
+            player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, target.getLocation().add(0, 1, 0), 100);
             playSound(player, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0f, 0.5f);
         }
 

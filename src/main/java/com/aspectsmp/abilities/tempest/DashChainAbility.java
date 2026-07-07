@@ -17,7 +17,7 @@ public class DashChainAbility extends BaseAbility {
 
     @Override
     public String getName() {
-        return "Dash Chain";
+        return "Lightning Dash";
     }
 
     @Override

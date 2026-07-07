@@ -37,7 +37,7 @@ public class RageModeAbility extends BaseAbility {
 
         player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().add(0, 1, 0), 50, 1, 1, 1);
         playSound(player, Sound.ENTITY_WARDEN_ROAR, 1.0f, 0.5f);
-        
+
         double damage = player.getAttribute(Attribute.ATTACK_DAMAGE).getValue() * getPowerMultiplier(heart);
         player.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(
             player.getAttribute(Attribute.MOVEMENT_SPEED).getBaseValue() * 1.5);

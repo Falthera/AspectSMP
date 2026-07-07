@@ -18,7 +18,7 @@ public class MiningRushAbility extends BaseAbility {
 
     @Override
     public String getName() {
-        return "Mining Rush";
+        return "Golden Touch";
     }
 
     @Override

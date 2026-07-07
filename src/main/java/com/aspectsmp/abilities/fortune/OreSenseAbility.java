@@ -16,7 +16,7 @@ public class OreSenseAbility extends BaseAbility {
 
     @Override
     public String getName() {
-        return "Ore Sense";
+        return "Prospector";
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.aspectsmp.core;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
 import java.util.UUID;
@@ -28,19 +30,29 @@ public class TideRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
-        if (!player.getLocation().getBlock().getType().toString().contains("WATER")) return;
-
-        long now = System.currentTimeMillis();
-        Long last = lastHeal.get(player.getUniqueId());
-        if (last == null || now - last > HEAL_COOLDOWN_MS) {
-            player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.REGENERATION, 24, 0, false, false, true));
-            lastHeal.put(player.getUniqueId(), now);
+        if (player.getLocation().getBlock().getType().toString().contains("WATER")) {
+            long now = System.currentTimeMillis();
+            Long last = lastHeal.get(player.getUniqueId());
+            if (last == null || now - last > HEAL_COOLDOWN_MS) {
+                player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.REGENERATION, 24, 0, false, false, true));
+                lastHeal.put(player.getUniqueId(), now);
+            }
+            player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 40, 0, false, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 80, 0, false, false, true), true);
         }
-        player.setWalkSpeed(0.25f);
     }
 
     @Override
     public double modifyKnockback(Player player, double knockback) {
         return knockback * 0.9;
+    }
+
+    @Override
+    public void applyPassive(Player player) {
+        if (player.getLocation().getBlock().getType().toString().contains("WATER") ||
+            player.getLocation().getBlock().getType().toString().contains("BUBBLE_COLUMN")) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 80, 0, false, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 80, 0, false, false, true), true);
+        }
     }
 }

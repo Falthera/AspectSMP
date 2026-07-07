@@ -6,7 +6,9 @@ import com.aspectsmp.core.Heart;
 import com.aspectsmp.items.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityKnockbackByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,6 +16,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -34,6 +37,12 @@ public class ListenerManager implements Listener {
             public void run() {
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     plugin.getAbilityManager().processPassives(player);
+                    Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+                    if (heart == null || heart.isDormant()) continue;
+                    RuleModifier modifier = plugin.getRuleModifierManager().getModifier(heart.getAspect());
+                    if (modifier != null) {
+                        modifier.applyPassive(player);
+                    }
                 }
             }
         }.runTaskTimer(plugin, 20L, 20L);
@@ -301,11 +310,27 @@ public class ListenerManager implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof org.bukkit.entity.Player player) {
-            Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
-            if (heart == null || heart.isDormant()) return;
-            
-            heart.addEssence((long) (event.getDamage() * 2));
+        if (!(event.getDamager() instanceof org.bukkit.entity.Player player)) return;
+        
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null || heart.isDormant()) return;
+        
+        heart.addEssence((long) (event.getDamage() * 2));
+        
+        if (heart.getAspect() == AspectType.INFERNO && event.getEntity() instanceof org.bukkit.entity.LivingEntity target && target.getFireTicks() > 0) {
+            event.setDamage(event.getDamage() * 1.2);
+        }
+        
+        if (heart.getAspect() == AspectType.WAR) {
+            RuleModifier modifier = plugin.getRuleModifierManager().getModifier(AspectType.WAR);
+            if (modifier != null) {
+                modifier.recordCombat(player.getUniqueId());
+            }
+        }
+        
+        if (player.hasMetadata("berserker") && event.getEntity() instanceof org.bukkit.entity.LivingEntity living) {
+            double healAmount = event.getFinalDamage() * 0.2;
+            player.setHealth(Math.min(player.getAttribute(Attribute.MAX_HEALTH).getValue(), player.getHealth() + healAmount));
         }
     }
 
@@ -333,15 +358,58 @@ public class ListenerManager implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        Player player = event.getEntity();
-        if (player.hasMetadata("revival_shield")) {
-            event.setCancelled(true);
-            player.setHealth(1.0);
-            player.removeMetadata("revival_shield", com.aspectsmp.AspectSMP.getInstance());
-            player.sendMessage("§a§lREVIVAL SHIELD ACTIVATED!");
-            player.getWorld().spawnParticle(org.bukkit.Particle.TOTEM_OF_UNDYING, player.getLocation().add(0, 1, 0), 50, 1, 1, 1);
-            player.playSound(player.getLocation(), org.bukkit.Sound.ITEM_TOTEM_USE, 1.0f, 1.0f);
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null || heart.isDormant()) return;
+        
+        if (heart.getAspect() == AspectType.RIFT && event.getCause() != EntityDamageEvent.DamageCause.VOID) {
+            if (new java.util.Random().nextDouble() < 0.2 && !player.hasMetadata("rift_blink_cd")) {
+                org.bukkit.Location loc = player.getLocation().getDirection().multiply(5).toLocation(player.getWorld());
+                if (loc.getBlock().getType().isAir() || loc.getBlock().getType().isLiquid()) {
+                    player.teleport(loc);
+                    player.setMetadata("rift_blink_cd", new org.bukkit.metadata.FixedMetadataValue(com.aspectsmp.AspectSMP.getInstance(), true));
+                    plugin.getServer().getScheduler().runTaskLater(plugin, () -> player.removeMetadata("rift_blink_cd", com.aspectsmp.AspectSMP.getInstance()), 60L);
+                }
+            }
+        }
+        
+        if (player.hasMetadata("vitality_bloom")) {
+            org.bukkit.metadata.MetadataValue meta = player.getMetadata("vitality_bloom").get(0);
+            java.util.Optional<Double> opt = java.util.Optional.ofNullable(meta.asDouble());
+            if (opt.isPresent()) {
+                double bloomHp = opt.get();
+                if (bloomHp >= event.getDamage()) {
+                    player.setMetadata("vitality_bloom", new org.bukkit.metadata.FixedMetadataValue(com.aspectsmp.AspectSMP.getInstance(), bloomHp - event.getDamage()));
+                    event.setDamage(0);
+                    player.getWorld().spawnParticle(org.bukkit.Particle.HEART, player.getLocation().add(0, 1, 0), 5, 0.5, 0.5, 0.5);
+                } else {
+                    player.removeMetadata("vitality_bloom", com.aspectsmp.AspectSMP.getInstance());
+                    event.setDamage(event.getDamage() - bloomHp);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        if (!player.hasMetadata("golden_touch")) return;
+        
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null || heart.isDormant()) return;
+        
+        long now = System.currentTimeMillis();
+        long expire = player.getMetadata("golden_touch").get(0).asLong();
+        if (now > expire) {
+            player.removeMetadata("golden_touch", com.aspectsmp.AspectSMP.getInstance());
+            return;
+        }
+        
+        if (new java.util.Random().nextDouble() < 0.5) {
+            event.setDropItems(false);
+            player.getWorld().dropItemNaturally(event.getBlock().getLocation().add(0.5, 0.5, 0.5), new org.bukkit.inventory.ItemStack(org.bukkit.Material.GOLD_INGOT, 1));
         }
     }
 }

@@ -16,7 +16,7 @@ public class KingsJackpotAbility extends BaseAbility {
 
     @Override
     public String getName() {
-        return "King's Jackpot";
+        return "King's Fortune";
     }
 
     @Override

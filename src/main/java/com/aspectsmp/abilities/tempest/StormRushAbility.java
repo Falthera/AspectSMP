@@ -38,7 +38,7 @@ public class StormRushAbility extends BaseAbility {
         player.setInvulnerable(true);
         Vector direction = player.getLocation().getDirection().multiply(2.0);
         player.setVelocity(direction);
-        
+
         player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, player.getLocation(), 100, 0.5, 0.5, 0.5);
         playSound(player, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 1.0f);
 

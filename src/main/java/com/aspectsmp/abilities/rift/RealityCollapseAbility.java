@@ -2,6 +2,7 @@ package com.aspectsmp.abilities.rift;
 
 import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -42,8 +43,8 @@ public class RealityCollapseAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        org.bukkit.Location loc = player.getLocation();
-        
+        Location loc = player.getLocation();
+
         for (int i = 0; i < 5; i++) {
             org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
                 @Override
@@ -53,7 +54,7 @@ public class RealityCollapseAbility extends BaseAbility {
             };
             runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), i * 10L);
         }
-        
+
         playSound(player, Sound.BLOCK_PORTAL_TRIGGER, 2.0f, 0.5f);
 
         List<Entity> nearby = loc.getWorld().getEntities().stream()

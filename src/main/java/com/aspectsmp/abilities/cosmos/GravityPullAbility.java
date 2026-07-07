@@ -20,7 +20,7 @@ public class GravityPullAbility extends BaseAbility {
 
     @Override
     public String getName() {
-        return "Gravity Pull";
+        return "Gravity Well";
     }
 
     @Override

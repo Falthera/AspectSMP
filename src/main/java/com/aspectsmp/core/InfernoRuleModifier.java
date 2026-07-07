@@ -20,11 +20,15 @@ public class InfernoRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
-        player.setFireTicks(Math.min(player.getFireTicks(), 40));
+        player.setFireTicks(0);
     }
 
     @Override
     public double modifyKnockback(Player player, double knockback) {
         return knockback;
+    }
+
+    @Override
+    public void applyPassive(Player player) {
     }
 }

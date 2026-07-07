@@ -19,7 +19,7 @@ public class StaticBoltAbility extends BaseAbility {
 
     @Override
     public String getName() {
-        return "Static Bolt";
+        return "Thunder Strike";
     }
 
     @Override
