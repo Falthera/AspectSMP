@@ -11,13 +11,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.PotionEffectEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.Action;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.EquipmentSlot;
@@ -528,17 +526,6 @@ public class ListenerManager implements Listener {
         if (cause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION || 
             cause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) {
             event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onPotionEffect(PotionEffectEvent event) {
-        if (event.getAction() != PotionEffectEvent.Action.ADDED && event.getAction() != PotionEffectEvent.Action.CHANGED) return;
-        org.bukkit.potion.PotionEffect effect = event.getEffect();
-        if (effect.getAmplifier() > 2) {
-            event.setCancelled(true);
-            LivingEntity entity = event.getEntity();
-            entity.addPotionEffect(new org.bukkit.potion.PotionEffect(effect.getType(), effect.getDuration(), 2, effect.isAmbient(), effect.hasParticles(), effect.hasIcon()));
         }
     }
 }
