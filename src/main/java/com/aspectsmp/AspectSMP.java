@@ -1,8 +1,16 @@
 package com.aspectsmp;
 
 import com.aspectsmp.abilities.AbilityManager;
-import com.aspectsmp.commands.CommandManager;
+import com.aspectsmp.commands.Ability3Command;
+import com.aspectsmp.commands.GiveCommand;
+import com.aspectsmp.commands.GuiCommand;
+import com.aspectsmp.commands.InfoCommand;
+import com.aspectsmp.commands.ListCommand;
+import com.aspectsmp.commands.ReloadCommand;
+import com.aspectsmp.commands.RepairCommand;
+import com.aspectsmp.commands.RerollCommand;
 import com.aspectsmp.commands.TrustCommand;
+import com.aspectsmp.commands.UltimateCommand;
 import com.aspectsmp.crafting.CraftingManager;
 import com.aspectsmp.core.RuleModifierManager;
 import com.aspectsmp.gui.GuiManager;
@@ -21,7 +29,6 @@ public class AspectSMP extends JavaPlugin {
     private CraftingManager craftingManager;
     private GuiManager guiManager;
     private ListenerManager listenerManager;
-    private CommandManager commandManager;
     private RuleModifierManager ruleModifierManager;
     private ScoreboardManager scoreboardManager;
     private TrustManager trustManager;
@@ -39,7 +46,6 @@ public class AspectSMP extends JavaPlugin {
         this.guiManager = new GuiManager(this);
         this.listenerManager = new ListenerManager(this);
         this.ruleModifierManager = new RuleModifierManager(this);
-        this.commandManager = new CommandManager(this);
         this.trustManager = new TrustManager(this);
         
         storageManager.initialize();
@@ -50,7 +56,7 @@ public class AspectSMP extends JavaPlugin {
         scoreboardManager = new ScoreboardManager(this);
         getServer().getPluginManager().registerEvents(ruleModifierManager, this);
         getServer().getPluginManager().registerEvents(guiManager, this);
-        commandManager.registerCommands();
+        registerCommands();
         registerTrustCommand();
         
         getServer().getScheduler().runTaskTimerAsynchronously(this, heartManager::saveAll, 6000L, 6000L);
@@ -103,10 +109,6 @@ public class AspectSMP extends JavaPlugin {
         return listenerManager;
     }
 
-    public CommandManager getCommandManager() {
-        return commandManager;
-    }
-
     public RuleModifierManager getRuleModifierManager() {
         return ruleModifierManager;
     }
@@ -117,6 +119,26 @@ public class AspectSMP extends JavaPlugin {
 
     public TrustManager getTrustManager() {
         return trustManager;
+    }
+
+    private void registerCommands() {
+        InfoCommand infoCmd = new InfoCommand(this);
+        getCommand("info").setExecutor(infoCmd);
+        getCommand("info").setTabCompleter(infoCmd);
+        getCommand("list").setExecutor(new ListCommand(this));
+        getCommand("gui").setExecutor(new GuiCommand(this));
+        getCommand("ability3").setExecutor(new Ability3Command(this));
+        getCommand("ultimate").setExecutor(new UltimateCommand(this));
+        GiveCommand giveCmd = new GiveCommand(this);
+        getCommand("give").setExecutor(giveCmd);
+        getCommand("give").setTabCompleter(giveCmd);
+        RerollCommand rerollCmd = new RerollCommand(this);
+        getCommand("reroll").setExecutor(rerollCmd);
+        getCommand("reroll").setTabCompleter(rerollCmd);
+        RepairCommand repairCmd = new RepairCommand(this);
+        getCommand("repair").setExecutor(repairCmd);
+        getCommand("repair").setTabCompleter(repairCmd);
+        getCommand("reload").setExecutor(new ReloadCommand(this));
     }
 
     private void registerTrustCommand() {
