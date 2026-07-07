@@ -39,8 +39,8 @@ public class FlameStepAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        Vector direction = player.getLocation().getDirection().multiply(0.8);
-        player.setVelocity(player.getVelocity().add(direction));
+        Vector direction = player.getLocation().getDirection().normalize().multiply(3.5);
+        player.setVelocity(direction.setY(0.4));
 
         World world = player.getWorld();
         Location start = player.getLocation();
@@ -65,6 +65,6 @@ public class FlameStepAbility extends BaseAbility {
 
     @Override
     protected long getCooldownBase() {
-        return 80000L;
+        return 3000L;
     }
 }

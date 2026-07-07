@@ -39,7 +39,7 @@ public abstract class BaseAbility implements Ability {
     }
 
     protected long getCooldownDuration(Heart heart) {
-        return getCooldownBase() * (100 - heart.getStability()) / 50;
+        return Math.max(3000L, getCooldownBase() * (100 - heart.getStability()) / 50);
     }
 
     protected long getCooldownBase() {

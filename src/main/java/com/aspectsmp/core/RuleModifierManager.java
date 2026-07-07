@@ -40,6 +40,11 @@ public class RuleModifierManager implements Listener {
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null || heart.isDormant()) return;
         
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL && plugin.getAbilityManager().recentlyUsedAbility(player.getUniqueId())) {
+            event.setDamage(0);
+            return;
+        }
+        
         RuleModifier modifier = modifiers.get(heart.getAspect());
         if (modifier != null) {
             event.setDamage(modifier.modifyDamage(player, event.getDamage(), event.getCause()));

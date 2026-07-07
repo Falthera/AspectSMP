@@ -42,6 +42,7 @@ import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class AbilityManager {
 
@@ -49,12 +50,14 @@ public class AbilityManager {
     private final Map<String, Ability> registeredAbilities;
     private final Map<AspectType, Set<Ability>> aspectAbilities;
     private final Map<UUID, Set<Ability>> activePassives;
+    private final Map<UUID, Long> lastAbilityUse;
 
     public AbilityManager(AspectSMP plugin) {
         this.plugin = plugin;
         this.registeredAbilities = new ConcurrentHashMap<>();
         this.aspectAbilities = new EnumMap<>(AspectType.class);
         this.activePassives = new ConcurrentHashMap<>();
+        this.lastAbilityUse = new ConcurrentHashMap<>();
         
         for (AspectType type : AspectType.values()) {
             aspectAbilities.put(type, ConcurrentHashMap.newKeySet());
@@ -171,6 +174,7 @@ public class AbilityManager {
                 tier1Ability.execute(player, heart, null);
                 heart.addEssence(5);
                 player.sendMessage("§b+5 Essence");
+                lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
             });
         } else if (tier1Ability != null) {
             player.sendMessage("§cAbility is on cooldown!");
@@ -194,6 +198,7 @@ public class AbilityManager {
                 tier2Ability.execute(player, heart, null);
                 heart.addEssence(10);
                 player.sendMessage("§b+10 Essence");
+                lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
             });
         } else if (tier2Ability != null) {
             player.sendMessage("§cAbility is on cooldown!");
@@ -222,6 +227,7 @@ public class AbilityManager {
                 tier3Ability.execute(player, heart, null);
                 heart.addEssence(15);
                 player.sendMessage("§b+15 Essence");
+                lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
             });
         } else if (tier3Ability != null) {
             player.sendMessage("§cAbility is on cooldown or not unlocked!");
@@ -251,6 +257,7 @@ public class AbilityManager {
                 ultimate.execute(player, heart, null);
                 heart.addEssence(25);
                 player.sendMessage("§b+25 Essence");
+                lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
             });
         } else {
             player.sendMessage("§cUltimate is on cooldown or not unlocked!");
@@ -283,5 +290,10 @@ public class AbilityManager {
         passives.stream()
             .filter(Ability::isPassive)
             .forEach(ability -> ability.applyPassive(player, heart));
+    }
+
+    public boolean recentlyUsedAbility(UUID uuid) {
+        Long time = lastAbilityUse.get(uuid);
+        return time != null && System.currentTimeMillis() - time < 3000;
     }
 }
