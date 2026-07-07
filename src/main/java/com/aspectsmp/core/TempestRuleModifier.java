@@ -7,6 +7,9 @@ public class TempestRuleModifier implements RuleModifier {
 
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
+        if (cause == EntityDamageEvent.DamageCause.FALL) {
+            return 0;
+        }
         return damage;
     }
 
@@ -17,6 +20,6 @@ public class TempestRuleModifier implements RuleModifier {
 
     @Override
     public double modifyKnockback(Player player, double knockback) {
-        return knockback;
+        return knockback * 0.3;
     }
 }

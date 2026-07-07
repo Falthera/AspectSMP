@@ -7,6 +7,10 @@ public class FortuneRuleModifier implements RuleModifier {
 
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
+        if (cause == EntityDamageEvent.DamageCause.CACTUS ||
+            cause == EntityDamageEvent.DamageCause.SWEET_BERRY_BUSH) {
+            return damage * 0.3;
+        }
         return damage;
     }
 
