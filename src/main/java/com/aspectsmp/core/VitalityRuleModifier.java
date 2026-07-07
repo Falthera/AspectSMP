@@ -2,13 +2,16 @@ package com.aspectsmp.core;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class VitalityRuleModifier implements RuleModifier {
 
-    private final Map<java.util.UUID, Long> lastHeal = new ConcurrentHashMap<>();
+    private final Map<UUID, Long> lastHeal = new ConcurrentHashMap<>();
     private static final long HEAL_COOLDOWN_MS = 1000;
 
     @Override
@@ -18,13 +21,13 @@ public class VitalityRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
+        long now = System.currentTimeMillis();
+        Long last = lastHeal.get(player.getUniqueId());
+        if (last != null && now - last < HEAL_COOLDOWN_MS) return;
+
         if (player.getHealth() < player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()) {
-            long now = System.currentTimeMillis();
-            Long last = lastHeal.get(player.getUniqueId());
-            if (last == null || now - last > HEAL_COOLDOWN_MS) {
-                player.setHealth(Math.min(player.getHealth() + 1, player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()));
-                lastHeal.put(player.getUniqueId(), now);
-            }
+            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 24, 0, false, false, true));
+            lastHeal.put(player.getUniqueId(), now);
         }
     }
 
