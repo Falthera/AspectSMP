@@ -8,6 +8,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.util.Vector;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -72,7 +73,8 @@ public class RuleModifierManager implements Listener {
         
         RuleModifier modifier = modifiers.get(heart.getAspect());
         if (modifier != null) {
-            event.setStrength((float) modifier.modifyKnockback(player, event.getKnockbackStrength()));
+            Vector current = event.getKnockback();
+            event.setKnockback(current.multiply(modifier.modifyKnockback(player, current.length())));
         }
     }
 
