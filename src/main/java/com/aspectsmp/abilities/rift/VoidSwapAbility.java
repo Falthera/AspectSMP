@@ -47,6 +47,11 @@ public class VoidSwapAbility extends BaseAbility {
             .orElse(null);
 
         if (target instanceof Player p) {
+            if (com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(player.getUniqueId(), p.getUniqueId())) {
+                player.sendMessage("§cYou cannot Void Swap with a trusted player!");
+                return false;
+            }
+
             Location playerLoc = player.getLocation().clone();
             Location targetLoc = p.getLocation().clone();
 
