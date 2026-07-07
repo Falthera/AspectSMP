@@ -8,6 +8,9 @@ commands:
   aspect:
     description: Aspect SMP main command
     usage: /<command> [args]
+  trust:
+    description: Manage trusted players
+    usage: /<command> <add|remove|clear|list> [name]
 permissions:
   aspect.use:
     description: Access to basic aspect commands

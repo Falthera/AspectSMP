@@ -20,6 +20,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import java.util.UUID;
 
 public class ListenerManager implements Listener {
 
@@ -42,6 +43,15 @@ public class ListenerManager implements Listener {
                     RuleModifier modifier = plugin.getRuleModifierManager().getModifier(heart.getAspect());
                     if (modifier != null) {
                         modifier.applyPassive(player);
+                    }
+                    
+                    for (UUID trusted : plugin.getTrustManager().getTrusted(player.getUniqueId())) {
+                        Player ally = plugin.getServer().getPlayer(trusted);
+                        if (ally == null || !ally.isOnline()) continue;
+                        if (ally.getLocation().distanceSquared(player.getLocation()) <= 100) {
+                            ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.REGENERATION, 40, 0), true);
+                            ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 40, 0), true);
+                        }
                     }
                 }
             }
@@ -314,6 +324,13 @@ public class ListenerManager implements Listener {
         
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null || heart.isDormant()) return;
+        
+        if (event.getEntity() instanceof Player target) {
+            if (plugin.getTrustManager().isTrusted(player.getUniqueId(), target.getUniqueId())) {
+                event.setCancelled(true);
+                return;
+            }
+        }
         
         heart.addEssence((long) (event.getDamage() * 2));
         
