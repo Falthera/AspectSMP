@@ -15,12 +15,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.entity.Item;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.world.VillagerAcquireTradeEvent;
-import org.bukkit.event.world.VillagerTradeSelectEvent;
-import org.bukkit.MerchantRecipe;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -467,32 +463,6 @@ public class ListenerManager implements Listener {
         
         String obfuscatedName = "§k" + killerName;
         event.setDeathMessage(deathMessage.replace(killerName, obfuscatedName));
-    }
-
-    @EventHandler
-    public void onVillagerTrade(VillagerTradeSelectEvent event) {
-        if (!plugin.getConfig().getBoolean("features.unlimited-villager-trading", true)) return;
-        
-        Villager villager = event.getWhoClicked();
-        if (!(villager instanceof Villager v)) return;
-        
-        v.setMaxDiscount(0);
-        v.setMaxTradesToUnlock(999);
-        v.restock();
-        
-        for (MerchantRecipe recipe : v.getRecipes()) {
-            recipe.setMaxUses(Integer.MAX_VALUE);
-            recipe.setUses(0);
-        }
-    }
-
-    @EventHandler
-    public void onVillagerAcquireTrade(VillagerAcquireTradeEvent event) {
-        if (!plugin.getConfig().getBoolean("features.unlimited-villager-trading", true)) return;
-        
-        MerchantRecipe recipe = event.getRecipe();
-        recipe.setMaxUses(Integer.MAX_VALUE);
-        recipe.setUses(0);
     }
 
     @EventHandler
