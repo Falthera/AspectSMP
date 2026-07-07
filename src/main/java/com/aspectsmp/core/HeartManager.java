@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HeartManager {
 
     private static final AspectType[] ASPECTS = Arrays.stream(AspectType.values())
-            .filter(type -> type != AspectType.NONE)
             .toArray(AspectType[]::new);
 
     private final AspectSMP plugin;
