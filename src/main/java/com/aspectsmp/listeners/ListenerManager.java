@@ -15,11 +15,18 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Item;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.world.VillagerAcquireTradeEvent;
+import org.bukkit.event.world.VillagerTradeSelectEvent;
+import org.bukkit.MerchantRecipe;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import java.util.UUID;
 
 public class ListenerManager implements Listener {
@@ -439,6 +446,64 @@ public class ListenerManager implements Listener {
         if (new java.util.Random().nextDouble() < 0.5) {
             event.setDropItems(false);
             player.getWorld().dropItemNaturally(event.getBlock().getLocation().add(0.5, 0.5, 0.5), new org.bukkit.inventory.ItemStack(org.bukkit.Material.GOLD_INGOT, 1));
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        if (!plugin.getConfig().getBoolean("features.obfuscated-death-messages", true)) return;
+        
+        Player victim = event.getEntity();
+        Player killer = victim.getKiller();
+        
+        if (killer == null) return;
+        if (!killer.hasPotionEffect(PotionEffectType.INVISIBILITY)) return;
+        
+        String deathMessage = event.getDeathMessage();
+        if (deathMessage == null || deathMessage.isEmpty()) return;
+        
+        String killerName = killer.getName();
+        if (!deathMessage.contains(killerName)) return;
+        
+        String obfuscatedName = "§k" + killerName;
+        event.setDeathMessage(deathMessage.replace(killerName, obfuscatedName));
+    }
+
+    @EventHandler
+    public void onVillagerTrade(VillagerTradeSelectEvent event) {
+        if (!plugin.getConfig().getBoolean("features.unlimited-villager-trading", true)) return;
+        
+        Villager villager = event.getWhoClicked();
+        if (!(villager instanceof Villager v)) return;
+        
+        v.setMaxDiscount(0);
+        v.setMaxTradesToUnlock(999);
+        v.restock();
+        
+        for (MerchantRecipe recipe : v.getRecipes()) {
+            recipe.setMaxUses(Integer.MAX_VALUE);
+            recipe.setUses(0);
+        }
+    }
+
+    @EventHandler
+    public void onVillagerAcquireTrade(VillagerAcquireTradeEvent event) {
+        if (!plugin.getConfig().getBoolean("features.unlimited-villager-trading", true)) return;
+        
+        MerchantRecipe recipe = event.getRecipe();
+        recipe.setMaxUses(Integer.MAX_VALUE);
+        recipe.setUses(0);
+    }
+
+    @EventHandler
+    public void onItemDamage(EntityDamageEvent event) {
+        if (!plugin.getConfig().getBoolean("features.explosion-proof-items", true)) return;
+        if (!(event.getEntity() instanceof Item)) return;
+        
+        EntityDamageEvent.DamageCause cause = event.getCause();
+        if (cause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION || 
+            cause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) {
+            event.setCancelled(true);
         }
     }
 }

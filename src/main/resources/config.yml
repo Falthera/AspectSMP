@@ -17,3 +17,8 @@ stability:
 essence:
   pvp_kill: 10
   combat_damage: 2
+
+features:
+  obfuscated-death-messages: true
+  unlimited-villager-trading: true
+  explosion-proof-items: true
