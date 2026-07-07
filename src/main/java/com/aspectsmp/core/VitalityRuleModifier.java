@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class VitalityRuleModifier implements RuleModifier {
 
-    private final Map<UUID, Long> lastHeal = new ConcurrentHashMap<>();
-    private static final long HEAL_COOLDOWN_MS = 1000;
+    private final Map<UUID, Long> lastPassiveHeal = new ConcurrentHashMap<>();
+    private static final long PASSIVE_COOLDOWN_MS = 4000;
     private final java.util.Set<Material> naturalBlocks = java.util.Set.of(
         Material.GRASS_BLOCK, Material.DIRT, Material.COARSE_DIRT, Material.ROOTED_DIRT,
         Material.SAND, Material.RED_SAND, Material.STONE, Material.DEEPSLATE,
@@ -38,14 +38,6 @@ public class VitalityRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
-        long now = System.currentTimeMillis();
-        Long last = lastHeal.get(player.getUniqueId());
-        if (last != null && now - last < HEAL_COOLDOWN_MS) return;
-
-        if (player.getHealth() < player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()) {
-            player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.REGENERATION, 24, 0, false, false, true));
-            lastHeal.put(player.getUniqueId(), now);
-        }
     }
 
     @Override
@@ -55,9 +47,16 @@ public class VitalityRuleModifier implements RuleModifier {
 
     @Override
     public void applyPassive(Player player) {
+        long now = System.currentTimeMillis();
+        Long last = lastPassiveHeal.get(player.getUniqueId());
+        if (last != null && now - last < PASSIVE_COOLDOWN_MS) return;
+
         Block feet = player.getLocation().clone().subtract(0, 1, 0).getBlock();
-        if (naturalBlocks.contains(feet.getType())) {
+        if (!naturalBlocks.contains(feet.getType())) return;
+
+        if (player.getHealth() < player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 0, false, false, true), true);
+            lastPassiveHeal.put(player.getUniqueId(), now);
         }
     }
 }
