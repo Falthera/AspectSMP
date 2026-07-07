@@ -43,31 +43,28 @@ public class GenesisFieldAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         org.bukkit.Location loc = player.getLocation();
-        
-        for (int i = 0; i < 5; i++) {
-            org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
-                @Override
-                public void run() {
-                    loc.getWorld().spawnParticle(Particle.HEART, loc.clone().add(Math.random() - 0.5, 0.5, Math.random() - 0.5), 20);
-                }
-            };
-            runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), i * 20L);
-        }
-        
+        player.getWorld().spawnParticle(Particle.HEART, loc.add(0, 1, 0), 30, 2, 2, 2);
         playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 
-        List<Entity> nearby = loc.getWorld().getEntities().stream()
-            .filter(e -> e instanceof Player)
-            .filter(e -> e.getLocation().distanceSquared(loc) <= 36)
-            .toList();
-
-        for (Entity entity : nearby) {
-            if (entity instanceof Player target) {
-                if (target == player || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(player.getUniqueId(), target.getUniqueId()) || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(target.getUniqueId(), player.getUniqueId())) {
-                    target.heal(10 * getPowerMultiplier(heart));
+        new org.bukkit.scheduler.BukkitRunnable() {
+            int ticks = 0;
+            @Override
+            public void run() {
+                if (!player.isOnline() || ticks >= 100) {
+                    cancel();
+                    return;
+                }
+                ticks += 20;
+                loc.getWorld().spawnParticle(Particle.HEART, loc.clone().add(Math.random() - 0.5, 0.5, Math.random() - 0.5), 15);
+                for (Entity entity : loc.getWorld().getEntities()) {
+                    if (entity instanceof Player target && entity.getLocation().distanceSquared(loc) <= 36) {
+                        if (target == player || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(player.getUniqueId(), target.getUniqueId()) || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(target.getUniqueId(), player.getUniqueId())) {
+                            target.heal(2 * getPowerMultiplier(heart));
+                        }
+                    }
                 }
             }
-        }
+        }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, 20L);
 
         applyCooldown(player, getId(), 60000L);
         return true;

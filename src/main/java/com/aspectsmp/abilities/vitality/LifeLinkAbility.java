@@ -45,8 +45,11 @@ public class LifeLinkAbility extends BaseAbility {
             .orElse(null);
 
         if (target instanceof Player p) {
-            player.heal(4);
-            p.damage(2 * getPowerMultiplier(heart), player);
+            double damage = 2 * getPowerMultiplier(heart);
+            p.damage(damage, player);
+            player.heal(damage * 0.5);
+            player.getWorld().spawnParticle(Particle.HEART, loc.add(0, 1, 0), 50);
+            playSound(player, Sound.ENTITY_WITCH_THROW, 1.0f, 1.0f);
         }
 
         applyCooldown(player, getId(), 12000L);

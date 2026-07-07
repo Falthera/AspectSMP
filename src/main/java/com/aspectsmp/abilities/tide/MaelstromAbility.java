@@ -39,13 +39,31 @@ public class MaelstromAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.WATER_BREATHING, 600, 0));
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.DOLPHINS_GRACE, 600, 0));
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.CONDUIT_POWER, 600, 0));
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 600, 0));
-        
-        player.getWorld().spawnParticle(Particle.HEART, player.getLocation().add(0, 1, 0), 40, 1, 1, 1);
-        playSound(player, Sound.AMBIENT_UNDERWATER_ENTER, 1.0f, 1.0f);
+        Location center = player.getLocation();
+        playSound(player, Sound.ENTITY_DOLPHIN_PLAY, 1.0f, 0.5f);
+
+        new org.bukkit.scheduler.BukkitRunnable() {
+            int ticks = 0;
+            @Override
+            public void run() {
+                if (!player.isOnline() || ticks >= 100) {
+                    cancel();
+                    return;
+                }
+                ticks += 10;
+                center.getWorld().spawnParticle(Particle.BUBBLE_COLUMN_UP, center, 40, 4, 1, 4);
+                center.getWorld().getEntities().stream()
+                    .filter(e -> e instanceof Player && e != player && e.getLocation().distanceSquared(center) <= 25)
+                    .forEach(e -> {
+                        Vector pull = center.toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.5);
+                        e.setVelocity(pull);
+                        if (e instanceof Player target) {
+                            target.damage(4 * getPowerMultiplier(heart), player);
+                            target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.MINING_FATIGUE, 30, 1));
+                        }
+                    });
+            }
+        }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, 10L);
 
         applyCooldown(player, getId(), 60000L);
         return true;

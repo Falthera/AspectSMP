@@ -259,14 +259,14 @@ public class GuiManager implements Listener {
         return switch (aspect) {
             case INFERNO -> switch (tier) {
                 case 1 -> "Flame Step";
-                case 2 -> "Infernal Chains";
-                case 3 -> "Lava Burst";
+                case 2 -> "Lava Burst";
+                case 3 -> "Infernal Chains";
                 default -> "Unknown";
             };
             case TIDE -> switch (tier) {
                 case 1 -> "Hydro Push";
                 case 2 -> "Tidal Prison";
-                case 3 -> "Maelstrom";
+                case 3 -> "Ocean Surge";
                 default -> "Unknown";
             };
             case TEMPEST -> switch (tier) {
@@ -289,8 +289,8 @@ public class GuiManager implements Listener {
             };
             case WAR -> switch (tier) {
                 case 1 -> "Berserk Slash";
-                case 2 -> "Execution Chain";
-                case 3 -> "Rage Mode";
+                case 2 -> "Rage Mode";
+                case 3 -> "Execution Chain";
                 default -> "Unknown";
             };
             case COSMOS -> switch (tier) {
@@ -300,9 +300,9 @@ public class GuiManager implements Listener {
                 default -> "Unknown";
             };
             case FORTUNE -> switch (tier) {
-                case 1 -> "Ore Sense";
-                case 2 -> "Mining Rush";
-                case 3 -> "Lucky Strike";
+                case 1 -> "Lucky Strike";
+                case 2 -> "Ore Sense";
+                case 3 -> "Mining Rush";
                 default -> "Unknown";
             };
         };
