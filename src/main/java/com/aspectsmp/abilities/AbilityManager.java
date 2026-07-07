@@ -173,7 +173,7 @@ public class AbilityManager {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 tier1Ability.execute(player, heart, null);
                 heart.addEssence(5);
-                player.sendMessage("§b+5 Essence");
+                player.sendMessage("§7You have used §f" + tier1Ability.getName() + "§7.");
                 lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
             });
         } else if (tier1Ability != null) {
@@ -197,7 +197,7 @@ public class AbilityManager {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 tier2Ability.execute(player, heart, null);
                 heart.addEssence(10);
-                player.sendMessage("§b+10 Essence");
+                player.sendMessage("§7You have used §f" + tier2Ability.getName() + "§7.");
                 lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
             });
         } else if (tier2Ability != null) {
@@ -226,7 +226,7 @@ public class AbilityManager {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 tier3Ability.execute(player, heart, null);
                 heart.addEssence(15);
-                player.sendMessage("§b+15 Essence");
+                player.sendMessage("§7You have used §f" + tier3Ability.getName() + "§7.");
                 lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
             });
         } else if (tier3Ability != null) {
@@ -256,7 +256,7 @@ public class AbilityManager {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 ultimate.execute(player, heart, null);
                 heart.addEssence(25);
-                player.sendMessage("§b+25 Essence");
+                player.sendMessage("§7You have used §f" + ultimate.getName() + "§7.");
                 lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
             });
         } else {
