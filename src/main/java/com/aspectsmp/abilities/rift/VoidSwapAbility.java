@@ -5,10 +5,14 @@ import com.aspectsmp.core.Heart;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 public class VoidSwapAbility extends BaseAbility {
+
+    private static final double MAX_RANGE = 200.0;
+    private static final double MAX_RANGE_SQ = MAX_RANGE * MAX_RANGE;
 
     @Override
     public String getId() {
@@ -37,13 +41,14 @@ public class VoidSwapAbility extends BaseAbility {
 
         org.bukkit.entity.Entity target = player.getWorld().getEntities().stream()
             .filter(e -> e instanceof Player && e != player)
+            .filter(e -> e.getLocation().distanceSquared(player.getLocation()) <= MAX_RANGE_SQ)
             .min((a, b) -> Double.compare(a.getLocation().distanceSquared(player.getLocation()),
                   b.getLocation().distanceSquared(player.getLocation())))
             .orElse(null);
 
         if (target instanceof Player p) {
-            org.bukkit.Location playerLoc = player.getLocation().clone();
-            org.bukkit.Location targetLoc = p.getLocation().clone();
+            Location playerLoc = player.getLocation().clone();
+            Location targetLoc = p.getLocation().clone();
 
             player.getWorld().spawnParticle(Particle.PORTAL, playerLoc.add(0, 1, 0), 50);
             player.getWorld().spawnParticle(Particle.PORTAL, targetLoc.add(0, 1, 0), 50);
@@ -52,6 +57,9 @@ public class VoidSwapAbility extends BaseAbility {
 
             player.teleport(targetLoc);
             p.teleport(playerLoc);
+        } else {
+            player.sendMessage("§cNo target within §f" + (int) MAX_RANGE + " §cblocks!");
+            return false;
         }
 
         applyCooldown(player, getId(), 15000L);
