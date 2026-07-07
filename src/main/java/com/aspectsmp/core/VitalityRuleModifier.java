@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class VitalityRuleModifier implements RuleModifier {
 
-    private final Map<UUID, Long> lastPassiveHeal = new ConcurrentHashMap<>();
-    private static final long PASSIVE_COOLDOWN_MS = 4000;
+    private final Map<UUID, Long> lastSpeed = new ConcurrentHashMap<>();
+    private static final long SPEED_COOLDOWN_MS = 4000;
     private final java.util.Set<Material> naturalBlocks = java.util.Set.of(
         Material.GRASS_BLOCK, Material.DIRT, Material.COARSE_DIRT, Material.ROOTED_DIRT,
         Material.SAND, Material.RED_SAND, Material.STONE, Material.DEEPSLATE,
@@ -38,6 +38,15 @@ public class VitalityRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
+        long now = System.currentTimeMillis();
+        Long last = lastSpeed.get(player.getUniqueId());
+        if (last != null && now - last < SPEED_COOLDOWN_MS) return;
+
+        Block feet = player.getLocation().clone().subtract(0, 1, 0).getBlock();
+        if (!naturalBlocks.contains(feet.getType())) return;
+
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0, false, false, true), true);
+        lastSpeed.put(player.getUniqueId(), now);
     }
 
     @Override
@@ -47,16 +56,9 @@ public class VitalityRuleModifier implements RuleModifier {
 
     @Override
     public void applyPassive(Player player) {
-        long now = System.currentTimeMillis();
-        Long last = lastPassiveHeal.get(player.getUniqueId());
-        if (last != null && now - last < PASSIVE_COOLDOWN_MS) return;
-
         Block feet = player.getLocation().clone().subtract(0, 1, 0).getBlock();
-        if (!naturalBlocks.contains(feet.getType())) return;
-
-        if (player.getHealth() < player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 40, 0, false, false, true), true);
-            lastPassiveHeal.put(player.getUniqueId(), now);
+        if (naturalBlocks.contains(feet.getType())) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0, false, false, true), true);
         }
     }
 }
