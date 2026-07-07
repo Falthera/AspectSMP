@@ -49,7 +49,7 @@ public class ThunderExecutionAbility extends BaseAbility {
             .stream().toList();
 
         for (Player target : nearby) {
-            target.damage(20 * getPowerMultiplier(heart), player);
+            target.damage(20 * getPowerMultiplier(player, heart), player);
             player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, target.getLocation().add(0, 1, 0), 100);
             playSound(player, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0f, 0.5f);
         }

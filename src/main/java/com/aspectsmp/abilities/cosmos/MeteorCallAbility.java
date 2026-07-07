@@ -57,7 +57,7 @@ public class MeteorCallAbility extends BaseAbility {
                 
                 for (Entity entity : nearby) {
                     if (entity instanceof Player p) {
-                        p.damage(12 * getPowerMultiplier(heart), player);
+                        p.damage(12 * getPowerMultiplier(player, heart), player);
                     }
                 }
             }

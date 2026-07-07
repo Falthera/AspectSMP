@@ -54,7 +54,7 @@ public class FlameStepAbility extends BaseAbility {
 
         for (Entity entity : player.getNearbyEntities(4.0, 2.0, 4.0)) {
             if (entity instanceof LivingEntity target && target != player) {
-                target.damage(3.0 + getPowerMultiplier(heart), player);
+                target.damage(3.0 + getPowerMultiplier(player, heart), player);
                 target.setFireTicks(40);
             }
         }

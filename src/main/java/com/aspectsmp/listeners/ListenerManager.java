@@ -11,11 +11,13 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.PotionEffectEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.Action;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.EquipmentSlot;
@@ -61,8 +63,35 @@ public class ListenerManager implements Listener {
     }
     
     private void applyTrustBuffs(Player ally, AspectType aspect) {
-        ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.FIRE_RESISTANCE, 80, 0), true);
-        ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE, 80, 0), true);
+        switch (aspect) {
+            case INFERNO -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.FIRE_RESISTANCE, 80, 0), true);
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.STRENGTH, 80, 0), true);
+            }
+            case TIDE -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.WATER_BREATHING, 80, 0), true);
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.DOLPHINS_GRACE, 80, 0), true);
+            }
+            case TEMPEST -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 80, 0), true);
+            }
+            case RIFT -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.NIGHT_VISION, 80, 0), true);
+            }
+            case VITALITY -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.REGENERATION, 80, 0), true);
+            }
+            case WAR -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.STRENGTH, 80, 0), true);
+            }
+            case COSMOS -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.RESISTANCE, 80, 0), true);
+            }
+            case FORTUNE -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.LUCK, 80, 0), true);
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE, 80, 0), true);
+            }
+        }
     }
 
     @EventHandler
@@ -488,6 +517,17 @@ public class ListenerManager implements Listener {
         if (cause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION || 
             cause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPotionEffect(PotionEffectEvent event) {
+        if (event.getAction() != PotionEffectEvent.Action.ADDED && event.getAction() != PotionEffectEvent.Action.CHANGED) return;
+        org.bukkit.potion.PotionEffect effect = event.getEffect();
+        if (effect.getAmplifier() > 2) {
+            event.setCancelled(true);
+            LivingEntity entity = event.getEntity();
+            entity.addPotionEffect(new org.bukkit.potion.PotionEffect(effect.getType(), effect.getDuration(), 2, effect.isAmbient(), effect.hasParticles(), effect.hasIcon()));
         }
     }
 }

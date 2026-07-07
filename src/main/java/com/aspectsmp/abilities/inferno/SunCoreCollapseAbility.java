@@ -61,7 +61,7 @@ public class SunCoreCollapseAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                target.damage(10 * getPowerMultiplier(heart), player);
+                target.damage(10 * getPowerMultiplier(player, heart), player);
                 target.setFireTicks(100);
             }
         }

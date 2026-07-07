@@ -58,7 +58,7 @@ public class MaelstromAbility extends BaseAbility {
                         Vector pull = center.toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.5);
                         e.setVelocity(pull);
                         if (e instanceof Player target) {
-                            target.damage(4 * getPowerMultiplier(heart), player);
+                            target.damage(4 * getPowerMultiplier(player, heart), player);
                             target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.MINING_FATIGUE, 30, 1));
                         }
                     });

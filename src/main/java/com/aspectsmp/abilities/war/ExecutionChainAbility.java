@@ -47,8 +47,9 @@ public class ExecutionChainAbility extends BaseAbility {
             .toList();
 
         for (Entity entity : nearby) {
-            target.damage(20 * getPowerMultiplier(heart), player);
-        }
+            if (entity instanceof Player target) {
+                target.damage(20 * getPowerMultiplier(player, heart), player);
+            }
         }
 
         applyCooldown(player, getId(), 25000L);

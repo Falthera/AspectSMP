@@ -64,7 +64,7 @@ public class BlackStarCollapseAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                target.damage(15 * getPowerMultiplier(heart), player);
+                target.damage(15 * getPowerMultiplier(player, heart), player);
             }
         }
 

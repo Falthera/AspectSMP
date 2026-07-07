@@ -63,7 +63,7 @@ public class RealityCollapseAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                target.damage(12 * getPowerMultiplier(heart), player);
+                target.damage(12 * getPowerMultiplier(player, heart), player);
             }
         }
 

@@ -45,7 +45,7 @@ public class LifeLinkAbility extends BaseAbility {
             .orElse(null);
 
         if (target instanceof Player p) {
-            double damage = 2 * getPowerMultiplier(heart);
+            double damage = 2 * getPowerMultiplier(player, heart);
             p.damage(damage, player);
             player.heal(damage * 0.5);
             player.getWorld().spawnParticle(Particle.HEART, loc.add(0, 1, 0), 50);

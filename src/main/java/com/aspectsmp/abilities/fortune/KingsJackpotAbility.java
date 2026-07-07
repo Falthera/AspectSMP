@@ -42,7 +42,7 @@ public class KingsJackpotAbility extends BaseAbility {
         player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, player.getLocation(), 200, 5, 5, 5);
         playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 2.0f, 1.0f);
         
-        long essence = (long) (25 * getPowerMultiplier(heart));
+        long essence = (long) (25 * getPowerMultiplier(player, heart));
         heart.addEssence(essence);
         
         player.sendMessage("§6+§e" + essence + "§6 Essence!");

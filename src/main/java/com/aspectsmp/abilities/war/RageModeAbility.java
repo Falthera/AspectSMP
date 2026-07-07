@@ -41,7 +41,7 @@ public class RageModeAbility extends BaseAbility {
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.STRENGTH, 100, 1));
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 100, 1));
 
-        double damage = player.getAttribute(Attribute.ATTACK_DAMAGE).getValue() * getPowerMultiplier(heart);
+        double damage = player.getAttribute(Attribute.ATTACK_DAMAGE).getValue() * getPowerMultiplier(player, heart);
         org.bukkit.attribute.AttributeInstance speedAttr = player.getAttribute(Attribute.MOVEMENT_SPEED);
         double originalSpeed = speedAttr.getBaseValue();
         speedAttr.setBaseValue(originalSpeed * 1.5);

@@ -53,13 +53,13 @@ public class WarGodStateAbility extends BaseAbility {
         world.spawnParticle(Particle.EXPLOSION_EMITTER, center, 5);
         playSound(player, Sound.ENTITY_ENDER_DRAGON_GROWL, 2.0f, 0.5f);
 
-        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 300, 4));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 300, 2));
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 2));
         player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 300, 2));
 
         for (Entity entity : center.getWorld().getNearbyEntities(center, 12.0, 6.0, 12.0)) {
             if (entity instanceof LivingEntity target && target != player) {
-                target.damage(10.0 + getPowerMultiplier(heart) * 2, player);
+                target.damage(10.0 + getPowerMultiplier(player, heart) * 2, player);
             }
         }
 

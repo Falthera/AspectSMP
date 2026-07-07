@@ -40,7 +40,7 @@ public class MiningRushAbility extends BaseAbility {
         playSound(player, Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f);
         
         player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 300, 2));
-        heart.addEssence((long) (10 * getPowerMultiplier(heart)));
+        heart.addEssence((long) (10 * getPowerMultiplier(player, heart)));
 
         applyCooldown(player, getId(), 30000L);
         return true;
