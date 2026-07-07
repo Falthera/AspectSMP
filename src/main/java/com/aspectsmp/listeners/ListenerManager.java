@@ -125,11 +125,13 @@ public class ListenerManager implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Heart heart = plugin.getHeartManager().getHeart(event.getPlayer().getUniqueId()).orElse(null);
+        Player player = event.getPlayer();
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart != null) {
             plugin.getHeartManager().saveHeart(heart);
         }
-        plugin.getScoreboardManager().onPlayerQuit(event.getPlayer());
+        plugin.getScoreboardManager().onPlayerQuit(player);
+        plugin.getCombatManager().handleLogout(player);
     }
 
     @EventHandler
@@ -371,6 +373,8 @@ public class ListenerManager implements Listener {
                 event.setCancelled(true);
                 return;
             }
+            plugin.getCombatManager().tagPlayer(player.getUniqueId());
+            plugin.getCombatManager().tagPlayer(target.getUniqueId());
         }
         
         heart.addEssence((long) (event.getDamage() * 2));
@@ -421,6 +425,13 @@ public class ListenerManager implements Listener {
         
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null || heart.isDormant()) return;
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK && event.getSource() instanceof Player attacker) {
+            if (!plugin.getTrustManager().isTrusted(player.getUniqueId(), attacker.getUniqueId())) {
+                plugin.getCombatManager().tagPlayer(player.getUniqueId());
+                plugin.getCombatManager().tagPlayer(attacker.getUniqueId());
+            }
+        }
         
         if (heart.getAspect() == AspectType.RIFT && event.getCause() != EntityDamageEvent.DamageCause.VOID) {
             if (new java.util.Random().nextDouble() < 0.2 && !player.hasMetadata("rift_blink_cd")) {

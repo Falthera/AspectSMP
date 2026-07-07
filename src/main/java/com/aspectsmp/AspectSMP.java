@@ -20,6 +20,7 @@ import com.aspectsmp.listeners.ListenerManager;
 import com.aspectsmp.storage.StorageManager;
 import com.aspectsmp.trust.TrustManager;
 import com.aspectsmp.util.ScoreboardManager;
+import com.aspectsmp.combat.CombatManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AspectSMP extends JavaPlugin {
@@ -34,6 +35,7 @@ public class AspectSMP extends JavaPlugin {
     private RuleModifierManager ruleModifierManager;
     private ScoreboardManager scoreboardManager;
     private TrustManager trustManager;
+    private CombatManager combatManager;
 
     @Override
     public void onEnable() {
@@ -49,6 +51,7 @@ public class AspectSMP extends JavaPlugin {
         this.listenerManager = new ListenerManager(this);
         this.ruleModifierManager = new RuleModifierManager(this);
         this.trustManager = new TrustManager(this);
+        this.combatManager = new CombatManager(this, trustManager);
         
         storageManager.initialize();
         abilityManager.initialize();
@@ -76,6 +79,9 @@ public class AspectSMP extends JavaPlugin {
         }
         if (trustManager != null) {
             trustManager.save();
+        }
+        if (combatManager != null) {
+            combatManager.cleanup();
         }
         if (storageManager != null) {
             storageManager.shutdown();
@@ -121,6 +127,10 @@ public class AspectSMP extends JavaPlugin {
 
     public TrustManager getTrustManager() {
         return trustManager;
+    }
+
+    public CombatManager getCombatManager() {
+        return combatManager;
     }
 
     private void registerCommands() {
