@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityKnockbackByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -62,7 +63,27 @@ public class RuleModifierManager implements Listener {
         }
     }
 
+    @EventHandler
+    public void onEntityKnockbackByEntity(EntityKnockbackByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null || heart.isDormant()) return;
+        
+        RuleModifier modifier = modifiers.get(heart.getAspect());
+        if (modifier != null) {
+            event.setStrength(modifier.modifyKnockback(player, event.getStrength()));
+        }
+    }
+
     public RuleModifier getModifier(AspectType type) {
         return modifiers.get(type);
+    }
+
+    public double modifyKnockback(Player player, double originalKnockback) {
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null || heart.isDormant()) return originalKnockback;
+        RuleModifier modifier = modifiers.get(heart.getAspect());
+        return modifier != null ? modifier.modifyKnockback(player, originalKnockback) : originalKnockback;
     }
 }

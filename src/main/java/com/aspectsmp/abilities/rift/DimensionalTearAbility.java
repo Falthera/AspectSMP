@@ -40,6 +40,8 @@ public class DimensionalTearAbility extends BaseAbility {
 
         org.bukkit.Location loc = player.getLocation();
         loc.getWorld().spawnParticle(Particle.DRIPPING_OBSIDIAN_TEAR, loc, 100, 2, 2, 2);
+        loc.getWorld().spawnParticle(Particle.PORTAL, loc, 50, 1, 1, 1);
+        loc.getWorld().spawnParticle(Particle.END_ROD, loc, 30, 0.5, 0.5, 0.5);
         playSound(player, Sound.BLOCK_PORTAL_AMBIENT, 1.0f, 1.0f);
 
         List<Entity> nearby = loc.getWorld().getEntities().stream()
@@ -49,6 +51,13 @@ public class DimensionalTearAbility extends BaseAbility {
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
                 target.damage(6 * getPowerMultiplier(heart), player);
+                org.bukkit.Location pullLoc = loc.clone().add(
+                    (loc.getX() - target.getLocation().getX()) * 1.5,
+                    0,
+                    (loc.getZ() - target.getLocation().getZ()) * 1.5
+                );
+                target.setVelocity(pullLoc.toVector().normalize().multiply(0.8));
+                target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.BLINDNESS, 40, 0));
             }
         }
 

@@ -7,6 +7,8 @@ import com.aspectsmp.items.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityKnockbackByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
@@ -14,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class ListenerManager implements Listener {
 
@@ -25,6 +28,15 @@ public class ListenerManager implements Listener {
 
     public void registerAll() {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                    plugin.getAbilityManager().processPassives(player);
+                }
+            }
+        }.runTaskTimer(plugin, 20L, 20L);
     }
 
     @EventHandler
@@ -317,6 +329,19 @@ public class ListenerManager implements Listener {
                     heart.addStability(-10);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        if (player.hasMetadata("revival_shield")) {
+            event.setCancelled(true);
+            player.setHealth(1.0);
+            player.removeMetadata("revival_shield", com.aspectsmp.AspectSMP.getInstance());
+            player.sendMessage("§a§lREVIVAL SHIELD ACTIVATED!");
+            player.getWorld().spawnParticle(org.bukkit.Particle.TOTEM_OF_UNDYING, player.getLocation().add(0, 1, 0), 50, 1, 1, 1);
+            player.playSound(player.getLocation(), org.bukkit.Sound.ITEM_TOTEM_USE, 1.0f, 1.0f);
         }
     }
 }
