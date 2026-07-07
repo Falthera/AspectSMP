@@ -2,7 +2,7 @@ package com.aspectsmp.commands;
 
 import com.aspectsmp.AspectSMP;
 import com.aspectsmp.core.Heart;
-import com.aspectsmp.core.HeartOfTheSea;
+import com.aspectsmp.items.HeartOfTheSea;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
