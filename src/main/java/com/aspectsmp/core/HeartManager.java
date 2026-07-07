@@ -4,14 +4,18 @@ import com.aspectsmp.AspectSMP;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HeartManager {
 
+    private static final AspectType[] ASPECTS = Arrays.stream(AspectType.values())
+            .filter(type -> type != AspectType.NONE)
+            .toArray(AspectType[]::new);
+
     private final AspectSMP plugin;
     private final ConcurrentHashMap<UUID, Heart> heartCache;
+    private final Random random = new Random();
 
     public HeartManager(AspectSMP plugin) {
         this.plugin = plugin;
@@ -26,7 +30,8 @@ public class HeartManager {
         return heartCache.computeIfAbsent(playerId, id -> {
             Heart heart = plugin.getStorageManager().loadHeart(id);
             if (heart == null) {
-                heart = new Heart(id, AspectType.TIDE);
+                AspectType randomAspect = ASPECTS[random.nextInt(ASPECTS.length)];
+                heart = new Heart(id, randomAspect);
             }
             return heart;
         });
