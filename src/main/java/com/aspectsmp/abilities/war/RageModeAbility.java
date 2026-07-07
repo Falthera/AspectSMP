@@ -39,14 +39,16 @@ public class RageModeAbility extends BaseAbility {
         playSound(player, Sound.ENTITY_WARDEN_ROAR, 1.0f, 0.5f);
 
         double damage = player.getAttribute(Attribute.ATTACK_DAMAGE).getValue() * getPowerMultiplier(heart);
-        player.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(
-            player.getAttribute(Attribute.MOVEMENT_SPEED).getBaseValue() * 1.5);
+        org.bukkit.attribute.AttributeInstance speedAttr = player.getAttribute(Attribute.MOVEMENT_SPEED);
+        double originalSpeed = speedAttr.getBaseValue();
+        speedAttr.setBaseValue(originalSpeed * 1.5);
 
         org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
             @Override
             public void run() {
-                player.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(
-                    player.getAttribute(Attribute.MOVEMENT_SPEED).getBaseValue() / 1.5);
+                if (player.isOnline()) {
+                    player.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(originalSpeed);
+                }
             }
         };
         runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), 100L);

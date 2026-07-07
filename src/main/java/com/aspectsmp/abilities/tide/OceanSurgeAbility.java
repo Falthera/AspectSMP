@@ -44,7 +44,7 @@ public class OceanSurgeAbility extends BaseAbility {
             int ticks = 0;
             @Override
             public void run() {
-                if (ticks >= 50) {
+                if (!player.isOnline() || ticks >= 50) {
                     cancel();
                     return;
                 }

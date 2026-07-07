@@ -46,7 +46,7 @@ public class LifeLinkAbility extends BaseAbility {
 
         if (target instanceof Player p) {
             player.heal(4);
-            p.damage(2 * getPowerMultiplier(heart));
+            p.damage(2 * getPowerMultiplier(heart), player);
         }
 
         applyCooldown(player, getId(), 12000L);

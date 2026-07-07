@@ -45,6 +45,7 @@ public class MeteorCallAbility extends BaseAbility {
         org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
             @Override
             public void run() {
+                if (!player.isOnline()) return;
                 targetLoc.getWorld().spawnParticle(Particle.LAVA, targetLoc, 100, 1, 1, 1);
                 targetLoc.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, targetLoc, 5);
                 playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 2.0f, 0.8f);

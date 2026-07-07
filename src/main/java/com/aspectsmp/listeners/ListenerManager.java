@@ -444,9 +444,26 @@ public class ListenerManager implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
+        Player victim = event.getEntity();
+
+        if (victim.hasMetadata("revival_shield")) {
+            org.bukkit.metadata.MetadataValue meta = victim.getMetadata("revival_shield").get(0);
+            long expireTime = meta.asLong();
+            if (System.currentTimeMillis() <= expireTime) {
+                event.setCancelled(true);
+                victim.setHealth(1.0);
+                victim.removeMetadata("revival_shield", com.aspectsmp.AspectSMP.getInstance());
+                victim.sendMessage("§a§lREVIVAL SHIELD ACTIVATED!");
+                victim.getWorld().spawnParticle(org.bukkit.Particle.TOTEM_OF_UNDYING, victim.getLocation().add(0, 1, 0), 50, 1, 1, 1);
+                victim.playSound(victim.getLocation(), org.bukkit.Sound.ITEM_TOTEM_USE, 1.0f, 1.0f);
+                return;
+            } else {
+                victim.removeMetadata("revival_shield", com.aspectsmp.AspectSMP.getInstance());
+            }
+        }
+
         if (!plugin.getConfig().getBoolean("features.obfuscated-death-messages", true)) return;
         
-        Player victim = event.getEntity();
         Player killer = victim.getKiller();
         
         if (killer == null) return;

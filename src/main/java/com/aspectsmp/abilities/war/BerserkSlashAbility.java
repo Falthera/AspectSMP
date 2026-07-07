@@ -48,7 +48,7 @@ public class BerserkSlashAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                target.damage(6 * getPowerMultiplier(heart));
+                target.damage(6 * getPowerMultiplier(heart), player);
             }
         }
 

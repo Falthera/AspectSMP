@@ -45,7 +45,9 @@ public class StormRushAbility extends BaseAbility {
         org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
             @Override
             public void run() {
-                player.setInvulnerable(false);
+                if (player.isOnline()) {
+                    player.setInvulnerable(false);
+                }
             }
         };
         runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), 40L);

@@ -42,15 +42,13 @@ public class ExecutionChainAbility extends BaseAbility {
         playSound(player, Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.0f);
 
         List<Entity> nearby = loc.getWorld().getEntities().stream()
-            .filter(e -> e instanceof Player && e != player)
-            .filter(e -> e instanceof Player p && p.getHealth() <= 8)
-            .filter(e -> e.getLocation().distanceSquared(loc) <= 25)
+            .filter(e -> e instanceof Player && e != player && e.getLocation().distanceSquared(loc) <= 25)
+            .filter(e -> ((Player) e).getHealth() <= 8)
             .toList();
 
         for (Entity entity : nearby) {
-            if (entity instanceof Player target && target.getHealth() <= 8) {
-                target.damage(20 * getPowerMultiplier(heart), player);
-            }
+            target.damage(20 * getPowerMultiplier(heart), player);
+        }
         }
 
         applyCooldown(player, getId(), 25000L);

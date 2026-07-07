@@ -43,6 +43,7 @@ public class OrbitalShieldAbility extends BaseAbility {
             @Override
             public void run() {
                 ticks++;
+                if (!player.isOnline()) { cancel(); return; }
                 player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 2, 0), 10, 0.5, 0.5, 0.5);
                 if (ticks >= 100) {
                     player.setInvulnerable(false);
