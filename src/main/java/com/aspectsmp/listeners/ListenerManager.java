@@ -4,12 +4,12 @@ import com.aspectsmp.AspectSMP;
 import com.aspectsmp.core.AspectType;
 import com.aspectsmp.core.Heart;
 import com.aspectsmp.items.*;
+import com.aspectsmp.core.RuleModifier;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityKnockbackByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -399,7 +399,7 @@ public class ListenerManager implements Listener {
         if (heart.getAspect() == AspectType.RIFT && event.getCause() != EntityDamageEvent.DamageCause.VOID) {
             if (new java.util.Random().nextDouble() < 0.2 && !player.hasMetadata("rift_blink_cd")) {
                 org.bukkit.Location loc = player.getLocation().getDirection().multiply(5).toLocation(player.getWorld());
-                if (loc.getBlock().getType().isAir() || loc.getBlock().getType().isLiquid()) {
+                if (loc.getBlock().getType().isAir()) {
                     player.teleport(loc);
                     player.setMetadata("rift_blink_cd", new org.bukkit.metadata.FixedMetadataValue(com.aspectsmp.AspectSMP.getInstance(), true));
                     plugin.getServer().getScheduler().runTaskLater(plugin, () -> player.removeMetadata("rift_blink_cd", com.aspectsmp.AspectSMP.getInstance()), 60L);

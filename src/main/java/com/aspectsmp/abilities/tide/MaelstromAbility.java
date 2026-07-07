@@ -41,7 +41,7 @@ public class MaelstromAbility extends BaseAbility {
 
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.WATER_BREATHING, 600, 0));
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.DOLPHINS_GRACE, 600, 0));
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.DEPTH_STRIDER, 600, 0));
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.CONDUIT_POWER, 600, 0));
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 600, 0));
         
         player.getWorld().spawnParticle(Particle.HEART, player.getLocation().add(0, 1, 0), 40, 1, 1, 1);

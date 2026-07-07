@@ -37,7 +37,7 @@ public class HydroPushAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         Vector direction = player.getLocation().getDirection().normalize();
-        player.getWorld().spawnParticle(Particle.WATER_SPLASH, player.getLocation().add(0, 1, 0), 40, 0.2, 0.2, 0.2);
+        player.getWorld().spawnParticle(Particle.SPLASH, player.getLocation().add(0, 1, 0), 40, 0.2, 0.2, 0.2);
         playSound(player, Sound.ENTITY_DOLPHIN_SPLASH, 1.0f, 1.0f);
 
         for (double i = 0.5; i <= 8; i += 0.5) {

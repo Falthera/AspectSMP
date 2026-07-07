@@ -2,7 +2,6 @@ package com.aspectsmp.core;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.util.Vector;
 
 public class CosmosRuleModifier implements RuleModifier {
 
@@ -13,6 +12,10 @@ public class CosmosRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
+    }
+
+    @Override
+    public void applyPassive(Player player) {
     }
 
     @Override

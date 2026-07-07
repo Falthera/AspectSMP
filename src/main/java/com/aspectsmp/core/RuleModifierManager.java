@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityKnockbackByEntityEvent;
+import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -72,7 +72,7 @@ public class RuleModifierManager implements Listener {
         
         RuleModifier modifier = modifiers.get(heart.getAspect());
         if (modifier != null) {
-            event.setStrength(modifier.modifyKnockback(player, event.getStrength()));
+            event.setStrength((float) modifier.modifyKnockback(player, event.getKnockbackStrength()));
         }
     }
 

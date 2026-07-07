@@ -107,6 +107,10 @@ public class AspectSMP extends JavaPlugin {
         return commandManager;
     }
 
+    public RuleModifierManager getRuleModifierManager() {
+        return ruleModifierManager;
+    }
+
     public ScoreboardManager getScoreboardManager() {
         return scoreboardManager;
     }

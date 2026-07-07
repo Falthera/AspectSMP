@@ -52,7 +52,7 @@ public class TidalPrisonAbility extends BaseAbility {
                             for (int z = -2; z <= 2; z++) {
                                 if (x == -2 || x == 2 || z == -2 || z == 2) {
                                     org.bukkit.Location blockLoc = targetLoc.clone().add(x, y, z);
-                                    if (blockLoc.getBlock().getType().isAir() || blockLoc.getBlock().getType().isLiquid()) {
+                                    if (blockLoc.getBlock().getType().isAir()) {
                                         blockLoc.getBlock().setType(org.bukkit.Material.BLUE_STAINED_GLASS);
                                         player.getWorld().spawnParticle(Particle.BUBBLE_POP, blockLoc.add(0.5, 0.5, 0.5), 5, 0, 0, 0);
                                     }
