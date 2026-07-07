@@ -167,7 +167,7 @@ public class ListenerManager implements Listener {
         } else if (CustomItem.isCustomItem(item, "heart_restoration_kit")) {
             handleHeartRestorationKit(event.getPlayer(), event);
         } else if (CustomItem.isCustomItem(item, "reforging_core")) {
-            handleReforgingCore(event.getPlayer());
+            handleReforgingCore(event.getPlayer(), event);
         } else if (CustomItem.isCustomItem(item, "stability_bottle")) {
             handleStabilityBottle(event.getPlayer(), event);
         }
@@ -247,8 +247,26 @@ public class ListenerManager implements Listener {
         plugin.getScoreboardManager().updatePlayer(player);
     }
 
-    private void handleReforgingCore(Player player) {
-        player.sendMessage("§cReforging Core not implemented yet!");
+    private void handleReforgingCore(Player player, PlayerInteractEvent event) {
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null) return;
+        
+        AspectType current = heart.getAspect();
+        java.util.List<AspectType> choices = new java.util.ArrayList<>(java.util.List.of(AspectType.values()));
+        choices.remove(current);
+        AspectType newAspect = choices.get(new java.util.Random().nextInt(choices.size()));
+        
+        heart.setAspect(newAspect);
+        heart.setTier(1);
+        heart.getCooldowns().clear();
+        
+        player.sendMessage("§b§lYour Heart has been reforged!");
+        player.sendMessage("§7Old Aspect: §f" + current.getDisplayName());
+        player.sendMessage("§7New Aspect: §f" + newAspect.getDisplayName());
+        player.sendMessage("§7Tier reset to 1.");
+        
+        consumeOneItem(player, event);
+        plugin.getScoreboardManager().updatePlayer(player);
     }
 
     private void handleStabilityBottle(Player player, PlayerInteractEvent event) {
