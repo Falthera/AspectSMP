@@ -25,7 +25,7 @@ public class InfoCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player target = args.length > 0 ? Bukkit.getPlayerExact(args[0]) : null;
         if (!(sender instanceof Player player) && target == null) {
-            sender.sendMessage("§cUsage: /info [player]");
+            sender.sendMessage("§cUsage: /aspect-info [player]");
             return true;
         }
 

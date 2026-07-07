@@ -5,31 +5,31 @@ api-version: 1.21
 author: Aspect SMP Team
 description: Ability-based PvP RPG survival system
 commands:
-  info:
+  aspect-info:
     description: View Heart info
     usage: /<command> [player]
-  list:
+  aspect-list:
     description: List all Aspects
     usage: /<command>
-  gui:
+  aspect-gui:
     description: Open Heart GUI
     usage: /<command>
-  ability3:
+  aspect-ability3:
     description: Use Tier 3 ability
     usage: /<command>
-  ultimate:
+  aspect-ultimate:
     description: Use Ultimate ability
     usage: /<command>
-  give:
+  aspect-give:
     description: Give Heart item
     usage: /<command> <player> <catalyst|resonator|restoration|reforging>
-  reroll:
+  aspect-reroll:
     description: Reroll Aspect
     usage: /<command> <player>
-  repair:
+  aspect-repair:
     description: Repair Heart
     usage: /<command> <player>
-  reload:
+  aspect-reload:
     description: Reload plugin
     usage: /<command>
   trust:

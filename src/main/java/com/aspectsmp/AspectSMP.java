@@ -123,22 +123,22 @@ public class AspectSMP extends JavaPlugin {
 
     private void registerCommands() {
         InfoCommand infoCmd = new InfoCommand(this);
-        getCommand("info").setExecutor(infoCmd);
-        getCommand("info").setTabCompleter(infoCmd);
-        getCommand("list").setExecutor(new ListCommand(this));
-        getCommand("gui").setExecutor(new GuiCommand(this));
-        getCommand("ability3").setExecutor(new Ability3Command(this));
-        getCommand("ultimate").setExecutor(new UltimateCommand(this));
+        getCommand("aspect-info").setExecutor(infoCmd);
+        getCommand("aspect-info").setTabCompleter(infoCmd);
+        getCommand("aspect-list").setExecutor(new ListCommand(this));
+        getCommand("aspect-gui").setExecutor(new GuiCommand(this));
+        getCommand("aspect-ability3").setExecutor(new Ability3Command(this));
+        getCommand("aspect-ultimate").setExecutor(new UltimateCommand(this));
         GiveCommand giveCmd = new GiveCommand(this);
-        getCommand("give").setExecutor(giveCmd);
-        getCommand("give").setTabCompleter(giveCmd);
+        getCommand("aspect-give").setExecutor(giveCmd);
+        getCommand("aspect-give").setTabCompleter(giveCmd);
         RerollCommand rerollCmd = new RerollCommand(this);
-        getCommand("reroll").setExecutor(rerollCmd);
-        getCommand("reroll").setTabCompleter(rerollCmd);
+        getCommand("aspect-reroll").setExecutor(rerollCmd);
+        getCommand("aspect-reroll").setTabCompleter(rerollCmd);
         RepairCommand repairCmd = new RepairCommand(this);
-        getCommand("repair").setExecutor(repairCmd);
-        getCommand("repair").setTabCompleter(repairCmd);
-        getCommand("reload").setExecutor(new ReloadCommand(this));
+        getCommand("aspect-repair").setExecutor(repairCmd);
+        getCommand("aspect-repair").setTabCompleter(repairCmd);
+        getCommand("aspect-reload").setExecutor(new ReloadCommand(this));
     }
 
     private void registerTrustCommand() {

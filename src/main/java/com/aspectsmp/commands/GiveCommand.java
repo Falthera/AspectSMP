@@ -30,7 +30,7 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            sender.sendMessage("§cUsage: /give <player> <catalyst|resonator|restoration|reforging>");
+            sender.sendMessage("§cUsage: /aspect-give <player> <catalyst|resonator|restoration|reforging>");
             return true;
         }
 
@@ -50,7 +50,7 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
         };
 
         if (item == null) {
-            sender.sendMessage("§cUsage: /give <player> <catalyst|resonator|restoration|reforging>");
+            sender.sendMessage("§cUsage: /aspect-give <player> <catalyst|resonator|restoration|reforging>");
             return true;
         }
 
