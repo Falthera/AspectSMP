@@ -424,7 +424,7 @@ public class ListenerManager implements Listener {
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null || heart.isDormant()) return;
 
-        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK && event.getSource() instanceof Player attacker) {
+        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK && event instanceof EntityDamageByEntityEvent damageByEntity && damageByEntity.getDamager() instanceof Player attacker) {
             if (!plugin.getTrustManager().isTrusted(player.getUniqueId(), attacker.getUniqueId())) {
                 plugin.getCombatManager().tagPlayer(player.getUniqueId());
                 plugin.getCombatManager().tagPlayer(attacker.getUniqueId());

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 import java.util.Comparator;
+import java.util.List;
 
 public class ThunderExecutionAbility extends BaseAbility {
 

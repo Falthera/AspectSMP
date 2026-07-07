@@ -40,8 +40,8 @@ public class CombatManager {
     }
 
     public void handleDamage(org.bukkit.event.entity.EntityDamageEvent event) {
+        if (!(event instanceof org.bukkit.event.entity.EntityDamageByEntityEvent damageByEntity && damageByEntity.getDamager() instanceof Player attacker)) return;
         if (!(event.getEntity() instanceof Player victim)) return;
-        if (!(event.getDamager() instanceof Player attacker)) return;
 
         if (trustManager.isTrusted(victim.getUniqueId(), attacker.getUniqueId())) return;
 

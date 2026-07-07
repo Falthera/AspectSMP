@@ -4,8 +4,10 @@ import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.util.Vector;
 
 public class MaelstromAbility extends BaseAbility {
 
