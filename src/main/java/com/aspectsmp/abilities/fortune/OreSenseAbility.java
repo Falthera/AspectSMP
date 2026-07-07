@@ -34,29 +34,34 @@ public class OreSenseAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.VIBRATION, player.getLocation().add(0, 1, 0), 50, 20, 20, 20);
+        player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, player.getLocation().add(0, 1, 0), 30, 0.5, 0.5, 0.5);
         playSound(player, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.0f);
+        player.sendMessage("§7Prospecting for ores...");
 
-        org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
+        int radius = 10;
+        int heightRange = 5;
+        int duration = 100;
+        int interval = 10;
+
+        new org.bukkit.scheduler.BukkitRunnable() {
             int ticks = 0;
             @Override
             public void run() {
                 ticks++;
                 org.bukkit.Location center = player.getLocation();
-                for (int x = -20; x <= 20; x++) {
-                    for (int y = -10; y <= 10; y++) {
-                        for (int z = -20; z <= 20; z++) {
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -heightRange; y <= heightRange; y++) {
+                        for (int z = -radius; z <= radius; z++) {
                             org.bukkit.block.Block block = center.clone().add(x, y, z).getBlock();
                             if (block.getType().toString().contains("ORE")) {
-                                player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, block.getLocation().add(0.5, 0.5, 0.5), 1);
+                                player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, block.getLocation().add(0.5, 0.5, 0.5), 2, 0.2, 0.2, 0.2);
                             }
                         }
                     }
                 }
-                if (ticks >= 200) cancel();
+                if (ticks >= duration) cancel();
             }
-        };
-        runnable.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, 5L);
+        }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, interval);
 
         applyCooldown(player, getId(), 60000L);
         return true;

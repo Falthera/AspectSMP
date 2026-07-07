@@ -14,6 +14,12 @@ commands:
   aspect-gui:
     description: Open Heart GUI
     usage: /<command>
+  aspect-ability1:
+    description: Use Tier 1 ability
+    usage: /<command>
+  aspect-ability2:
+    description: Use Tier 2 ability
+    usage: /<command>
   aspect-ability3:
     description: Use Tier 3 ability
     usage: /<command>
