@@ -31,7 +31,12 @@ public class StormSentinel {
                     cancel();
                     return;
                 }
-                if (entity.getTarget() instanceof Player target) {
+                Player target = entity.getWorld().getNearbyEntities(entity.getLocation(), 10, 10, 10).stream()
+                    .filter(e -> e instanceof Player)
+                    .map(e -> (Player) e)
+                    .findFirst()
+                    .orElse(null);
+                if (target != null) {
                     if (entity.getLocation().distanceSquared(target.getLocation()) < 25) {
                         target.damage(6.0, entity);
                         target.setVelocity(target.getLocation().toVector().subtract(entity.getLocation().toVector()).normalize().multiply(0.8));

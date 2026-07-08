@@ -2,9 +2,16 @@ package com.aspectsmp.event;
 
 import com.aspectsmp.AspectSMP;
 import com.aspectsmp.core.AspectType;
+import com.aspectsmp.core.Heart;
+import com.aspectsmp.mobs.CloudWraith;
+import com.aspectsmp.mobs.SkyGuardian;
+import com.aspectsmp.mobs.StormSentinel;
+import com.aspectsmp.mobs.TempestPhantom;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;

@@ -56,7 +56,7 @@ public class TempestCageAbility extends BaseAbility {
 
         player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(0, 1, 0), 50, OUTER_RADIUS, 1.5, OUTER_RADIUS, 0.02);
         player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 1, 0), 30, OUTER_RADIUS * 0.6, 1.0, OUTER_RADIUS * 0.6, 0.02);
-        playSound(player, Sound.ENTITY_BREEZE_SLAM, 1.2f, 0.7f);
+        playSound(player, Sound.ENTITY_BREEZE_WIND_BURST, 1.2f, 0.7f);
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;

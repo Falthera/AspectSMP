@@ -31,7 +31,12 @@ public class CloudWraith {
                     cancel();
                     return;
                 }
-                if (entity.getTarget() instanceof Player target) {
+                Player target = entity.getWorld().getNearbyEntities(entity.getLocation(), 15, 10, 15).stream()
+                    .filter(e -> e instanceof Player)
+                    .map(e -> (Player) e)
+                    .findFirst()
+                    .orElse(null);
+                if (target != null) {
                     entity.setVelocity(entity.getLocation().getDirection().multiply(0.6));
                     if (entity.getLocation().distanceSquared(target.getLocation()) < 16) {
                         target.damage(3.0, entity);

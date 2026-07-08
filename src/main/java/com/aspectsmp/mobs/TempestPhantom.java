@@ -31,7 +31,12 @@ public class TempestPhantom {
                     cancel();
                     return;
                 }
-                if (entity.getTarget() instanceof Player target) {
+                Player target = entity.getWorld().getNearbyEntities(entity.getLocation(), 12, 10, 12).stream()
+                    .filter(e -> e instanceof Player)
+                    .map(e -> (Player) e)
+                    .findFirst()
+                    .orElse(null);
+                if (target != null) {
                     if (entity.getLocation().distanceSquared(target.getLocation()) < 20) {
                         entity.teleport(target.getLocation().add(2, 1, 2));
                         target.damage(5.0, entity);

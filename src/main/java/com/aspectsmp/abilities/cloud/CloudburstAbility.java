@@ -57,7 +57,7 @@ public class CloudburstAbility extends BaseAbility {
         }
 
         player.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, player.getLocation().add(0, 1, 0), 10, DAMAGE_RADIUS * 0.5, 1.0, DAMAGE_RADIUS * 0.5, 0.1);
-        playSound(player, Sound.ENTITY_BREEZE_SLAM, 2.0f, 0.6f);
+        playSound(player, Sound.ENTITY_BREEZE_WIND_BURST, 2.0f, 0.6f);
 
         new BukkitRunnable() {
             @Override

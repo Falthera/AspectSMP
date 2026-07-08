@@ -34,7 +34,12 @@ public class SkyGuardian {
                     return;
                 }
                 tick++;
-                if (entity.getTarget() instanceof Player target) {
+                Player target = entity.getWorld().getNearbyEntities(entity.getLocation(), 20, 15, 20).stream()
+                    .filter(e -> e instanceof Player)
+                    .map(e -> (Player) e)
+                    .findFirst()
+                    .orElse(null);
+                if (target != null) {
                     switch (tick % 4) {
                         case 0 -> windCollapse(target);
                         case 1 -> stormPrison(target);
@@ -65,6 +70,6 @@ public class SkyGuardian {
     private void heavenBreak(Player target) {
         target.damage(12.0, entity);
         target.getWorld().spawnParticle(org.bukkit.Particle.EXPLOSION_EMITTER, target.getLocation().add(0, 1, 0), 15, 3, 2, 3, 0.1);
-        target.getWorld().playSound(target.getLocation(), org.bukkit.Sound.ENTITY_BREEZE_SLAM, 2.0f, 0.5f);
+        target.getWorld().playSound(target.getLocation(), Sound.ENTITY_BREEZE_WIND_BURST, 2.0f, 0.5f);
     }
 }
