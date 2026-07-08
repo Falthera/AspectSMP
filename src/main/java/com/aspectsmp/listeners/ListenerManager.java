@@ -112,6 +112,7 @@ public class ListenerManager implements Listener {
         player.removePotionEffect(org.bukkit.potion.PotionEffectType.RESISTANCE);
         player.removePotionEffect(org.bukkit.potion.PotionEffectType.LUCK);
         player.removePotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST);
     }
 
     public void clearAspectEffects(Player player) {
@@ -168,19 +169,12 @@ public class ListenerManager implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.useItemInHand() == org.bukkit.event.Event.Result.DENY) return;
-        
         Player player = event.getPlayer();
         ItemStack mainHandItem = player.getInventory().getItemInMainHand();
         ItemStack offHandItem = player.getInventory().getItemInOffHand();
 
         boolean hasHeart = (mainHandItem != null && HeartOfTheSea.isHeartOfTheSea(mainHandItem)) ||
                            (offHandItem != null && HeartOfTheSea.isHeartOfTheSea(offHandItem));
-
-        if (!hasHeart) {
-            player.sendMessage("§cHold your Heart of the Sea to use abilities!");
-            return;
-        }
 
         if ((mainHandItem != null && mainHandItem.getType().isBlock()) ||
             (offHandItem != null && offHandItem.getType().isBlock())) {
@@ -215,6 +209,11 @@ public class ListenerManager implements Listener {
         
         if (customItem != null) {
             handleCustomItemUse(event, customItem, customHand);
+            return;
+        }
+
+        if (!hasHeart) {
+            player.sendMessage("§cHold your Heart of the Sea to use abilities!");
             return;
         }
 
