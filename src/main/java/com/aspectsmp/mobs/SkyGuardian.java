@@ -2,6 +2,7 @@ package com.aspectsmp.mobs;
 
 import com.aspectsmp.AspectSMP;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
