@@ -39,8 +39,13 @@ public class MySQLProvider implements StorageProvider {
     private void createTable() throws SQLException {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-                 "CREATE TABLE IF NOT EXISTS hearts (uuid VARCHAR(36) PRIMARY KEY, aspect VARCHAR(32), tier INT, stability INT, essence BIGINT, dormant BOOLEAN, cooldowns TEXT)")) {
+                 "CREATE TABLE IF NOT EXISTS hearts (uuid VARCHAR(36) PRIMARY KEY, aspect VARCHAR(32), tier INT, stability INT, essence BIGINT, dormant BOOLEAN, cloud_unlocked BOOLEAN DEFAULT FALSE, cooldowns TEXT)")) {
             stmt.executeUpdate();
+        }
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("ALTER TABLE hearts ADD COLUMN cloud_unlocked BOOLEAN DEFAULT FALSE");
+        } catch (SQLException e) {
         }
     }
 
@@ -49,20 +54,22 @@ public class MySQLProvider implements StorageProvider {
         return CompletableFuture.runAsync(() -> {
             try (Connection conn = dataSource.getConnection()) {
                 PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO hearts (uuid, aspect, tier, stability, essence, dormant, cooldowns) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE aspect=?, tier=?, stability=?, essence=?, dormant=?, cooldowns=?");
+                    "INSERT INTO hearts (uuid, aspect, tier, stability, essence, dormant, cloud_unlocked, cooldowns) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE aspect=?, tier=?, stability=?, essence=?, dormant=?, cloud_unlocked=?, cooldowns=?");
                 stmt.setString(1, heart.getOwner().toString());
                 stmt.setString(2, heart.getAspect().name());
                 stmt.setInt(3, heart.getTier());
                 stmt.setInt(4, heart.getStability());
                 stmt.setLong(5, heart.getEssence());
                 stmt.setBoolean(6, heart.isDormant());
-                stmt.setString(7, serializeCooldowns(heart.getCooldowns()));
-                stmt.setString(8, heart.getAspect().name());
-                stmt.setInt(9, heart.getTier());
-                stmt.setInt(10, heart.getStability());
-                stmt.setLong(11, heart.getEssence());
-                stmt.setBoolean(12, heart.isDormant());
-                stmt.setString(13, serializeCooldowns(heart.getCooldowns()));
+                stmt.setBoolean(7, heart.isCloudUnlocked());
+                stmt.setString(8, serializeCooldowns(heart.getCooldowns()));
+                stmt.setString(9, heart.getAspect().name());
+                stmt.setInt(10, heart.getTier());
+                stmt.setInt(11, heart.getStability());
+                stmt.setLong(12, heart.getEssence());
+                stmt.setBoolean(13, heart.isDormant());
+                stmt.setBoolean(14, heart.isCloudUnlocked());
+                stmt.setString(15, serializeCooldowns(heart.getCooldowns()));
                 stmt.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -83,8 +90,10 @@ public class MySQLProvider implements StorageProvider {
                 int stability = rs.getInt("stability");
                 long essence = rs.getLong("essence");
                 boolean dormant = rs.getBoolean("dormant");
+                boolean cloudUnlocked = rs.getBoolean("cloud_unlocked");
                 
                 Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
+                heart.setCloudUnlocked(cloudUnlocked);
                 heart.getCooldowns().putAll(deserializeCooldowns(rs.getString("cooldowns")));
                 return heart;
             }

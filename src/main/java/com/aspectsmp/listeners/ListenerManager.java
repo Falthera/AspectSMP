@@ -131,6 +131,16 @@ public class ListenerManager implements Listener {
         Player player = event.getPlayer();
         Heart heart = plugin.getHeartManager().getOrCreateHeart(player.getUniqueId());
         
+        if (heart.getAspect() == AspectType.CLOUD && !heart.isCloudUnlocked()) {
+            AspectType[] nonCloud = java.util.Arrays.stream(AspectType.values())
+                    .filter(a -> a != AspectType.CLOUD)
+                    .toArray(AspectType[]::new);
+            AspectType random = nonCloud[new java.util.Random().nextInt(nonCloud.length)];
+            heart.setAspect(random);
+            heart.setCloudUnlocked(false);
+            player.sendMessage("§cThe Aspect of the Cloud has been removed. Win the Ninth Sky event to unlock it.");
+        }
+        
         if (player.isOnline()) {
             player.sendMessage("§d§lWelcome to Aspect SMP!");
             player.sendMessage("§7You are bound to the §b" + heart.getAspect().getDisplayName() + " §7Heart.");

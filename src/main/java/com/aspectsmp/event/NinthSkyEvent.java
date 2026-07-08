@@ -182,6 +182,7 @@ public class NinthSkyEvent {
                 Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
                 if (heart != null) {
                     heart.setAspect(AspectType.CLOUD);
+                    heart.setCloudUnlocked(true);
                     heart.setTier(1);
                     heart.getCooldowns().clear();
                     player.sendMessage("§b§lYou have unlocked the Aspect of the Cloud!");

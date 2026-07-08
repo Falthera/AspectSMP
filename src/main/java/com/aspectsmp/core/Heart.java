@@ -14,6 +14,7 @@ public class Heart {
     private long essence;
     private final Map<String, Long> cooldowns;
     private boolean dormant;
+    private boolean cloudUnlocked;
 
     public Heart(UUID owner, AspectType aspect) {
         this.owner = owner;
@@ -23,6 +24,7 @@ public class Heart {
         this.essence = 0;
         this.cooldowns = new HashMap<>();
         this.dormant = false;
+        this.cloudUnlocked = false;
     }
 
     public Heart(UUID owner, AspectType aspect, int tier, int stability, long essence, boolean dormant) {
@@ -33,6 +35,7 @@ public class Heart {
         this.essence = essence;
         this.cooldowns = new HashMap<>();
         this.dormant = dormant;
+        this.cloudUnlocked = false;
     }
 
     public UUID getOwner() {
@@ -97,6 +100,14 @@ public class Heart {
         }
     }
 
+    public boolean isCloudUnlocked() {
+        return cloudUnlocked;
+    }
+
+    public void setCloudUnlocked(boolean cloudUnlocked) {
+        this.cloudUnlocked = cloudUnlocked;
+    }
+
     public boolean canUseAbilities() {
         return !dormant && tier > 0;
     }
@@ -122,6 +133,7 @@ public class Heart {
         section.set("stability", stability);
         section.set("essence", essence);
         section.set("dormant", dormant);
+        section.set("cloud_unlocked", cloudUnlocked);
         section.set("cooldowns", cooldowns);
     }
 
@@ -132,8 +144,10 @@ public class Heart {
         int stability = section.getInt("stability", 100);
         long essence = section.getLong("essence", 0);
         boolean dormant = section.getBoolean("dormant", false);
+        boolean cloudUnlocked = section.getBoolean("cloud_unlocked", false);
         
         Heart heart = new Heart(UUID.fromString(section.getName()), aspect, tier, stability, essence, dormant);
+        heart.setCloudUnlocked(cloudUnlocked);
         heart.getCooldowns().putAll(section.getConfigurationSection("cooldowns") != null ? 
             section.getConfigurationSection("cooldowns").getValues(false).entrySet().stream()
                 .collect(java.util.stream.Collectors.toMap(

@@ -36,9 +36,14 @@ public class SQLiteProvider implements StorageProvider {
                     stability INTEGER NOT NULL,
                     essence INTEGER NOT NULL,
                     dormant INTEGER NOT NULL,
+                    cloud_unlocked INTEGER NOT NULL DEFAULT 0,
                     cooldowns TEXT
                 )
                 """);
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("ALTER TABLE hearts ADD COLUMN cloud_unlocked INTEGER DEFAULT 0");
+            } catch (SQLException e) {
+            }
         }
     }
 
@@ -47,14 +52,15 @@ public class SQLiteProvider implements StorageProvider {
         return CompletableFuture.runAsync(() -> {
             try (Connection conn = dataSource.getConnection()) {
                 PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT OR REPLACE INTO hearts (uuid, aspect, tier, stability, essence, dormant, cooldowns) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    "INSERT OR REPLACE INTO hearts (uuid, aspect, tier, stability, essence, dormant, cloud_unlocked, cooldowns) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 stmt.setString(1, heart.getOwner().toString());
                 stmt.setString(2, heart.getAspect().name());
                 stmt.setInt(3, heart.getTier());
                 stmt.setInt(4, heart.getStability());
                 stmt.setLong(5, heart.getEssence());
                 stmt.setInt(6, heart.isDormant() ? 1 : 0);
-                stmt.setString(7, serializeCooldowns(heart.getCooldowns()));
+                stmt.setInt(7, heart.isCloudUnlocked() ? 1 : 0);
+                stmt.setString(8, serializeCooldowns(heart.getCooldowns()));
                 stmt.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -75,8 +81,10 @@ public class SQLiteProvider implements StorageProvider {
                 int stability = rs.getInt("stability");
                 long essence = rs.getLong("essence");
                 boolean dormant = rs.getInt("dormant") == 1;
+                boolean cloudUnlocked = rs.getInt("cloud_unlocked") == 1;
                 
                 Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
+                heart.setCloudUnlocked(cloudUnlocked);
                 heart.getCooldowns().putAll(deserializeCooldowns(rs.getString("cooldowns")));
                 return heart;
             }

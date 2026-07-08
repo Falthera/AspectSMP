@@ -38,6 +38,7 @@ public class YAMLProvider implements StorageProvider {
             config.set(path + ".stability", heart.getStability());
             config.set(path + ".essence", heart.getEssence());
             config.set(path + ".dormant", heart.isDormant());
+            config.set(path + ".cloud_unlocked", heart.isCloudUnlocked());
             config.set(path + ".cooldowns", heart.getCooldowns());
             try {
                 config.save(file);
@@ -58,8 +59,10 @@ public class YAMLProvider implements StorageProvider {
         int stability = config.getInt(path + ".stability", 100);
         long essence = config.getLong(path + ".essence", 0);
         boolean dormant = config.getBoolean(path + ".dormant", false);
+        boolean cloudUnlocked = config.getBoolean(path + ".cloud_unlocked", false);
         
         Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
+        heart.setCloudUnlocked(cloudUnlocked);
         heart.getCooldowns().putAll(config.getConfigurationSection(path + ".cooldowns") != null ? 
             config.getConfigurationSection(path + ".cooldowns").getValues(false).entrySet().stream()
                 .collect(java.util.stream.Collectors.toMap(
