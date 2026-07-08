@@ -119,6 +119,12 @@ public class AbilityManager {
                     abilities.add(new MiningRushAbility());
                     abilities.add(new KingsJackpotAbility());
                 }
+                case CLOUD -> {
+                    abilities.add(new com.aspectsmp.abilities.cloud.AirWalkerAbility());
+                    abilities.add(new com.aspectsmp.abilities.cloud.InhaleAbility());
+                    abilities.add(new com.aspectsmp.abilities.cloud.TempestCageAbility());
+                    abilities.add(new com.aspectsmp.abilities.cloud.CloudburstAbility());
+                }
             }
             abilities.forEach(ability -> registeredAbilities.put(ability.getId(), ability));
         }

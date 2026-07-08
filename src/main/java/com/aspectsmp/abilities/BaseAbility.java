@@ -132,6 +132,14 @@ public abstract class BaseAbility implements Ability {
                     multiplier += 0.05;
                 }
             }
+            case CLOUD -> {
+                if (player.getLocation().getY() > 100) {
+                    multiplier += 0.2;
+                }
+                if (world.hasStorm() || world.isThundering()) {
+                    multiplier += 0.15;
+                }
+            }
         }
 
         return Math.max(0.5, Math.min(1.5, multiplier));

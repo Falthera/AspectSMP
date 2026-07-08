@@ -38,6 +38,10 @@ commands:
   aspect-reload:
     description: Reload plugin
     usage: /<command>
+  event:
+    description: Manage server events
+    usage: /<command> start <event_name>
+    permission: aspect.admin
   trust:
     description: Manage trusted players
     usage: /<command> <add|remove|clear|list> [name]

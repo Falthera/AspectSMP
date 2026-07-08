@@ -252,6 +252,7 @@ public class GuiManager implements Listener {
             case WAR -> "Battle Frenzy";
             case COSMOS -> "Stellar Alignment";
             case FORTUNE -> "Lucky Charm";
+            case CLOUD -> "Air Walker";
         };
     }
 
@@ -305,6 +306,12 @@ public class GuiManager implements Listener {
                 case 3 -> "Mining Rush";
                 default -> "Unknown";
             };
+            case CLOUD -> switch (tier) {
+                case 1 -> "Air Walker";
+                case 2 -> "Inhale";
+                case 3 -> "Tempest Cage";
+                default -> "Unknown";
+            };
         };
     }
 
@@ -318,6 +325,7 @@ public class GuiManager implements Listener {
             case WAR -> "War God State";
             case COSMOS -> "Black Star Collapse";
             case FORTUNE -> "King's Jackpot";
+            case CLOUD -> "Cloudburst";
         };
     }
 

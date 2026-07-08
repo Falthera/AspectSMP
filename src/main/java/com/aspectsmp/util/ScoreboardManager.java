@@ -171,6 +171,7 @@ public class ScoreboardManager {
             case WAR -> ChatColor.DARK_RED;
             case COSMOS -> ChatColor.LIGHT_PURPLE;
             case FORTUNE -> ChatColor.GOLD;
+            case CLOUD -> ChatColor.AQUA;
         };
     }
 }

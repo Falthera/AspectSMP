@@ -15,6 +15,8 @@ import com.aspectsmp.commands.TrustCommand;
 import com.aspectsmp.commands.UltimateCommand;
 import com.aspectsmp.crafting.CraftingManager;
 import com.aspectsmp.core.RuleModifierManager;
+import com.aspectsmp.event.EventManager;
+import com.aspectsmp.event.SkyRealmManager;
 import com.aspectsmp.gui.GuiManager;
 import com.aspectsmp.listeners.ListenerManager;
 import com.aspectsmp.storage.StorageManager;
@@ -36,6 +38,8 @@ public class AspectSMP extends JavaPlugin {
     private ScoreboardManager scoreboardManager;
     private TrustManager trustManager;
     private CombatManager combatManager;
+    private EventManager eventManager;
+    private SkyRealmManager skyRealmManager;
 
     @Override
     public void onEnable() {
@@ -52,6 +56,8 @@ public class AspectSMP extends JavaPlugin {
         this.ruleModifierManager = new RuleModifierManager(this);
         this.trustManager = new TrustManager(this);
         this.combatManager = new CombatManager(this, trustManager);
+        this.eventManager = new EventManager(this);
+        this.skyRealmManager = new SkyRealmManager(this);
         
         storageManager.initialize();
         abilityManager.initialize();
@@ -133,6 +139,14 @@ public class AspectSMP extends JavaPlugin {
         return combatManager;
     }
 
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+
+    public SkyRealmManager getSkyRealmManager() {
+        return skyRealmManager;
+    }
+
     private void registerCommands() {
         InfoCommand infoCmd = new InfoCommand(this);
         getCommand("aspect-info").setExecutor(infoCmd);
@@ -153,6 +167,7 @@ public class AspectSMP extends JavaPlugin {
         getCommand("aspect-repair").setExecutor(repairCmd);
         getCommand("aspect-repair").setTabCompleter(repairCmd);
         getCommand("aspect-reload").setExecutor(new ReloadCommand(this));
+        getCommand("event").setExecutor(eventManager);
     }
 
     private void registerTrustCommand() {

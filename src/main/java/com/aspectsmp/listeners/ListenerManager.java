@@ -94,6 +94,10 @@ public class ListenerManager implements Listener {
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.LUCK, 80, 0), true);
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE, 80, 0), true);
             }
+            case CLOUD -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 80, 0), true);
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, 80, 0), true);
+            }
         }
     }
     
