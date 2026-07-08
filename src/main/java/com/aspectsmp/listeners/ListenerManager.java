@@ -136,9 +136,7 @@ public class ListenerManager implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.useItemInHand() == org.bukkit.event.Event.Result.DENY) return;
         
-        ItemStack usedItem = event.getItem();
         Player player = event.getPlayer();
-
         ItemStack mainHandItem = player.getInventory().getItemInMainHand();
         ItemStack offHandItem = player.getInventory().getItemInOffHand();
 
@@ -150,20 +148,39 @@ public class ListenerManager implements Listener {
             return;
         }
 
-        if (usedItem != null && usedItem.getType().isBlock()) {
+        if ((mainHandItem != null && mainHandItem.getType().isBlock()) ||
+            (offHandItem != null && offHandItem.getType().isBlock())) {
             return;
         }
 
-        boolean isCustomItem = usedItem != null && (
+        ItemStack usedItem = event.getItem();
+        EquipmentSlot usedHand = event.getHand();
+
+        ItemStack customItem = null;
+        EquipmentSlot customHand = null;
+
+        if (usedItem != null && (
             CustomItem.isCustomItem(usedItem, "heart_catalyst") || 
             CustomItem.isCustomItem(usedItem, "heart_resonator") ||
             CustomItem.isCustomItem(usedItem, "heart_restoration_kit") ||
             CustomItem.isCustomItem(usedItem, "reforging_core") ||
             CustomItem.isCustomItem(usedItem, "stability_bottle")
-        );
+        )) {
+            customItem = usedItem;
+            customHand = usedHand;
+        } else if (offHandItem != null && (
+            CustomItem.isCustomItem(offHandItem, "heart_catalyst") || 
+            CustomItem.isCustomItem(offHandItem, "heart_resonator") ||
+            CustomItem.isCustomItem(offHandItem, "heart_restoration_kit") ||
+            CustomItem.isCustomItem(offHandItem, "reforging_core") ||
+            CustomItem.isCustomItem(offHandItem, "stability_bottle")
+        )) {
+            customItem = offHandItem;
+            customHand = EquipmentSlot.OFF_HAND;
+        }
         
-        if (isCustomItem) {
-            handleCustomItemUse(event, usedItem);
+        if (customItem != null) {
+            handleCustomItemUse(event, customItem, customHand);
             return;
         }
 
@@ -231,36 +248,35 @@ public class ListenerManager implements Listener {
         event.setCancelled(true);
     }
 
-    private void handleCustomItemUse(PlayerInteractEvent event, ItemStack item) {
+    private void handleCustomItemUse(PlayerInteractEvent event, ItemStack item, EquipmentSlot hand) {
         if (CustomItem.isCustomItem(item, "heart_catalyst")) {
-            handleHeartCatalyst(event.getPlayer(), event);
+            handleHeartCatalyst(event.getPlayer(), event, hand, item);
         } else if (CustomItem.isCustomItem(item, "heart_resonator")) {
-            handleHeartResonator(event.getPlayer(), event);
+            handleHeartResonator(event.getPlayer(), event, hand, item);
         } else if (CustomItem.isCustomItem(item, "heart_restoration_kit")) {
-            handleHeartRestorationKit(event.getPlayer(), event);
+            handleHeartRestorationKit(event.getPlayer(), event, hand, item);
         } else if (CustomItem.isCustomItem(item, "reforging_core")) {
-            handleReforgingCore(event.getPlayer(), event);
+            handleReforgingCore(event.getPlayer(), event, hand, item);
         } else if (CustomItem.isCustomItem(item, "stability_bottle")) {
-            handleStabilityBottle(event.getPlayer(), event);
+            handleStabilityBottle(event.getPlayer(), event, hand, item);
         }
     }
 
-    private void consumeOneItem(Player player, PlayerInteractEvent event) {
-        ItemStack used = event.getItem();
-        if (used == null) return;
-        int newAmount = used.getAmount() - 1;
+    private void consumeOneItem(Player player, EquipmentSlot hand, ItemStack item) {
+        if (item == null) return;
+        int newAmount = item.getAmount() - 1;
         if (newAmount <= 0) {
-            if (event.getHand() == EquipmentSlot.HAND) {
+            if (hand == EquipmentSlot.HAND) {
                 player.getInventory().setItemInMainHand(null);
             } else {
                 player.getInventory().setItemInOffHand(null);
             }
         } else {
-            used.setAmount(newAmount);
+            item.setAmount(newAmount);
         }
     }
 
-    private void handleHeartCatalyst(Player player, PlayerInteractEvent event) {
+    private void handleHeartCatalyst(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         if (heart.getTier() >= 2) {
@@ -274,11 +290,11 @@ public class ListenerManager implements Listener {
         heart.setTier(2);
         heart.addEssence(-20);
         player.sendMessage("§6Heart upgraded to Tier 2!");
-        consumeOneItem(player, event);
+        consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
     }
 
-    private void handleHeartResonator(Player player, PlayerInteractEvent event) {
+    private void handleHeartResonator(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         if (heart.getTier() >= 3) {
@@ -296,11 +312,11 @@ public class ListenerManager implements Listener {
         heart.setTier(3);
         heart.addEssence(-50);
         player.sendMessage("§dHeart upgraded to Tier 3!");
-        consumeOneItem(player, event);
+        consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
     }
 
-    private void handleHeartRestorationKit(Player player, PlayerInteractEvent event) {
+    private void handleHeartRestorationKit(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         if (!heart.isDormant()) {
@@ -315,11 +331,11 @@ public class ListenerManager implements Listener {
         heart.setStability(50);
         heart.addEssence(-30);
         player.sendMessage("§bHeart restored!");
-        consumeOneItem(player, event);
+        consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
     }
 
-    private void handleReforgingCore(Player player, PlayerInteractEvent event) {
+    private void handleReforgingCore(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         
@@ -337,11 +353,11 @@ public class ListenerManager implements Listener {
         player.sendMessage("§7New Aspect: §f" + newAspect.getDisplayName());
         player.sendMessage("§7Tier reset to 1.");
         
-        consumeOneItem(player, event);
+        consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
     }
 
-    private void handleStabilityBottle(Player player, PlayerInteractEvent event) {
+    private void handleStabilityBottle(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         if (heart.getStability() >= 100) {
@@ -355,7 +371,7 @@ public class ListenerManager implements Listener {
         heart.addStability(50);
         heart.addEssence(-10);
         player.sendMessage("§aStability restored by 50!");
-        consumeOneItem(player, event);
+        consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
     }
 
