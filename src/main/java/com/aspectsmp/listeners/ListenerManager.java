@@ -110,6 +110,17 @@ public class ListenerManager implements Listener {
         player.removePotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE);
     }
 
+    public void clearAspectEffects(Player player) {
+        removeTrustBuffs(player);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.HASTE);
+        player.removeMetadata("berserker", com.aspectsmp.AspectSMP.getInstance());
+        player.removeMetadata("rift_blink_cd", com.aspectsmp.AspectSMP.getInstance());
+        player.removeMetadata("vitality_bloom", com.aspectsmp.AspectSMP.getInstance());
+        player.removeMetadata("golden_touch", com.aspectsmp.AspectSMP.getInstance());
+        player.removeMetadata("revival_shield", com.aspectsmp.AspectSMP.getInstance());
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -365,6 +376,7 @@ public class ListenerManager implements Listener {
         heart.setAspect(newAspect);
         heart.setTier(1);
         heart.getCooldowns().clear();
+        clearAspectEffects(player);
         
         player.sendMessage("§b§lYour Heart has been reforged!");
         player.sendMessage("§7Old Aspect: §f" + current.getDisplayName());

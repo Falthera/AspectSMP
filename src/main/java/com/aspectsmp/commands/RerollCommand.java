@@ -43,6 +43,8 @@ public class RerollCommand implements CommandExecutor, TabCompleter {
         } while (newAspect == heart.getAspect() && aspects.size() > 1);
 
         heart.setAspect(newAspect);
+        heart.getCooldowns().clear();
+        plugin.getListenerManager().clearAspectEffects(target);
         plugin.getHeartManager().saveHeart(heart);
 
         if (target.isOnline()) {
