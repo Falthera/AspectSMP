@@ -209,12 +209,11 @@ public class ListenerManager implements Listener {
             return;
         }
 
-        event.setCancelled(true);
-
         boolean sneaking = player.isSneaking();
         Action action = event.getAction();
 
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+            event.setCancelled(true);
             if (!sneaking && heart.getTier() >= 1) {
                 plugin.getAbilityManager().handleTier1Ability(player, heart);
             } else if (sneaking && heart.getTier() >= 2) {
