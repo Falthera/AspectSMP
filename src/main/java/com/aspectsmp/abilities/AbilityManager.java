@@ -35,7 +35,6 @@ import com.aspectsmp.abilities.fortune.LuckyStrikeAbility;
 import com.aspectsmp.abilities.fortune.OreSenseAbility;
 import com.aspectsmp.abilities.fortune.MiningRushAbility;
 import com.aspectsmp.abilities.fortune.KingsJackpotAbility;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.EquipmentSlot;
@@ -150,12 +149,10 @@ public class AbilityManager {
             .orElse(null);
             
         if (tier1Ability != null && canUseAbility(player, tier1Ability)) {
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                tier1Ability.execute(player, heart, null);
-                heart.addEssence(5);
-                player.sendMessage("§7You have used §f" + tier1Ability.getName() + "§7.");
-                lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
-            });
+            tier1Ability.execute(player, heart, null);
+            heart.addEssence(5);
+            player.sendMessage("§7You have used §f" + tier1Ability.getName() + "§7.");
+            lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
         } else if (tier1Ability != null) {
             player.sendMessage("§cAbility is on cooldown!");
         }
@@ -174,12 +171,10 @@ public class AbilityManager {
             .orElse(null);
             
         if (tier2Ability != null && canUseAbility(player, tier2Ability)) {
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                tier2Ability.execute(player, heart, null);
-                heart.addEssence(10);
-                player.sendMessage("§7You have used §f" + tier2Ability.getName() + "§7.");
-                lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
-            });
+            tier2Ability.execute(player, heart, null);
+            heart.addEssence(10);
+            player.sendMessage("§7You have used §f" + tier2Ability.getName() + "§7.");
+            lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
         } else if (tier2Ability != null) {
             player.sendMessage("§cAbility is on cooldown!");
         }
@@ -203,12 +198,10 @@ public class AbilityManager {
             .orElse(null);
             
         if (tier3Ability != null && canUseAbility(player, tier3Ability)) {
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                tier3Ability.execute(player, heart, null);
-                heart.addEssence(15);
-                player.sendMessage("§7You have used §f" + tier3Ability.getName() + "§7.");
-                lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
-            });
+            tier3Ability.execute(player, heart, null);
+            heart.addEssence(15);
+            player.sendMessage("§7You have used §f" + tier3Ability.getName() + "§7.");
+            lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
         } else if (tier3Ability != null) {
             player.sendMessage("§cAbility is on cooldown or not unlocked!");
         } else {
@@ -233,12 +226,10 @@ public class AbilityManager {
             .orElse(null);
             
         if (ultimate != null && canUseAbility(player, ultimate)) {
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                ultimate.execute(player, heart, null);
-                heart.addEssence(25);
-                player.sendMessage("§7You have used §f" + ultimate.getName() + "§7.");
-                lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
-            });
+            ultimate.execute(player, heart, null);
+            heart.addEssence(25);
+            player.sendMessage("§7You have used §f" + ultimate.getName() + "§7.");
+            lastAbilityUse.put(player.getUniqueId(), System.currentTimeMillis());
         } else {
             player.sendMessage("§cUltimate is on cooldown or not unlocked!");
         }

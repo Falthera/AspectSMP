@@ -48,12 +48,17 @@ public class ListenerManager implements Listener {
                         modifier.applyPassive(player);
                     }
                     
+                    boolean hasNearbyTrusted = false;
                     for (UUID trusted : plugin.getTrustManager().getTrusted(player.getUniqueId())) {
                         Player ally = plugin.getServer().getPlayer(trusted);
                         if (ally == null || !ally.isOnline()) continue;
                         if (ally.getLocation().distanceSquared(player.getLocation()) <= 100) {
                             applyTrustBuffs(ally, heart.getAspect());
+                            hasNearbyTrusted = true;
                         }
+                    }
+                    if (!hasNearbyTrusted) {
+                        removeTrustBuffs(player);
                     }
                 }
             }
@@ -90,6 +95,19 @@ public class ListenerManager implements Listener {
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE, 80, 0), true);
             }
         }
+    }
+    
+    private void removeTrustBuffs(Player player) {
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.FIRE_RESISTANCE);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.STRENGTH);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.WATER_BREATHING);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.DOLPHINS_GRACE);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.SPEED);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.NIGHT_VISION);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.REGENERATION);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.RESISTANCE);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.LUCK);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE);
     }
 
     @EventHandler
@@ -130,6 +148,7 @@ public class ListenerManager implements Listener {
         }
         plugin.getScoreboardManager().onPlayerQuit(player);
         plugin.getCombatManager().handleLogout(player);
+        removeTrustBuffs(player);
     }
 
     @EventHandler
@@ -516,6 +535,8 @@ public class ListenerManager implements Listener {
             }
         }
 
+        removeTrustBuffs(victim);
+        
         if (!plugin.getConfig().getBoolean("features.obfuscated-death-messages", true)) return;
         
         Player killer = victim.getKiller();

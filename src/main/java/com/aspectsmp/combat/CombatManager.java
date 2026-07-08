@@ -16,11 +16,45 @@ public class CombatManager {
     private final TrustManager trustManager;
     private final Map<UUID, Long> combatTags = new HashMap<>();
     private final Map<UUID, BossBar> bossBars = new HashMap<>();
-    private static final long COMBAT_DURATION = 30000L;
+    private static final long COMBAT_DURATION = 15000L;
 
     public CombatManager(AspectSMP plugin, TrustManager trustManager) {
         this.plugin = plugin;
         this.trustManager = trustManager;
+        startUpdateTask();
+    }
+
+    private void startUpdateTask() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                long now = System.currentTimeMillis();
+                Iterator<Map.Entry<UUID, Long>> iterator = combatTags.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<UUID, Long> entry = iterator.next();
+                    UUID playerId = entry.getKey();
+                    long expiry = entry.getValue();
+                    Player player = plugin.getServer().getPlayer(playerId);
+                    if (player == null || !player.isOnline()) {
+                        hideBossBar(player);
+                        iterator.remove();
+                        continue;
+                    }
+                    if (now > expiry) {
+                        hideBossBar(player);
+                        iterator.remove();
+                        continue;
+                    }
+                    BossBar bar = bossBars.get(playerId);
+                    if (bar == null) continue;
+                    long remaining = expiry - now;
+                    double progress = Math.max(0.0, Math.min(1.0, (double) remaining / COMBAT_DURATION));
+                    double healthPercent = Math.max(0.0, Math.min(1.0, player.getHealth() / player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()));
+                    bar.setProgress(healthPercent);
+                    bar.setTitle(String.format("§c§lIN COMBAT §7| §c%.1fs §7| §c❤ %.0f/%.0f", remaining / 1000.0, player.getHealth(), player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue()));
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 10L);
     }
 
     public void tagPlayer(UUID playerId) {
