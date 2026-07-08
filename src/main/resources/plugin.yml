@@ -5,43 +5,43 @@ api-version: 1.21
 author: Aspect SMP Team
 description: Ability-based PvP RPG survival system
 commands:
-  aspect-info:
-    description: View Heart info
-    usage: /<command> [player]
-  aspect-list:
-    description: List all Aspects
-    usage: /<command>
-  aspect-gui:
-    description: Open Heart GUI
-    usage: /<command>
-  aspect-ability1:
-    description: Use Tier 1 ability
-    usage: /<command>
-  aspect-ability2:
-    description: Use Tier 2 ability
-    usage: /<command>
-  aspect-ability3:
-    description: Use Tier 3 ability
-    usage: /<command>
-  aspect-ultimate:
-    description: Use Ultimate ability
-    usage: /<command>
   aspect-give:
     description: Give Heart item
     usage: /<command> <player> <catalyst|resonator|restoration|reforging>
-  aspect-reroll:
-    description: Reroll Aspect
-    usage: /<command> <player>
-  aspect-repair:
-    description: Repair Heart
-    usage: /<command> <player>
-  aspect-reload:
-    description: Reload plugin
-    usage: /<command>
   event:
     description: Manage server events
-    usage: /<command> start <event_name>
+    usage: /<command> <event_name>
     permission: aspect.admin
+  info:
+    description: View Heart info
+    usage: /<command> [player]
+  list:
+    description: List all Aspects
+    usage: /<command>
+  gui:
+    description: Open Heart GUI
+    usage: /<command>
+  ability1:
+    description: Use Tier 1 ability
+    usage: /<command>
+  ability2:
+    description: Use Tier 2 ability
+    usage: /<command>
+  ability3:
+    description: Use Tier 3 ability
+    usage: /<command>
+  ultimate:
+    description: Use Ultimate ability
+    usage: /<command>
+  reroll:
+    description: Reroll Aspect
+    usage: /<command> <player>
+  repair:
+    description: Repair Heart
+    usage: /<command> <player>
+  reload:
+    description: Reload plugin
+    usage: /<command>
   trust:
     description: Manage trusted players
     usage: /<command> <add|remove|clear|list> [name]

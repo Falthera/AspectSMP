@@ -11,8 +11,8 @@ import com.aspectsmp.commands.ListCommand;
 import com.aspectsmp.commands.ReloadCommand;
 import com.aspectsmp.commands.RepairCommand;
 import com.aspectsmp.commands.RerollCommand;
-import com.aspectsmp.commands.TrustCommand;
 import com.aspectsmp.commands.UltimateCommand;
+import com.aspectsmp.commands.TrustCommand;
 import com.aspectsmp.crafting.CraftingManager;
 import com.aspectsmp.core.RuleModifierManager;
 import com.aspectsmp.event.EventManager;
@@ -149,25 +149,26 @@ public class AspectSMP extends JavaPlugin {
 
     private void registerCommands() {
         InfoCommand infoCmd = new InfoCommand(this);
-        getCommand("aspect-info").setExecutor(infoCmd);
-        getCommand("aspect-info").setTabCompleter(infoCmd);
-        getCommand("aspect-list").setExecutor(new ListCommand(this));
-        getCommand("aspect-gui").setExecutor(new GuiCommand(this));
-        getCommand("aspect-ability1").setExecutor(new Ability1Command(this));
-        getCommand("aspect-ability2").setExecutor(new Ability2Command(this));
-        getCommand("aspect-ability3").setExecutor(new Ability3Command(this));
-        getCommand("aspect-ultimate").setExecutor(new UltimateCommand(this));
+        getCommand("info").setExecutor(infoCmd);
+        getCommand("info").setTabCompleter(infoCmd);
+        getCommand("list").setExecutor(new ListCommand(this));
+        getCommand("gui").setExecutor(new GuiCommand(this));
+        getCommand("ability1").setExecutor(new Ability1Command(this));
+        getCommand("ability2").setExecutor(new Ability2Command(this));
+        getCommand("ability3").setExecutor(new Ability3Command(this));
+        getCommand("ultimate").setExecutor(new UltimateCommand(this));
         GiveCommand giveCmd = new GiveCommand(this);
         getCommand("aspect-give").setExecutor(giveCmd);
         getCommand("aspect-give").setTabCompleter(giveCmd);
         RerollCommand rerollCmd = new RerollCommand(this);
-        getCommand("aspect-reroll").setExecutor(rerollCmd);
-        getCommand("aspect-reroll").setTabCompleter(rerollCmd);
+        getCommand("reroll").setExecutor(rerollCmd);
+        getCommand("reroll").setTabCompleter(rerollCmd);
         RepairCommand repairCmd = new RepairCommand(this);
-        getCommand("aspect-repair").setExecutor(repairCmd);
-        getCommand("aspect-repair").setTabCompleter(repairCmd);
-        getCommand("aspect-reload").setExecutor(new ReloadCommand(this));
+        getCommand("repair").setExecutor(repairCmd);
+        getCommand("repair").setTabCompleter(repairCmd);
+        getCommand("reload").setExecutor(new ReloadCommand(this));
         getCommand("event").setExecutor(eventManager);
+        getCommand("event").setTabCompleter(eventManager);
     }
 
     private void registerTrustCommand() {

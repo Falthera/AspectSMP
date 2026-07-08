@@ -4,12 +4,13 @@ import com.aspectsmp.AspectSMP;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventManager implements CommandExecutor {
+public class EventManager implements CommandExecutor, TabCompleter {
 
     private final AspectSMP plugin;
     private NinthSkyEvent currentEvent;
@@ -32,7 +33,7 @@ public class EventManager implements CommandExecutor {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage("§eUsage: /event start <event_name>");
+            sender.sendMessage("§eUsage: /event <event_name>");
             return true;
         }
         String eventName = String.join("_", args);
@@ -43,5 +44,14 @@ public class EventManager implements CommandExecutor {
             sender.sendMessage("§cUnknown event: " + eventName);
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        List<String> completions = new ArrayList<>();
+        if (args.length == 0 || args.length == 1) {
+            completions.add("The_Awakening_of_the_Ninth_Sky");
+        }
+        return completions;
     }
 }
