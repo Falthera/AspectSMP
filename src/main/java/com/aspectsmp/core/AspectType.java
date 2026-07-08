@@ -11,7 +11,8 @@ public enum AspectType {
     WAR("War", "⚔"),
     COSMOS("Cosmos", "🌠"),
     FORTUNE("Fortune", "💎"),
-    CLOUD("Cloud", "☁");
+    CLOUD("Cloud", "☁"),
+    WINTER("Winter", "❄");
 
     private final String displayName;
     private final String emoji;

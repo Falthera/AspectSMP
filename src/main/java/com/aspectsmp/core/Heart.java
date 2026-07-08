@@ -15,6 +15,7 @@ public class Heart {
     private final Map<String, Long> cooldowns;
     private boolean dormant;
     private boolean cloudUnlocked;
+    private boolean winterUnlocked;
 
     public Heart(UUID owner, AspectType aspect) {
         this.owner = owner;
@@ -25,6 +26,7 @@ public class Heart {
         this.cooldowns = new HashMap<>();
         this.dormant = false;
         this.cloudUnlocked = false;
+        this.winterUnlocked = false;
     }
 
     public Heart(UUID owner, AspectType aspect, int tier, int stability, long essence, boolean dormant) {
@@ -36,6 +38,7 @@ public class Heart {
         this.cooldowns = new HashMap<>();
         this.dormant = dormant;
         this.cloudUnlocked = false;
+        this.winterUnlocked = false;
     }
 
     public UUID getOwner() {
@@ -108,6 +111,14 @@ public class Heart {
         this.cloudUnlocked = cloudUnlocked;
     }
 
+    public boolean isWinterUnlocked() {
+        return winterUnlocked;
+    }
+
+    public void setWinterUnlocked(boolean winterUnlocked) {
+        this.winterUnlocked = winterUnlocked;
+    }
+
     public boolean canUseAbilities() {
         return !dormant && tier > 0;
     }
@@ -134,6 +145,7 @@ public class Heart {
         section.set("essence", essence);
         section.set("dormant", dormant);
         section.set("cloud_unlocked", cloudUnlocked);
+        section.set("winter_unlocked", winterUnlocked);
         section.set("cooldowns", cooldowns);
     }
 
@@ -145,9 +157,11 @@ public class Heart {
         long essence = section.getLong("essence", 0);
         boolean dormant = section.getBoolean("dormant", false);
         boolean cloudUnlocked = section.getBoolean("cloud_unlocked", false);
+        boolean winterUnlocked = section.getBoolean("winter_unlocked", false);
         
         Heart heart = new Heart(UUID.fromString(section.getName()), aspect, tier, stability, essence, dormant);
         heart.setCloudUnlocked(cloudUnlocked);
+        heart.setWinterUnlocked(winterUnlocked);
         heart.getCooldowns().putAll(section.getConfigurationSection("cooldowns") != null ? 
             section.getConfigurationSection("cooldowns").getValues(false).entrySet().stream()
                 .collect(java.util.stream.Collectors.toMap(

@@ -7,5 +7,8 @@ public enum EventPhase {
     NINTH_SKY_REALM,
     TRIALS,
     SKY_GUARDIAN,
-    COMPLETED
+    COMPLETED,
+    FIRST_FROST,
+    FROZEN_KINGDOM,
+    FROST_MONARCH
 }

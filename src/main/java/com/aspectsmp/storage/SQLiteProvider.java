@@ -37,11 +37,16 @@ public class SQLiteProvider implements StorageProvider {
                     essence INTEGER NOT NULL,
                     dormant INTEGER NOT NULL,
                     cloud_unlocked INTEGER NOT NULL DEFAULT 0,
+                    winter_unlocked INTEGER NOT NULL DEFAULT 0,
                     cooldowns TEXT
                 )
                 """);
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute("ALTER TABLE hearts ADD COLUMN cloud_unlocked INTEGER DEFAULT 0");
+            } catch (SQLException e) {
+            }
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("ALTER TABLE hearts ADD COLUMN winter_unlocked INTEGER DEFAULT 0");
             } catch (SQLException e) {
             }
         }
@@ -52,7 +57,7 @@ public class SQLiteProvider implements StorageProvider {
         return CompletableFuture.runAsync(() -> {
             try (Connection conn = dataSource.getConnection()) {
                 PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT OR REPLACE INTO hearts (uuid, aspect, tier, stability, essence, dormant, cloud_unlocked, cooldowns) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                    "INSERT OR REPLACE INTO hearts (uuid, aspect, tier, stability, essence, dormant, cloud_unlocked, winter_unlocked, cooldowns) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 stmt.setString(1, heart.getOwner().toString());
                 stmt.setString(2, heart.getAspect().name());
                 stmt.setInt(3, heart.getTier());
@@ -60,7 +65,8 @@ public class SQLiteProvider implements StorageProvider {
                 stmt.setLong(5, heart.getEssence());
                 stmt.setInt(6, heart.isDormant() ? 1 : 0);
                 stmt.setInt(7, heart.isCloudUnlocked() ? 1 : 0);
-                stmt.setString(8, serializeCooldowns(heart.getCooldowns()));
+                stmt.setInt(8, heart.isWinterUnlocked() ? 1 : 0);
+                stmt.setString(9, serializeCooldowns(heart.getCooldowns()));
                 stmt.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -82,9 +88,11 @@ public class SQLiteProvider implements StorageProvider {
                 long essence = rs.getLong("essence");
                 boolean dormant = rs.getInt("dormant") == 1;
                 boolean cloudUnlocked = rs.getInt("cloud_unlocked") == 1;
+                boolean winterUnlocked = rs.getInt("winter_unlocked") == 1;
                 
                 Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
                 heart.setCloudUnlocked(cloudUnlocked);
+                heart.setWinterUnlocked(winterUnlocked);
                 heart.getCooldowns().putAll(deserializeCooldowns(rs.getString("cooldowns")));
                 return heart;
             }

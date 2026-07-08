@@ -13,16 +13,24 @@ import java.util.List;
 public class EventManager implements CommandExecutor, TabCompleter {
 
     private final AspectSMP plugin;
-    private NinthSkyEvent currentEvent;
+    private NinthSkyEvent ninthSkyEvent;
+    private FrozenEclipseEvent frozenEclipseEvent;
 
     public EventManager(AspectSMP plugin) {
         this.plugin = plugin;
     }
 
     public void startNinthSkyEvent() {
-        if (currentEvent == null || !currentEvent.isActive()) {
-            currentEvent = new NinthSkyEvent(plugin);
-            currentEvent.startEvent();
+        if (ninthSkyEvent == null || !ninthSkyEvent.isActive()) {
+            ninthSkyEvent = new NinthSkyEvent(plugin);
+            ninthSkyEvent.startEvent();
+        }
+    }
+
+    public void startFrozenEclipseEvent() {
+        if (frozenEclipseEvent == null || !frozenEclipseEvent.isActive()) {
+            frozenEclipseEvent = new FrozenEclipseEvent(plugin);
+            frozenEclipseEvent.startEvent();
         }
     }
 
@@ -40,6 +48,9 @@ public class EventManager implements CommandExecutor, TabCompleter {
         if (eventName.equalsIgnoreCase("The_Awakening_of_the_Ninth_Sky")) {
             startNinthSkyEvent();
             sender.sendMessage("§aStarted The Awakening of the Ninth Sky event!");
+        } else if (eventName.equalsIgnoreCase("The_Frozen_Eclipse")) {
+            startFrozenEclipseEvent();
+            sender.sendMessage("§aStarted The Frozen Eclipse event!");
         } else {
             sender.sendMessage("§cUnknown event: " + eventName);
         }
@@ -51,6 +62,7 @@ public class EventManager implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
         if (args.length == 0 || args.length == 1) {
             completions.add("The_Awakening_of_the_Ninth_Sky");
+            completions.add("The_Frozen_Eclipse");
         }
         return completions;
     }

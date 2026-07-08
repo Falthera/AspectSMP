@@ -38,6 +38,7 @@ public class RerollCommand implements CommandExecutor, TabCompleter {
         Heart heart = heartOptional.get();
         var aspects = java.util.List.of(com.aspectsmp.core.AspectType.values()).stream()
                 .filter(a -> a != com.aspectsmp.core.AspectType.CLOUD)
+                .filter(a -> a != com.aspectsmp.core.AspectType.WINTER)
                 .toList();
         com.aspectsmp.core.AspectType newAspect;
         do {

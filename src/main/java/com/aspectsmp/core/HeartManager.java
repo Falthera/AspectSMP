@@ -11,6 +11,7 @@ public class HeartManager {
 
     private static final AspectType[] ASPECTS = Arrays.stream(AspectType.values())
             .filter(a -> a != AspectType.CLOUD)
+            .filter(a -> a != AspectType.WINTER)
             .toArray(AspectType[]::new);
 
     private final AspectSMP plugin;

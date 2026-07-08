@@ -125,6 +125,12 @@ public class AbilityManager {
                     abilities.add(new com.aspectsmp.abilities.cloud.TempestCageAbility());
                     abilities.add(new com.aspectsmp.abilities.cloud.CloudburstAbility());
                 }
+                case WINTER -> {
+                    abilities.add(new com.aspectsmp.abilities.winter.IciclesAbility());
+                    abilities.add(new com.aspectsmp.abilities.winter.ColdSnapAbility());
+                    abilities.add(new com.aspectsmp.abilities.winter.ShatterAbility());
+                    abilities.add(new com.aspectsmp.abilities.winter.AbsoluteZeroAbility());
+                }
             }
             abilities.forEach(ability -> registeredAbilities.put(ability.getId(), ability));
         }

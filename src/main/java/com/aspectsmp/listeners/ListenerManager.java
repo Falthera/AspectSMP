@@ -98,6 +98,10 @@ public class ListenerManager implements Listener {
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 80, 0), true);
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, 80, 0), true);
             }
+            case WINTER -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.RESISTANCE, 80, 0), true);
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 80, 0), true);
+            }
         }
     }
     
@@ -113,6 +117,7 @@ public class ListenerManager implements Listener {
         player.removePotionEffect(org.bukkit.potion.PotionEffectType.LUCK);
         player.removePotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE);
         player.removePotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS);
     }
 
     public void clearAspectEffects(Player player) {
@@ -139,6 +144,16 @@ public class ListenerManager implements Listener {
             heart.setAspect(random);
             heart.setCloudUnlocked(false);
             player.sendMessage("§cThe Aspect of the Cloud has been removed. Win the Ninth Sky event to unlock it.");
+        }
+        
+        if (heart.getAspect() == AspectType.WINTER && !heart.isWinterUnlocked()) {
+            AspectType[] nonWinter = java.util.Arrays.stream(AspectType.values())
+                    .filter(a -> a != AspectType.WINTER)
+                    .toArray(AspectType[]::new);
+            AspectType random = nonWinter[new java.util.Random().nextInt(nonWinter.length)];
+            heart.setAspect(random);
+            heart.setWinterUnlocked(false);
+            player.sendMessage("§cThe Aspect of Winter has been removed. Win the Frozen Eclipse event to unlock it.");
         }
         
         if (player.isOnline()) {

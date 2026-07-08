@@ -34,6 +34,7 @@ public class RuleModifierManager implements Listener {
         modifiers.put(AspectType.COSMOS, new CosmosRuleModifier());
         modifiers.put(AspectType.FORTUNE, new FortuneRuleModifier());
         modifiers.put(AspectType.CLOUD, new CloudRuleModifier());
+        modifiers.put(AspectType.WINTER, new WinterRuleModifier());
     }
 
     @EventHandler

@@ -140,6 +140,14 @@ public abstract class BaseAbility implements Ability {
                     multiplier += 0.15;
                 }
             }
+            case WINTER -> {
+                if (world.hasStorm()) {
+                    multiplier += 0.2;
+                }
+                if (block.getTemperature() < 0.1) {
+                    multiplier += 0.15;
+                }
+            }
         }
 
         return Math.max(0.5, Math.min(1.5, multiplier));

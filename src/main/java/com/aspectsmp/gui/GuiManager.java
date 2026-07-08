@@ -253,6 +253,7 @@ public class GuiManager implements Listener {
             case COSMOS -> "Stellar Alignment";
             case FORTUNE -> "Lucky Charm";
             case CLOUD -> "Air Walker";
+            case WINTER -> "Frost Aura";
         };
     }
 
@@ -312,6 +313,12 @@ public class GuiManager implements Listener {
                 case 3 -> "Tempest Cage";
                 default -> "Unknown";
             };
+            case WINTER -> switch (tier) {
+                case 1 -> "Icicles";
+                case 2 -> "Cold Snap";
+                case 3 -> "Shatter";
+                default -> "Unknown";
+            };
         };
     }
 
@@ -326,6 +333,7 @@ public class GuiManager implements Listener {
             case COSMOS -> "Black Star Collapse";
             case FORTUNE -> "King's Jackpot";
             case CLOUD -> "Cloudburst";
+            case WINTER -> "Absolute Zero";
         };
     }
 
