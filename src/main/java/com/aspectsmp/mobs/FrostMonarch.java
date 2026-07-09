@@ -7,6 +7,7 @@ import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public class FrostMonarch {
 
@@ -61,7 +62,7 @@ public class FrostMonarch {
 
     private void frozenPrison(Player target) {
         target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, 3));
-        target.getWorld().spawnParticle(org.bukkit.Particle.ITEM_CRACK, target.getLocation(), 60, 1.5, 1.5, 1.5, 0.1);
+        target.getWorld().spawnParticle(org.bukkit.Particle.CRIT, target.getLocation(), 60, 1.5, 1.5, 1.5, 0.1);
         target.getWorld().playSound(target.getLocation(), Sound.BLOCK_GLASS_BREAK, 1.5f, 0.5f);
     }
 

@@ -42,7 +42,7 @@ public class IceWraith {
                         entity.teleport(target.getLocation().add(2, 1, 2));
                         target.damage(4.0, entity);
                         target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
-                        target.getWorld().spawnParticle(org.bukkit.Particle.ITEM_CRACK, target.getLocation().add(0, 1, 0), 20, 0.3, 0.5, 0.3, 0.05);
+                        target.getWorld().spawnParticle(org.bukkit.Particle.CRIT, target.getLocation().add(0, 1, 0), 20, 0.3, 0.5, 0.3, 0.05);
                         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 1.0f, 1.0f);
                     }
                 }

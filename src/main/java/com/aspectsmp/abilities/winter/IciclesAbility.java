@@ -2,6 +2,7 @@ package com.aspectsmp.abilities.winter;
 
 import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -57,7 +58,7 @@ public class IciclesAbility extends BaseAbility {
                         }
                         target.damage(4.0 + getPowerMultiplier(player, heart), player);
                         target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, FROST_DURATION_TICKS, 0));
-                        target.getWorld().spawnParticle(Particle.ITEM_CRACK, target.getLocation().add(0, 1, 0), 30, 0.3, 0.5, 0.3, 0.05);
+                        target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 30, 0.3, 0.5, 0.3, 0.05);
                         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 1.0f, 1.0f);
                     }
                 }.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), FALL_DELAY_TICKS);

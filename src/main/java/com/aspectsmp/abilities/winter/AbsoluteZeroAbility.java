@@ -52,7 +52,7 @@ public class AbsoluteZeroAbility extends BaseAbility {
                 target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, FREEZE_DURATION_TICKS, 4));
                 target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, FREEZE_DURATION_TICKS, 4));
                 target.setFreezeTicks(FREEZE_DURATION_TICKS);
-                target.getWorld().spawnParticle(Particle.ITEM_CRACK, target.getLocation().add(0, 1, 0), 30, 0.4, 0.8, 0.4, 0.1);
+                target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 30, 0.4, 0.8, 0.4, 0.1);
             }
         }
 
