@@ -18,6 +18,7 @@ public class AirWalkerAbility extends BaseAbility {
     private static final int MAX_CHARGES = 3;
     private static final long RECHARGE_DELAY_TICKS = 60L;
     private static final long RECHARGE_INTERVAL_TICKS = 60L;
+    private static final long FULL_RECHARGE_MILLIS = (RECHARGE_DELAY_TICKS + (MAX_CHARGES - 1) * RECHARGE_INTERVAL_TICKS) * 50L;
 
     private final Map<UUID, Integer> charges = new ConcurrentHashMap<>();
     private final Map<UUID, BukkitRunnable> regenTasks = new ConcurrentHashMap<>();
@@ -51,6 +52,7 @@ public class AirWalkerAbility extends BaseAbility {
         if (currentCharges <= 0) return false;
 
         charges.put(uuid, currentCharges - 1);
+        heart.getCooldowns().put(getId(), System.currentTimeMillis() + FULL_RECHARGE_MILLIS);
         startRegenTask(player);
 
         Vector direction;
@@ -70,22 +72,18 @@ public class AirWalkerAbility extends BaseAbility {
 
     private void startRegenTask(Player player) {
         UUID uuid = player.getUniqueId();
-        regenTasks.computeIfAbsent(uuid, id -> {
-            BukkitRunnable task = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    int current = charges.getOrDefault(uuid, 0);
-                    if (current >= MAX_CHARGES) {
-                        cancel();
-                        regenTasks.remove(uuid);
-                        return;
-                    }
-                    charges.put(uuid, current + 1);
+        regenTasks.computeIfAbsent(uuid, id -> new BukkitRunnable() {
+            @Override
+            public void run() {
+                int current = charges.getOrDefault(uuid, 0);
+                if (current >= MAX_CHARGES) {
+                    cancel();
+                    regenTasks.remove(uuid);
+                    return;
                 }
-            };
-            task.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), RECHARGE_DELAY_TICKS, RECHARGE_INTERVAL_TICKS);
-            return task;
-        });
+                charges.put(uuid, current + 1);
+            }
+        }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), RECHARGE_DELAY_TICKS, RECHARGE_INTERVAL_TICKS));
     }
 
     public int getCurrentCharges(Player player) {
@@ -98,6 +96,6 @@ public class AirWalkerAbility extends BaseAbility {
 
     @Override
     protected long getCooldownBase() {
-        return 0L;
+        return FULL_RECHARGE_MILLIS;
     }
 }
