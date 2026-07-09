@@ -27,12 +27,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class ListenerManager implements Listener {
 
     private final AspectSMP plugin;
-    private final Map<UUID, Set<PotionEffectType>> activeTrustEffects = new ConcurrentHashMap<>();
+    private final Map<UUID, Map<UUID, Set<PotionEffectType>>> activeTrustEffectMap = new ConcurrentHashMap<>();
 
     public ListenerManager(AspectSMP plugin) {
         this.plugin = plugin;
@@ -44,7 +43,7 @@ public class ListenerManager implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                Set<UUID> nearbyTrusted = java.util.Collections.newSetFromMap(new ConcurrentHashMap<>());
+                Map<UUID, Map<UUID, Set<PotionEffectType>>> newTrustEffectMap = new ConcurrentHashMap<>();
                 
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     plugin.getAbilityManager().processPassives(player);
@@ -60,26 +59,46 @@ public class ListenerManager implements Listener {
                         if (ally == null || !ally.isOnline()) continue;
                         if (ally.getLocation().distanceSquared(player.getLocation()) <= 100) {
                             applyTrustBuffs(ally, heart.getAspect());
-                            nearbyTrusted.add(trusted);
-                            activeTrustEffects.computeIfAbsent(trusted, k -> java.util.concurrent.ConcurrentHashMap.newKeySet())
-                                .addAll(getEffectsForAspect(heart.getAspect()));
+                            newTrustEffectMap.computeIfAbsent(player.getUniqueId(), k -> new ConcurrentHashMap<>())
+                                .put(trusted, getEffectsForAspect(heart.getAspect()));
                         }
                     }
                 }
                 
-                activeTrustEffects.keySet().stream()
-                    .filter(uuid -> !nearbyTrusted.contains(uuid))
-                    .toList()
-                    .forEach(uuid -> {
-                        Player ally = plugin.getServer().getPlayer(uuid);
-                        if (ally != null && ally.isOnline()) {
-                            for (PotionEffectType type : activeTrustEffects.remove(uuid)) {
-                                ally.removePotionEffect(type);
+                for (Map.Entry<UUID, Map<UUID, Set<PotionEffectType>>> outerEntry : activeTrustEffectMap.entrySet()) {
+                    UUID thrusterUuid = outerEntry.getKey();
+                    Map<UUID, Set<PotionEffectType>> oldAllyMap = outerEntry.getValue();
+                    Map<UUID, Set<PotionEffectType>> newAllyMap = newTrustEffectMap.get(thrusterUuid);
+                    
+                    if (newAllyMap == null) {
+                        for (Map.Entry<UUID, Set<PotionEffectType>> entry : oldAllyMap.entrySet()) {
+                            Player ally = plugin.getServer().getPlayer(entry.getKey());
+                            if (ally != null && ally.isOnline()) {
+                                for (PotionEffectType type : entry.getValue()) {
+                                    ally.removePotionEffect(type);
+                                }
                             }
-                        } else {
-                            activeTrustEffects.remove(uuid);
                         }
-                    });
+                        continue;
+                    }
+                    
+                    for (Map.Entry<UUID, Set<PotionEffectType>> entry : oldAllyMap.entrySet()) {
+                        UUID allyUuid = entry.getKey();
+                        if (!newAllyMap.containsKey(allyUuid)) {
+                            Player ally = plugin.getServer().getPlayer(allyUuid);
+                            if (ally != null && ally.isOnline()) {
+                                for (PotionEffectType type : entry.getValue()) {
+                                    ally.removePotionEffect(type);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                activeTrustEffectMap.clear();
+                for (Map.Entry<UUID, Map<UUID, Set<PotionEffectType>>> outer : newTrustEffectMap.entrySet()) {
+                    activeTrustEffectMap.put(outer.getKey(), new ConcurrentHashMap<>(outer.getValue()));
+                }
             }
         }.runTaskTimer(plugin, 20L, 20L);
     }
