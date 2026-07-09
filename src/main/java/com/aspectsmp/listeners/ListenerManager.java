@@ -23,11 +23,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class ListenerManager implements Listener {
 
     private final AspectSMP plugin;
+    private final Map<UUID, Set<PotionEffectType>> activeTrustEffects = new ConcurrentHashMap<>();
 
     public ListenerManager(AspectSMP plugin) {
         this.plugin = plugin;
@@ -39,6 +44,8 @@ public class ListenerManager implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
+                Set<UUID> nearbyTrusted = java.util.Collections.newSetFromMap(new ConcurrentHashMap<>());
+                
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     plugin.getAbilityManager().processPassives(player);
                     Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
@@ -48,21 +55,48 @@ public class ListenerManager implements Listener {
                         modifier.applyPassive(player);
                     }
                     
-                    boolean hasNearbyTrusted = false;
                     for (UUID trusted : plugin.getTrustManager().getTrusted(player.getUniqueId())) {
                         Player ally = plugin.getServer().getPlayer(trusted);
                         if (ally == null || !ally.isOnline()) continue;
                         if (ally.getLocation().distanceSquared(player.getLocation()) <= 100) {
                             applyTrustBuffs(ally, heart.getAspect());
-                            hasNearbyTrusted = true;
+                            nearbyTrusted.add(trusted);
+                            activeTrustEffects.computeIfAbsent(trusted, k -> java.util.concurrent.ConcurrentHashMap.newKeySet())
+                                .addAll(getEffectsForAspect(heart.getAspect()));
                         }
                     }
-                    if (!hasNearbyTrusted) {
-                        removeTrustBuffs(player);
-                    }
                 }
+                
+                activeTrustEffects.keySet().stream()
+                    .filter(uuid -> !nearbyTrusted.contains(uuid))
+                    .toList()
+                    .forEach(uuid -> {
+                        Player ally = plugin.getServer().getPlayer(uuid);
+                        if (ally != null && ally.isOnline()) {
+                            for (PotionEffectType type : activeTrustEffects.remove(uuid)) {
+                                ally.removePotionEffect(type);
+                            }
+                        } else {
+                            activeTrustEffects.remove(uuid);
+                        }
+                    });
             }
         }.runTaskTimer(plugin, 20L, 20L);
+    }
+    
+    private java.util.Set<PotionEffectType> getEffectsForAspect(AspectType aspect) {
+        return switch (aspect) {
+            case INFERNO -> java.util.Set.of(PotionEffectType.FIRE_RESISTANCE, PotionEffectType.STRENGTH);
+            case TIDE -> java.util.Set.of(PotionEffectType.WATER_BREATHING, PotionEffectType.DOLPHINS_GRACE);
+            case TEMPEST -> java.util.Set.of(PotionEffectType.SPEED);
+            case RIFT -> java.util.Set.of(PotionEffectType.NIGHT_VISION);
+            case VITALITY -> java.util.Set.of(PotionEffectType.REGENERATION);
+            case WAR -> java.util.Set.of(PotionEffectType.STRENGTH);
+            case COSMOS -> java.util.Set.of(PotionEffectType.RESISTANCE);
+            case FORTUNE -> java.util.Set.of(PotionEffectType.LUCK, PotionEffectType.HERO_OF_THE_VILLAGE);
+            case CLOUD -> java.util.Set.of(PotionEffectType.SPEED, PotionEffectType.JUMP_BOOST);
+            case WINTER -> java.util.Set.of(PotionEffectType.RESISTANCE, PotionEffectType.SLOWNESS);
+        };
     }
     
     private void applyTrustBuffs(Player ally, AspectType aspect) {
