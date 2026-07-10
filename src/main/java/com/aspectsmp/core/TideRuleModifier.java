@@ -43,11 +43,6 @@ public class TideRuleModifier implements RuleModifier {
     }
 
     @Override
-    public double modifyKnockback(Player player, double knockback) {
-        return knockback * 0.9;
-    }
-
-    @Override
     public void applyPassive(Player player) {
         if (player.getLocation().getBlock().getType().toString().contains("WATER") ||
             player.getLocation().getBlock().getType().toString().contains("BUBBLE_COLUMN")) {

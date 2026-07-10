@@ -17,9 +17,4 @@ public class CosmosRuleModifier implements RuleModifier {
     @Override
     public void applyPassive(Player player) {
     }
-
-    @Override
-    public double modifyKnockback(Player player, double knockback) {
-        return knockback * 0.2;
-    }
 }

@@ -38,11 +38,6 @@ public class RiftRuleModifier implements RuleModifier {
     }
 
     @Override
-    public double modifyKnockback(Player player, double knockback) {
-        return knockback * 0.5;
-    }
-
-    @Override
     public void applyPassive(Player player) {
     }
 }

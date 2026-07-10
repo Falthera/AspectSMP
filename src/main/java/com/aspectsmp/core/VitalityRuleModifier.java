@@ -50,11 +50,6 @@ public class VitalityRuleModifier implements RuleModifier {
     }
 
     @Override
-    public double modifyKnockback(Player player, double knockback) {
-        return knockback;
-    }
-
-    @Override
     public void applyPassive(Player player) {
         Block feet = player.getLocation().clone().subtract(0, 1, 0).getBlock();
         if (naturalBlocks.contains(feet.getType())) {

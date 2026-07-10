@@ -38,11 +38,6 @@ public class CloudRuleModifier implements RuleModifier {
     }
 
     @Override
-    public double modifyKnockback(Player player, double knockback) {
-        return knockback * 0.6;
-    }
-
-    @Override
     public void applyPassive(Player player) {
         if (player.getLocation().getY() > 100) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0, false, false, true), true);

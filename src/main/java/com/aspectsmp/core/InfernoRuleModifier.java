@@ -24,11 +24,6 @@ public class InfernoRuleModifier implements RuleModifier {
     }
 
     @Override
-    public double modifyKnockback(Player player, double knockback) {
-        return knockback;
-    }
-
-    @Override
     public void applyPassive(Player player) {
     }
 }

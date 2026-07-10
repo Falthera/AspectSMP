@@ -35,11 +35,6 @@ public class TempestRuleModifier implements RuleModifier {
     }
 
     @Override
-    public double modifyKnockback(Player player, double knockback) {
-        return knockback * 0.3;
-    }
-
-    @Override
     public void applyPassive(Player player) {
         int level = momentum.getOrDefault(player.getUniqueId(), 0);
         if (level > 0) {

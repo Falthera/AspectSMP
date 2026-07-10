@@ -46,11 +46,6 @@ public class WinterRuleModifier implements RuleModifier {
     }
 
     @Override
-    public double modifyKnockback(Player player, double knockback) {
-        return knockback * 0.7;
-    }
-
-    @Override
     public void applyPassive(Player player) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 60, 0, true, false, true), true);
         player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 60, 0, true, false, true), true);
