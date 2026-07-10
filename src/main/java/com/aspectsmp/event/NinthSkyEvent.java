@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
@@ -30,9 +31,9 @@ public class NinthSkyEvent {
     private static final int MAX_MOB_SPAWNS = 20;
     private int mobsSpawned = 0;
     private LivingEntity skyGuardianEntity;
-    private BukkitRunnable skyEffectsTask;
-    private BukkitRunnable mobSpamTask;
-    private final List<BukkitRunnable> scheduledTransitions = new ArrayList<>();
+    private BukkitTask skyEffectsTask;
+    private BukkitTask mobSpamTask;
+    private final List<BukkitTask> scheduledTransitions = new ArrayList<>();
 
     public NinthSkyEvent(AspectSMP plugin) {
         this.plugin = plugin;
@@ -117,7 +118,7 @@ public class NinthSkyEvent {
     }
 
     private void schedulePhaseTransition(long delay, EventPhase nextPhase) {
-        BukkitRunnable task = new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
                 scheduledTransitions.remove(this);
@@ -187,7 +188,7 @@ public class NinthSkyEvent {
     }
 
     private void spawnFragmentGuards() {
-        List<Player> overworldPlayers = Bukkit.getOnlinePlayers().stream()
+        List<? extends Player> overworldPlayers = Bukkit.getOnlinePlayers().stream()
             .filter(p -> p.getWorld().getEnvironment() == World.Environment.NORMAL)
             .filter(p -> participants.contains(p.getUniqueId()))
             .toList();

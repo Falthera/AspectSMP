@@ -199,6 +199,11 @@ public class FrozenEclipseEvent {
         participants.add(player.getUniqueId());
     }
 
+    public void stopEvent() {
+        active = false;
+        Bukkit.broadcastMessage("§cThe Frozen Eclipse event has been stopped.");
+    }
+
     public void onGuardianDefeated() {
         guardiansDefeated++;
         Bukkit.broadcastMessage("§aGuardian defeated! (" + guardiansDefeated + "/" + REQUIRED_GUARDIANS + ")");
