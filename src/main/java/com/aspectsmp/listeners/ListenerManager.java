@@ -13,6 +13,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Item;
@@ -332,12 +334,27 @@ public class ListenerManager implements Listener {
         
         if (!heartCurrent && !heartCursor) return;
         
-        if (event.getClickedInventory() != null && !(event.getClickedInventory().getHolder() instanceof Player)) {
+        if (event.getClick() == org.bukkit.event.inventory.ClickType.DROP) {
             event.setCancelled(true);
             return;
         }
         
-        if (event.getClick() == org.bukkit.event.inventory.ClickType.DROP) {
+        org.bukkit.inventory.Inventory topInv = event.getView().getTopInventory();
+        if (topInv != null && !(topInv.getHolder() instanceof Player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        if (HeartOfTheSea.isHeartOfTheSea(event.getItemDrop().getItemStack())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryMoveItem(InventoryMoveItemEvent event) {
+        if (HeartOfTheSea.isHeartOfTheSea(event.getItem())) {
             event.setCancelled(true);
         }
     }
