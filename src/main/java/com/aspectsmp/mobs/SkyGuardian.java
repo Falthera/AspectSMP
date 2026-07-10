@@ -52,6 +52,10 @@ public class SkyGuardian {
         }.runTaskTimer(plugin, 0L, 80L);
     }
 
+    public LivingEntity getEntity() {
+        return entity;
+    }
+
     private void windCollapse(Player target) {
         target.setVelocity(target.getLocation().toVector().subtract(entity.getLocation().toVector()).normalize().multiply(2.5));
         target.getWorld().spawnParticle(org.bukkit.Particle.CLOUD, entity.getLocation().add(0, 1, 0), 50, 4, 2, 4, 0.05);

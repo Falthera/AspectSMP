@@ -37,12 +37,15 @@ commands:
   reroll:
     description: Reroll Aspect
     usage: /<command> <player>
+    permission: aspect.admin
   repair:
     description: Repair Heart
     usage: /<command> <player>
+    permission: aspect.admin
   reload:
     description: Reload plugin
     usage: /<command>
+    permission: aspect.admin
   trust:
     description: Manage trusted players
     usage: /<command> <add|remove|clear|list> [name]

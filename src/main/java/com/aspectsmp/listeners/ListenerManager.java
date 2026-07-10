@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -245,6 +246,25 @@ public class ListenerManager implements Listener {
         plugin.getScoreboardManager().onPlayerQuit(player);
         plugin.getCombatManager().handleLogout(player);
         removeTrustBuffs(player);
+    }
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        if (plugin.getEventManager() == null) return;
+        NinthSkyEvent ninthSky = plugin.getEventManager().getNinthSkyEvent();
+        if (ninthSky != null && ninthSky.isActive()) {
+            org.bukkit.entity.LivingEntity guardian = ninthSky.getSkyGuardianEntity();
+            if (guardian != null && event.getEntity().getUniqueId() == guardian.getUniqueId()) {
+                ninthSky.getParticipants().forEach(uuid -> {
+                    org.bukkit.entity.Player p = Bukkit.getPlayer(uuid);
+                    if (p != null && p.isOnline()) {
+                        p.sendMessage("§a§lThe Sky Guardian has been defeated!");
+                    }
+                });
+                Bukkit.broadcastMessage("§a§lThe Sky Guardian has been defeated!");
+                ninthSky.advancePhase(com.aspectsmp.event.EventPhase.COMPLETED);
+            }
+        }
     }
 
     @EventHandler

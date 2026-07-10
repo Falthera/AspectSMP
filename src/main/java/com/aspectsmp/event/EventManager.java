@@ -20,6 +20,14 @@ public class EventManager implements CommandExecutor, TabCompleter {
         this.plugin = plugin;
     }
 
+    public NinthSkyEvent getNinthSkyEvent() {
+        return ninthSkyEvent;
+    }
+
+    public FrozenEclipseEvent getFrozenEclipseEvent() {
+        return frozenEclipseEvent;
+    }
+
     public void startNinthSkyEvent() {
         if (ninthSkyEvent == null || !ninthSkyEvent.isActive()) {
             ninthSkyEvent = new NinthSkyEvent(plugin);
@@ -34,6 +42,15 @@ public class EventManager implements CommandExecutor, TabCompleter {
         }
     }
 
+    public void stopActiveEvents() {
+        if (ninthSkyEvent != null && ninthSkyEvent.isActive()) {
+            ninthSkyEvent.stopEvent();
+        }
+        if (frozenEclipseEvent != null && frozenEclipseEvent.isActive()) {
+            frozenEclipseEvent.stopEvent();
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("aspect.admin")) {
@@ -41,7 +58,7 @@ public class EventManager implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage("§eUsage: /event <event_name>");
+            sender.sendMessage("§eUsage: /event <event_name|stop>");
             return true;
         }
         String eventName = String.join("_", args);
@@ -51,6 +68,9 @@ public class EventManager implements CommandExecutor, TabCompleter {
         } else if (eventName.equalsIgnoreCase("The_Frozen_Eclipse")) {
             startFrozenEclipseEvent();
             sender.sendMessage("§aStarted The Frozen Eclipse event!");
+        } else if (eventName.equalsIgnoreCase("stop")) {
+            stopActiveEvents();
+            sender.sendMessage("§cStopped all active events.");
         } else {
             sender.sendMessage("§cUnknown event: " + eventName);
         }
@@ -60,10 +80,9 @@ public class EventManager implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
-        if (args.length == 0 || args.length == 1) {
-            completions.add("The_Awakening_of_the_Ninth_Sky");
-            completions.add("The_Frozen_Eclipse");
-        }
+        completions.add("The_Awakening_of_the_Ninth_Sky");
+        completions.add("The_Frozen_Eclipse");
+        completions.add("stop");
         return completions;
     }
 }
