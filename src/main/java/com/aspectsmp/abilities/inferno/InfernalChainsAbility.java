@@ -38,7 +38,7 @@ public class InfernalChainsAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         Entity target = player.getWorld().getEntities().stream()
-            .filter(e -> e instanceof Player && e != player)
+            .filter(e -> e instanceof Player && e != player && e.getLocation().distanceSquared(player.getLocation()) <= 100)
             .min((a, b) -> Double.compare(a.getLocation().distanceSquared(player.getLocation()),
                   b.getLocation().distanceSquared(player.getLocation())))
             .orElse(null);
