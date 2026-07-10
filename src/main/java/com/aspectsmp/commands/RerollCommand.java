@@ -23,6 +23,11 @@ public class RerollCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("aspect.admin")) {
+            sender.sendMessage("§cYou do not have permission to use this command.");
+            return true;
+        }
+
         Player target = args.length > 0 ? Bukkit.getPlayerExact(args[0]) : null;
         if (target == null) {
             sender.sendMessage("§cPlayer not found.");
