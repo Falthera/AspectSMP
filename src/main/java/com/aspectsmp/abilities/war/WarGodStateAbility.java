@@ -58,7 +58,7 @@ public class WarGodStateAbility extends BaseAbility {
         player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 300, 2));
 
         for (Entity entity : center.getWorld().getNearbyEntities(center, 12.0, 6.0, 12.0)) {
-            if (entity instanceof LivingEntity target && target != player) {
+            if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 target.damage(10.0 + getPowerMultiplier(player, heart) * 2, player);
             }
         }

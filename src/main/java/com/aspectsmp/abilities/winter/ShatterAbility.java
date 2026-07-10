@@ -42,7 +42,7 @@ public class ShatterAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         for (Entity entity : player.getNearbyEntities(RADIUS, 5.0, RADIUS)) {
-            if (entity instanceof LivingEntity target && target != player) {
+            if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 boolean isFrozen = target.getFreezeTicks() > 0 ||
                     target.getPotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS) != null &&
                     target.getPotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS).getAmplifier() >= 4;

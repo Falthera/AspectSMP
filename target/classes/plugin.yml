@@ -8,6 +8,10 @@ commands:
   aspect-give:
     description: Give Heart item
     usage: /<command> <player> <catalyst|resonator|restoration|reforging>
+  give-event-aspect:
+    description: Give an event aspect to a player
+    usage: /<command> <player> <cloud|winter>
+    permission: aspect.admin
   event:
     description: Manage server events
     usage: /<command> <event_name>
@@ -17,9 +21,6 @@ commands:
     usage: /<command> [player]
   list:
     description: List all Aspects
-    usage: /<command>
-  gui:
-    description: Open Heart GUI
     usage: /<command>
   ability1:
     description: Use Tier 1 ability

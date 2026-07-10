@@ -49,7 +49,7 @@ public class CloudburstAbility extends BaseAbility {
 
         Vector center = player.getLocation().toVector();
         for (Entity entity : player.getNearbyEntities(DAMAGE_RADIUS, 5.0, DAMAGE_RADIUS)) {
-            if (entity instanceof LivingEntity target && target != player) {
+            if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 Vector launch = new Vector(0, LAUNCH_FORCE, 0);
                 target.setVelocity(launch);
                 target.getWorld().spawnParticle(Particle.CLOUD, target.getLocation().add(0, 1, 0), 15, 0.3, 0.5, 0.3, 0.03);
@@ -63,7 +63,7 @@ public class CloudburstAbility extends BaseAbility {
             @Override
             public void run() {
                 for (Entity entity : player.getNearbyEntities(DAMAGE_RADIUS, 5.0, DAMAGE_RADIUS)) {
-                    if (entity instanceof LivingEntity target && target != player) {
+                    if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                         Vector slam = new Vector(0, -1.2, 0);
                         target.setVelocity(slam);
                         target.damage(8.0 + getPowerMultiplier(player, heart), player);

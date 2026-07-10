@@ -22,9 +22,6 @@ commands:
   list:
     description: List all Aspects
     usage: /<command>
-  gui:
-    description: Open Heart GUI
-    usage: /<command>
   ability1:
     description: Use Tier 1 ability
     usage: /<command>

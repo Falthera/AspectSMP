@@ -44,7 +44,7 @@ public class IciclesAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         for (Entity entity : player.getNearbyEntities(RADIUS, 5.0, RADIUS)) {
-            if (entity instanceof LivingEntity target && target != player) {
+            if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 Location targetLoc = target.getLocation().add(0, 8, 0);
                 target.getWorld().spawnParticle(Particle.CRIMSON_SPORE, targetLoc, 20, 0.5, 0.2, 0.5, 0.02);
                 target.getWorld().playSound(targetLoc, Sound.BLOCK_POINTED_DRIPSTONE_LAND, 1.0f, 1.2f);

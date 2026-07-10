@@ -6,7 +6,6 @@ import com.aspectsmp.commands.Ability2Command;
 import com.aspectsmp.commands.Ability3Command;
 import com.aspectsmp.commands.GiveCommand;
 import com.aspectsmp.commands.GiveEventAspectCommand;
-import com.aspectsmp.commands.GuiCommand;
 import com.aspectsmp.commands.InfoCommand;
 import com.aspectsmp.commands.ListCommand;
 import com.aspectsmp.commands.ReloadCommand;
@@ -153,7 +152,6 @@ public class AspectSMP extends JavaPlugin {
         getCommand("info").setExecutor(infoCmd);
         getCommand("info").setTabCompleter(infoCmd);
         getCommand("list").setExecutor(new ListCommand(this));
-        getCommand("gui").setExecutor(new GuiCommand(this));
         getCommand("ability1").setExecutor(new Ability1Command(this));
         getCommand("ability2").setExecutor(new Ability2Command(this));
         getCommand("ability3").setExecutor(new Ability3Command(this));
