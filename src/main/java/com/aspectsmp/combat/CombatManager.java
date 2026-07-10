@@ -85,7 +85,7 @@ public class CombatManager {
 
     public void handleLogout(Player player) {
         if (isInCombat(player.getUniqueId())) {
-            player.setHealth(0.0);
+            plugin.getServer().broadcastMessage("§c" + player.getName() + " §7has been suspected of combat logging.");
         }
         hideBossBar(player);
         combatTags.remove(player.getUniqueId());
