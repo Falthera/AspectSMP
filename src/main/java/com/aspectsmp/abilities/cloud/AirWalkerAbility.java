@@ -72,18 +72,22 @@ public class AirWalkerAbility extends BaseAbility {
 
     private void startRegenTask(Player player) {
         UUID uuid = player.getUniqueId();
-        regenTasks.computeIfAbsent(uuid, id -> new BukkitRunnable() {
-            @Override
-            public void run() {
-                int current = charges.getOrDefault(uuid, 0);
-                if (current >= MAX_CHARGES) {
-                    cancel();
-                    regenTasks.remove(uuid);
-                    return;
+        regenTasks.computeIfAbsent(uuid, id -> {
+            BukkitRunnable task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    int current = charges.getOrDefault(uuid, 0);
+                    if (current >= MAX_CHARGES) {
+                        cancel();
+                        regenTasks.remove(uuid);
+                        return;
+                    }
+                    charges.put(uuid, current + 1);
                 }
-                charges.put(uuid, current + 1);
-            }
-        }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), RECHARGE_DELAY_TICKS, RECHARGE_INTERVAL_TICKS));
+            };
+            task.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), RECHARGE_DELAY_TICKS, RECHARGE_INTERVAL_TICKS);
+            return task;
+        });
     }
 
     public int getCurrentCharges(Player player) {

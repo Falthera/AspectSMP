@@ -2,7 +2,6 @@ package com.aspectsmp.core;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.util.Vector;
 
 import java.util.Map;
 import java.util.UUID;
@@ -10,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class WarRuleModifier implements RuleModifier {
 
-    private final Map<UUID, Long> lastKnockback = new ConcurrentHashMap<>();
     private final Map<UUID, Long> lastCombat = new ConcurrentHashMap<>();
     private static final long COMBAT_DURATION = 5000;
 
@@ -29,17 +27,6 @@ public class WarRuleModifier implements RuleModifier {
     @Override
     public void modifyMovement(Player player) {
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 40, 0, false, false, true), true);
-    }
-
-    @Override
-    public double modifyKnockback(Player player, double knockback) {
-        long now = System.currentTimeMillis();
-        Long last = lastKnockback.get(player.getUniqueId());
-        if (last != null && now - last < 1000) {
-            return 0;
-        }
-        lastKnockback.put(player.getUniqueId(), now);
-        return knockback * 0.2;
     }
 
     @Override
