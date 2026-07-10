@@ -291,7 +291,6 @@ public class ListenerManager implements Listener {
         }
 
         if (!hasHeart) {
-            player.sendMessage("§cHold your Heart of the Sea to use abilities!");
             return;
         }
 
