@@ -42,7 +42,7 @@ public class ColdSnapAbility extends BaseAbility {
 
         Vector direction = player.getLocation().getDirection().normalize();
         for (Entity entity : player.getNearbyEntities(RADIUS, 3.0, RADIUS)) {
-            if (entity instanceof LivingEntity target && target != player) {
+            if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 Vector toTarget = target.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
                 double dot = direction.dot(toTarget);
                 if (dot > 0.3) {

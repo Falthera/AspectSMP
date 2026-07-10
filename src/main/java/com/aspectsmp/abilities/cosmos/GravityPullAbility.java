@@ -53,8 +53,8 @@ public class GravityPullAbility extends BaseAbility {
         for (Entity entity : nearby) {
             Vector vec = loc.clone().add(0, 1, 0).toVector().subtract(entity.getLocation().toVector()).normalize().multiply(0.7);
             entity.setVelocity(entity.getVelocity().add(vec));
-            if (entity instanceof Player) {
-                entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 1, true, false, true));
+            if (entity instanceof Player target) {
+                target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 1, true, false, true));
             }
         }
 

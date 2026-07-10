@@ -43,7 +43,7 @@ public class TempestCageAbility extends BaseAbility {
 
         Vector center = player.getLocation().toVector();
         for (Entity entity : player.getNearbyEntities(OUTER_RADIUS, 3.0, OUTER_RADIUS)) {
-            if (entity instanceof LivingEntity target && target != player) {
+            if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 Vector toCenter = center.clone().subtract(target.getLocation().toVector());
                 double dist = toCenter.length();
                 if (dist > INNER_RADIUS) {

@@ -42,7 +42,7 @@ public class InhaleAbility extends BaseAbility {
 
         Vector toCenter = player.getLocation().toVector();
         for (Entity entity : player.getNearbyEntities(PULL_RADIUS, PULL_RADIUS, PULL_RADIUS)) {
-            if (entity instanceof LivingEntity target && target != player) {
+            if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 Vector pull = toCenter.clone().subtract(target.getLocation().toVector()).normalize().multiply(PULL_FORCE);
                 target.setVelocity(pull);
                 target.getWorld().spawnParticle(Particle.CLOUD, target.getLocation().add(0, 1, 0), 10, 0.3, 0.5, 0.3, 0.01);

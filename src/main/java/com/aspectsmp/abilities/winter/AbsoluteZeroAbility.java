@@ -48,7 +48,7 @@ public class AbsoluteZeroAbility extends BaseAbility {
 
         Vector center = player.getLocation().toVector();
         for (Entity entity : player.getNearbyEntities(RADIUS, 5.0, RADIUS)) {
-            if (entity instanceof LivingEntity target && target != player) {
+            if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, FREEZE_DURATION_TICKS, 4));
                 target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, FREEZE_DURATION_TICKS, 4));
                 target.setFreezeTicks(FREEZE_DURATION_TICKS);
