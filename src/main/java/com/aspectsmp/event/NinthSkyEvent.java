@@ -9,10 +9,13 @@ import com.aspectsmp.mobs.StormSentinel;
 import com.aspectsmp.mobs.TempestPhantom;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -284,6 +287,10 @@ public class NinthSkyEvent {
                     heart.getCooldowns().clear();
                     plugin.getHeartManager().saveHeart(heart);
                     player.sendMessage("§b§lYou have unlocked the Aspect of the Cloud!");
+
+                    ItemStack mace = new ItemStack(Material.MACE);
+                    mace.addEnchantment(Enchantment.WIND_BURST, 1);
+                    player.getInventory().addItem(mace);
                 }
             }
         }

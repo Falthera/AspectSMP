@@ -30,7 +30,7 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            sender.sendMessage("§cUsage: /give-event-aspect <player> <cloud|winter>");
+            sender.sendMessage("§cUsage: /give-event-aspect <player> <winter>");
             return true;
         }
 
@@ -42,16 +42,11 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
 
         String aspectName = args[1].toLowerCase(Locale.ROOT);
         AspectType aspect;
-        String unlockFlag;
 
-        if (aspectName.equals("cloud")) {
-            aspect = AspectType.CLOUD;
-            unlockFlag = "cloudUnlocked";
-        } else if (aspectName.equals("winter")) {
+        if (aspectName.equals("winter")) {
             aspect = AspectType.WINTER;
-            unlockFlag = "winterUnlocked";
         } else {
-            sender.sendMessage("§cUsage: /give-event-aspect <player> <cloud|winter>");
+            sender.sendMessage("§cUsage: /give-event-aspect <player> <winter>");
             return true;
         }
 
@@ -62,7 +57,6 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
         }
 
         heart.setAspect(aspect);
-        heart.setCloudUnlocked(aspect == AspectType.CLOUD);
         heart.setWinterUnlocked(aspect == AspectType.WINTER);
         heart.setTier(1);
         heart.setStability(100);
@@ -82,7 +76,7 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             Bukkit.getOnlinePlayers().forEach(p -> completions.add(p.getName()));
         } else if (args.length == 2) {
-            completions.addAll(List.of("cloud", "winter"));
+            completions.add("winter");
         }
         return completions;
     }
