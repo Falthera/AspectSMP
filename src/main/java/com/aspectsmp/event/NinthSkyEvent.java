@@ -88,7 +88,7 @@ public class NinthSkyEvent {
             mobSpamTask.cancel();
             mobSpamTask = null;
         }
-        for (BukkitRunnable task : scheduledTransitions) {
+        for (BukkitTask task : scheduledTransitions) {
             task.cancel();
         }
         scheduledTransitions.clear();
