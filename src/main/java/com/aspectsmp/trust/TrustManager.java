@@ -50,22 +50,18 @@ public class TrustManager {
     }
 
     public void save() {
-        if (config == null) {
-            config = new YamlConfiguration();
-        }
-
-        config.set("", null);
-        for (Map.Entry<UUID, Set<UUID>> entry : trusts.entrySet()) {
-            List<String> uuidStrings = new ArrayList<>();
-            for (UUID uuid : entry.getValue()) {
-                uuidStrings.add(uuid.toString());
-            }
-            config.set(entry.getKey().toString(), uuidStrings);
-        }
-
         try {
+            config = new YamlConfiguration();
+            for (Map.Entry<UUID, Set<UUID>> entry : trusts.entrySet()) {
+                List<String> uuidStrings = new ArrayList<>();
+                for (UUID uuid : entry.getValue()) {
+                    uuidStrings.add(uuid.toString());
+                }
+                config.set(entry.getKey().toString(), uuidStrings);
+            }
+
             config.save(file);
-        } catch (IOException e) {
+        } catch (Exception e) {
             plugin.getLogger().warning("Could not save trust.yml: " + e.getMessage());
         }
     }
