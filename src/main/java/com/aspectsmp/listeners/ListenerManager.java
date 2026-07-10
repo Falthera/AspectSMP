@@ -106,6 +106,50 @@ public class ListenerManager implements Listener {
                 }
             }
         }.runTaskTimer(plugin, 20L, 20L);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                    boolean hasCloudheart = false;
+                    for (ItemStack item : player.getInventory().getContents()) {
+                        if (CustomItem.isCustomItem(item, "cloudheart")) {
+                            hasCloudheart = true;
+                            break;
+                        }
+                    }
+                    if (!hasCloudheart) {
+                        ItemStack offHand = player.getInventory().getItemInOffHand();
+                        if (CustomItem.isCustomItem(offHand, "cloudheart")) {
+                            hasCloudheart = true;
+                        }
+                    }
+
+                    Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+                    if (heart == null) continue;
+
+                    if (hasCloudheart && heart.getAspect() != AspectType.CLOUD) {
+                        heart.setAspect(AspectType.CLOUD);
+                        heart.setCloudUnlocked(true);
+                        plugin.getHeartManager().saveHeart(heart);
+                        player.sendMessage("§b§lThe Cloudheart pulses... You are bound to the Cloud Aspect!");
+                        plugin.getScoreboardManager().updatePlayer(player);
+                        HeartOfTheSea.ensureBound(player);
+                    } else if (!hasCloudheart && heart.getAspect() == AspectType.CLOUD) {
+                        AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
+                                .filter(a -> a != AspectType.CLOUD && a != AspectType.WINTER)
+                                .toArray(AspectType[]::new);
+                        AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+                        heart.setAspect(random);
+                        heart.setCloudUnlocked(false);
+                        plugin.getHeartManager().saveHeart(heart);
+                        player.sendMessage("§c§lThe Cloudheart has been lost... The Cloud Aspect fades.");
+                        plugin.getScoreboardManager().updatePlayer(player);
+                        HeartOfTheSea.ensureBound(player);
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 20L, 20L);
     }
     
     private java.util.Set<PotionEffectType> getEffectsForAspect(AspectType aspect) {
@@ -194,9 +238,29 @@ public class ListenerManager implements Listener {
         Player player = event.getPlayer();
         Heart heart = plugin.getHeartManager().getOrCreateHeart(player.getUniqueId());
         
-        if (heart.getAspect() == AspectType.CLOUD && !heart.isCloudUnlocked()) {
+        boolean hasCloudheart = false;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (CustomItem.isCustomItem(item, "cloudheart")) {
+                hasCloudheart = true;
+                break;
+            }
+        }
+        if (!hasCloudheart) {
+            ItemStack offHand = player.getInventory().getItemInOffHand();
+            if (CustomItem.isCustomItem(offHand, "cloudheart")) {
+                hasCloudheart = true;
+            }
+        }
+
+        if (hasCloudheart) {
+            if (heart.getAspect() != AspectType.CLOUD) {
+                heart.setAspect(AspectType.CLOUD);
+                player.sendMessage("§b§lThe Cloudheart pulses... You are bound to the Cloud Aspect!");
+            }
+            heart.setCloudUnlocked(true);
+        } else if (heart.getAspect() == AspectType.CLOUD) {
             AspectType[] nonCloud = java.util.Arrays.stream(AspectType.values())
-                    .filter(a -> a != AspectType.CLOUD)
+                    .filter(a -> a != AspectType.CLOUD && a != AspectType.WINTER)
                     .toArray(AspectType[]::new);
             AspectType random = nonCloud[new java.util.Random().nextInt(nonCloud.length)];
             heart.setAspect(random);
