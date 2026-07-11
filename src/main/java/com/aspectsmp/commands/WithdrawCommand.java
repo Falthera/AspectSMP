@@ -6,10 +6,11 @@ import com.aspectsmp.items.StabilityBottle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class WithdrawCommand implements CommandExecutor {
+public class WithdrawCommand implements CommandExecutor, TabCompleter {
 
     private final AspectSMP plugin;
 
@@ -50,5 +51,13 @@ public class WithdrawCommand implements CommandExecutor {
         plugin.getScoreboardManager().updatePlayer(player);
 
         return true;
+    }
+
+    @Override
+    public java.util.List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 1) {
+            return java.util.Collections.singletonList("stability");
+        }
+        return java.util.Collections.emptyList();
     }
 }

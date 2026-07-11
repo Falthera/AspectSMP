@@ -165,7 +165,7 @@ public abstract class BaseAbility implements Ability {
     }
 
     protected void damageIgnoreArmor(LivingEntity target, double amount, Entity source) {
-        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(source, target, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(source, target, EntityDamageEvent.DamageCause.ENTITY_ATTACK, amount);
         event.setDamage(EntityDamageEvent.DamageModifier.BASE, amount);
         event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, 0.0);
         org.bukkit.Bukkit.getPluginManager().callEvent(event);
