@@ -53,7 +53,7 @@ public class WarGodStateAbility extends BaseAbility {
         world.spawnParticle(Particle.EXPLOSION_EMITTER, center, 5);
         playSound(player, Sound.ENTITY_ENDER_DRAGON_GROWL, 2.0f, 0.5f);
 
-        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 400, 2));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 400, 3));
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 400, 1));
         player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 400, 1));
 
