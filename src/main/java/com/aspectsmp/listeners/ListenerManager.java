@@ -291,8 +291,6 @@ public class ListenerManager implements Listener {
                         player.sendMessage("§eYou have been transported to the Ninth Sky Realm.");
                     }
                 }
-            } else if (ninthSky.isCompleted() && ninthSky.getParticipants().contains(player.getUniqueId()) && heart.getAspect() != AspectType.CLOUD) {
-                ninthSky.grantCloudAspectToPlayer(player);
             }
         }
         
@@ -370,13 +368,10 @@ public class ListenerManager implements Listener {
         if (ninthSky != null && ninthSky.isActive()) {
             org.bukkit.entity.LivingEntity guardian = ninthSky.getSkyGuardianEntity();
             if (guardian != null && event.getEntity().getUniqueId() == guardian.getUniqueId()) {
-                ninthSky.getParticipants().forEach(uuid -> {
-                    org.bukkit.entity.Player p = Bukkit.getPlayer(uuid);
-                    if (p != null && p.isOnline()) {
-                        p.sendMessage("§a§lThe Sky Guardian has been defeated!");
-                    }
-                });
-                Bukkit.broadcastMessage("§a§lThe Sky Guardian has been defeated!");
+                org.bukkit.entity.Player killer = event.getEntity().getKiller();
+                if (killer != null) {
+                    ninthSky.awardWinner(killer);
+                }
                 ninthSky.advancePhase(com.aspectsmp.event.EventPhase.COMPLETED);
             }
         }
