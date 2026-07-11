@@ -815,7 +815,11 @@ public class ListenerManager implements Listener {
             long expireTime = meta.asLong();
             if (System.currentTimeMillis() <= expireTime) {
                 event.setCancelled(true);
+                event.setKeepInventory(true);
+                event.setKeepLevel(true);
+                event.setDroppedExp(0);
                 victim.setHealth(1.0);
+                victim.setNoDamageTicks(20);
                 victim.removeMetadata("revival_shield", com.aspectsmp.AspectSMP.getInstance());
                 victim.sendMessage("§a§lREVIVAL SHIELD ACTIVATED!");
                 victim.getWorld().spawnParticle(org.bukkit.Particle.TOTEM_OF_UNDYING, victim.getLocation().add(0, 1, 0), 50, 1, 1, 1);
