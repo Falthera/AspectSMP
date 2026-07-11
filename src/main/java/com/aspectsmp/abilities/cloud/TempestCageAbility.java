@@ -47,7 +47,7 @@ public class TempestCageAbility extends BaseAbility {
                 Vector toCenter = center.clone().subtract(target.getLocation().toVector());
                 double dist = toCenter.length();
                 if (dist > INNER_RADIUS) {
-                    Vector push = toCenter.normalize().multiply(0.4);
+                    Vector push = toCenter.normalize().multiply(0.2);
                     target.setVelocity(target.getVelocity().add(push));
                 }
                 target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, DURATION_TICKS, 1));
