@@ -648,6 +648,7 @@ public class ListenerManager implements Listener {
         java.util.List<AspectType> choices = new java.util.ArrayList<>(java.util.List.of(AspectType.values()));
         choices.remove(current);
         choices.remove(com.aspectsmp.core.AspectType.CLOUD);
+        choices.remove(com.aspectsmp.core.AspectType.WINTER);
         AspectType newAspect = choices.get(new java.util.Random().nextInt(choices.size()));
         
         heart.setAspect(newAspect);
