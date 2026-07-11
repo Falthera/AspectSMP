@@ -129,7 +129,9 @@ public class ListenerManager implements Listener {
                     if (heart == null) continue;
 
                     if (hasCloudheart && heart.getAspect() != AspectType.CLOUD) {
+                        int previousTier = heart.getTier();
                         heart.setAspect(AspectType.CLOUD);
+                        heart.setTier(previousTier >= 2 ? previousTier : 1);
                         heart.setCloudUnlocked(true);
                         plugin.getHeartManager().saveHeart(heart);
                         player.sendMessage("§b§lThe Cloudheart pulses... You are bound to the Cloud Aspect!");
