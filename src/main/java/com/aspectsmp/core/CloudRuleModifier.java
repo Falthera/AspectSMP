@@ -5,14 +5,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class CloudRuleModifier implements RuleModifier {
-
-    private final Map<UUID, Long> lastWindBoost = new ConcurrentHashMap<>();
-    private static final long WIND_COOLDOWN_MS = 1500;
 
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
@@ -27,14 +20,6 @@ public class CloudRuleModifier implements RuleModifier {
 
     @Override
     public void modifyMovement(Player player) {
-        long now = System.currentTimeMillis();
-        Long last = lastWindBoost.get(player.getUniqueId());
-        if (last != null && now - last < WIND_COOLDOWN_MS) return;
-
-        if (player.getLocation().getY() > player.getWorld().getHighestBlockYAt(player.getLocation()) + 10) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 60, 0, false, false, true), true);
-            lastWindBoost.put(player.getUniqueId(), now);
-        }
     }
 
     @Override
