@@ -79,20 +79,40 @@ public class TrustCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        Player target = Bukkit.getPlayerExact(args[1]);
-        if (target == null) {
-            player.sendMessage("§cPlayer not found.");
+        String targetName = args[1];
+        UUID targetUuid = null;
+
+        Player targetOnline = Bukkit.getPlayerExact(targetName);
+        if (targetOnline != null) {
+            targetUuid = targetOnline.getUniqueId();
+        } else {
+            for (UUID uuid : trustManager.getTrusted(uid)) {
+                String name = Bukkit.getOfflinePlayer(uuid).getName();
+                if (name != null && name.equalsIgnoreCase(targetName)) {
+                    targetUuid = uuid;
+                    break;
+                }
+            }
+        }
+
+        if (targetUuid == null) {
+            player.sendMessage("§cPlayer not found or not trusted.");
             return;
         }
 
-        if (!trustManager.isTrusted(uid, target.getUniqueId())) {
-            player.sendMessage("§cYou have not trusted §f" + target.getName() + "§c.");
+        String targetDisplayName = Bukkit.getOfflinePlayer(targetUuid).getName();
+        if (targetDisplayName == null) targetDisplayName = targetName;
+
+        if (!trustManager.isTrusted(uid, targetUuid)) {
+            player.sendMessage("§cYou have not trusted §f" + targetDisplayName + "§c.");
             return;
         }
 
-        trustManager.untrust(uid, target.getUniqueId());
-        player.sendMessage("§aRemoved trust for §f" + target.getName() + "§a.");
-        if (target.isOnline()) {
+        trustManager.untrust(uid, targetUuid);
+        player.sendMessage("§aRemoved trust for §f" + targetDisplayName + "§a.");
+
+        Player target = Bukkit.getPlayer(targetUuid);
+        if (target != null) {
             target.sendMessage("§aYou are no longer trusted by §f" + player.getName() + "§a.");
         }
     }
@@ -128,10 +148,18 @@ public class TrustCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             completions.addAll(List.of("add", "remove", "clear", "list"));
-        } else if (args.length == 2 && ("add".equals(args[0].toLowerCase(Locale.ROOT)) || "remove".equals(args[0].toLowerCase(Locale.ROOT)))) {
+        } else if (args.length == 2 && "add".equals(args[0].toLowerCase(Locale.ROOT))) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (!p.getUniqueId().equals(((Player) sender).getUniqueId())) {
                     completions.add(p.getName());
+                }
+            }
+        } else if (args.length == 2 && "remove".equals(args[0].toLowerCase(Locale.ROOT))) {
+            Set<UUID> trusted = trustManager.getTrusted(((Player) sender).getUniqueId());
+            for (UUID uuid : trusted) {
+                String name = Bukkit.getOfflinePlayer(uuid).getName();
+                if (name != null) {
+                    completions.add(name);
                 }
             }
         }
