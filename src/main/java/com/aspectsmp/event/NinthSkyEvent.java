@@ -15,8 +15,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -76,7 +74,6 @@ public class NinthSkyEvent {
         Bukkit.broadcastMessage("§7The clouds have begun to move. Something ancient stirs above.");
         Bukkit.broadcastMessage("§7You have been marked as a participant. Good luck.");
 
-        startSkyEffects();
         schedulePhaseTransition(200L, EventPhase.SKY_FRAGMENTS);
     }
 
@@ -99,24 +96,6 @@ public class NinthSkyEvent {
         mobsSpawned = 0;
         skyGuardianEntity = null;
         Bukkit.broadcastMessage("§cThe Ninth Sky event has been stopped.");
-    }
-
-    private void startSkyEffects() {
-        skyEffectsTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!active) {
-                    cancel();
-                    return;
-                }
-                for (UUID uuid : participants) {
-                    Player player = Bukkit.getPlayer(uuid);
-                    if (player != null && player.isOnline() && player.getWorld().getEnvironment() == World.Environment.NORMAL) {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 0, true, false));
-                    }
-                }
-            }
-        }.runTaskTimer(plugin, 0L, 100L);
     }
 
     private void schedulePhaseTransition(long delay, EventPhase nextPhase) {
