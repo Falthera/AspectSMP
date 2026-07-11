@@ -237,6 +237,7 @@ public class NinthSkyEvent {
     }
 
     private void teleportParticipantsToSkyRealm() {
+        plugin.getSkyRealmManager().ensureNinthSkyLoaded();
         World skyWorld = Bukkit.getWorld("ninth_sky");
         if (skyWorld == null) {
             plugin.getLogger().warning("Ninth Sky world 'ninth_sky' not found! Teleportation cancelled.");
@@ -263,6 +264,7 @@ public class NinthSkyEvent {
     }
 
     private void spawnSkyGuardian() {
+        plugin.getSkyRealmManager().ensureNinthSkyLoaded();
         World skyWorld = Bukkit.getWorld("ninth_sky");
         if (skyWorld == null) {
             plugin.getLogger().warning("Ninth Sky world 'ninth_sky' not found! Cannot spawn Sky Guardian.");
