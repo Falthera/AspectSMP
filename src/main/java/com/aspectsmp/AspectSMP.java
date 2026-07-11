@@ -78,6 +78,7 @@ public class AspectSMP extends JavaPlugin {
         getServer().getScheduler().runTaskTimer(this, scoreboardManager::updateAll, 20L, 20L);
         getServer().getScheduler().runTaskTimer(this, this::updateAllActionBars, 20L, 20L);
         getServer().getScheduler().runTaskTimer(this, trustManager::save, 6000L, 6000L);
+        getServer().getScheduler().runTaskTimer(this, this::enforceCloudheartRules, 20L, 20L);
         
         getLogger().info("Aspect SMP enabled!");
     }
@@ -193,6 +194,24 @@ public class AspectSMP extends JavaPlugin {
     private void updateAllActionBars() {
         for (org.bukkit.entity.Player player : getServer().getOnlinePlayers()) {
             scoreboardManager.updateActionBar(player);
+        }
+    }
+
+    private void enforceCloudheartRules() {
+        for (org.bukkit.entity.Player player : getServer().getOnlinePlayers()) {
+            org.bukkit.inventory.Inventory inv = player.getInventory();
+            for (int i = 0; i < inv.getContents().length; i++) {
+                org.bukkit.inventory.ItemStack item = inv.getItem(i);
+                if (com.aspectsmp.items.CustomItem.isCustomItem(item, "cloudheart")) {
+                    com.aspectsmp.items.Cloudheart.fixCloudheart(item);
+                    inv.setItem(i, item);
+                }
+            }
+            org.bukkit.inventory.ItemStack offHand = inv.getItemInOffHand();
+            if (com.aspectsmp.items.CustomItem.isCustomItem(offHand, "cloudheart")) {
+                com.aspectsmp.items.Cloudheart.fixCloudheart(offHand);
+                inv.setItemInOffHand(offHand);
+            }
         }
     }
 }

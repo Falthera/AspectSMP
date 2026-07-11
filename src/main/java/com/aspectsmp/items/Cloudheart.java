@@ -17,6 +17,28 @@ public class Cloudheart extends CustomItem {
         super("cloudheart", "Cloudheart", "Token of the Ninth Sky");
     }
 
+    public static void fixCloudheart(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return;
+        if (!CustomItem.isCustomItem(item, "cloudheart")) return;
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        for (org.bukkit.enchantments.Enchantment enchant : meta.getEnchants().keySet()) {
+            meta.removeEnchant(enchant);
+        }
+
+        meta.addEnchant(org.bukkit.enchantments.Enchantment.WIND_BURST, 1, true);
+        meta.setDisplayName("§b§lCloudheart");
+        meta.lore(java.util.List.of(
+            Component.text("§7Token of the Ninth Sky."),
+            Component.text("§7Hold this to wield the §bCloud Aspect§7."),
+            Component.text("§cIf you lose it, the Aspect fades.")
+        ));
+
+        item.setItemMeta(meta);
+    }
+
     @Override
     public ItemStack createItemStack() {
         ItemStack item = new ItemStack(Material.MACE);
