@@ -269,6 +269,16 @@ public class ListenerManager implements Listener {
             heart.setCloudUnlocked(false);
             player.sendMessage("§cThe Aspect of the Cloud has been removed. Win the Ninth Sky event to unlock it.");
         }
+
+        if (plugin.getEventManager() != null && plugin.getEventManager().getNinthSkyEvent() != null) {
+            NinthSkyEvent ninthSky = plugin.getEventManager().getNinthSkyEvent();
+            if (ninthSky.isActive() && player.getWorld().getEnvironment() == World.Environment.NORMAL) {
+                ninthSky.addParticipant(player);
+                player.sendMessage("§eYou have joined the Awakening of the Ninth Sky event!");
+            } else if (ninthSky.isCompleted() && ninthSky.getParticipants().contains(player.getUniqueId()) && heart.getAspect() != AspectType.CLOUD) {
+                ninthSky.grantCloudAspectToPlayer(player);
+            }
+        }
         
         if (heart.getAspect() == AspectType.WINTER && !heart.isWinterUnlocked()) {
             AspectType[] nonWinter = java.util.Arrays.stream(AspectType.values())

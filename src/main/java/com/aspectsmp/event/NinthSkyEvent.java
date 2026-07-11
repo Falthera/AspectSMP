@@ -135,6 +135,11 @@ public class NinthSkyEvent {
     }
 
     public void advancePhase(EventPhase next) {
+        for (BukkitTask task : scheduledTransitions) {
+            task.cancel();
+        }
+        scheduledTransitions.clear();
+
         this.phase = next;
         switch (next) {
             case SKY_FRAGMENTS -> {
@@ -168,6 +173,7 @@ public class NinthSkyEvent {
                 Bukkit.broadcastMessage("§a§lThe Ninth Sky has been conquered!");
                 Bukkit.broadcastMessage("§7Aspect of the Cloud has been unlocked for all participants.");
                 grantCloudAspect();
+                active = false;
             }
             default -> {}
         }
@@ -278,9 +284,10 @@ public class NinthSkyEvent {
             if (player != null && player.isOnline()) {
                 Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
                 if (heart != null) {
+                    int previousTier = heart.getTier();
                     heart.setAspect(AspectType.CLOUD);
+                    heart.setTier(previousTier >= 2 ? previousTier : 1);
                     heart.setCloudUnlocked(true);
-                    heart.setTier(1);
                     heart.setStability(100);
                     heart.setDormant(false);
                     heart.getCooldowns().clear();
@@ -297,8 +304,34 @@ public class NinthSkyEvent {
         }
     }
 
+    public void grantCloudAspectToPlayer(Player player) {
+        if (player == null || !player.isOnline()) return;
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        if (heart == null) return;
+
+        int previousTier = heart.getTier();
+        heart.setAspect(AspectType.CLOUD);
+        heart.setTier(previousTier >= 2 ? previousTier : 1);
+        heart.setCloudUnlocked(true);
+        heart.setStability(100);
+        heart.setDormant(false);
+        heart.getCooldowns().clear();
+        plugin.getHeartManager().saveHeart(heart);
+        player.sendMessage("§b§lYou have unlocked the Aspect of the Cloud!");
+
+        ItemStack cloudheart = new Cloudheart().createItemStack();
+        java.util.HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(cloudheart);
+        if (!leftover.isEmpty()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), leftover.get(0));
+        }
+    }
+
     public void addParticipant(Player player) {
         participants.add(player.getUniqueId());
+    }
+
+    public boolean isCompleted() {
+        return !active && phase == EventPhase.COMPLETED;
     }
 
     public void collectFragment(Player player) {
