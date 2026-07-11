@@ -51,7 +51,7 @@ public class DimensionalTearAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                target.damage(6 * getPowerMultiplier(player, heart), player);
+                damageIgnoreArmor(target, 6 * getPowerMultiplier(player, heart), player);
                 Vector pull = loc.toVector().subtract(target.getLocation().toVector()).normalize().multiply(0.8);
                 target.setVelocity(pull);
                 target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.BLINDNESS, 40, 0));

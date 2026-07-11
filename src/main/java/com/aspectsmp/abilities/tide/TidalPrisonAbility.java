@@ -42,7 +42,7 @@ public class TidalPrisonAbility extends BaseAbility {
             .filter(e -> e instanceof Player && e != player && e.getLocation().distanceSquared(loc) <= 16)
             .forEach(e -> {
                 if (e instanceof Player target) {
-                    target.damage(4 * getPowerMultiplier(player, heart), player);
+                    damageIgnoreArmor(target, 4 * getPowerMultiplier(player, heart), player);
                     target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.LEVITATION, 40, 0));
                     target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 60, 1));
                     

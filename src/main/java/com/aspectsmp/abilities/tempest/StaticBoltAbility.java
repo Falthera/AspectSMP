@@ -45,7 +45,7 @@ public class StaticBoltAbility extends BaseAbility {
 
         if (target instanceof Player p) {
             p.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, p.getLocation().add(0, 1, 0), 50);
-            p.damage(8 * getPowerMultiplier(player, heart), player);
+            damageIgnoreArmor(p, 8 * getPowerMultiplier(player, heart), player);
             playSound(player, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1.0f, 1.0f);
         }
 

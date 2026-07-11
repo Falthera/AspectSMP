@@ -59,7 +59,7 @@ public class WarGodStateAbility extends BaseAbility {
 
         for (Entity entity : center.getWorld().getNearbyEntities(center, 12.0, 6.0, 12.0)) {
             if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
-                target.damage(10.0 + getPowerMultiplier(player, heart) * 2, player);
+                damageIgnoreArmor(target, 10.0 + getPowerMultiplier(player, heart) * 2, player);
             }
         }
 

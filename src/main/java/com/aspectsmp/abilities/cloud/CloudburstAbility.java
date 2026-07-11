@@ -66,7 +66,7 @@ public class CloudburstAbility extends BaseAbility {
                     if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                         Vector slam = new Vector(0, -1.2, 0);
                         target.setVelocity(slam);
-                        target.damage(8.0 + getPowerMultiplier(player, heart), player);
+                        damageIgnoreArmor(target, 8.0 + getPowerMultiplier(player, heart), player);
                         target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 20, 0.4, 0.6, 0.4, 0.1);
                     }
                 }

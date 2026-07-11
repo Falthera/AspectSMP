@@ -56,7 +56,7 @@ public class IciclesAbility extends BaseAbility {
                             cancel();
                             return;
                         }
-                        target.damage(4.0 + getPowerMultiplier(player, heart), player);
+                        damageIgnoreArmor(target, 4.0 + getPowerMultiplier(player, heart), player);
                         target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, FROST_DURATION_TICKS, 0));
                         target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 30, 0.3, 0.5, 0.3, 0.05);
                         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 1.0f, 1.0f);

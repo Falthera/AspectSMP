@@ -51,7 +51,7 @@ public class HydroPushAbility extends BaseAbility {
                         Vector away = e.getLocation().toVector().subtract(point.toVector()).normalize();
                         e.setVelocity(e.getVelocity().add(away.multiply(0.8)));
                         if (e instanceof Player target) {
-                            target.damage(5 * getPowerMultiplier(player, heart), player);
+                            damageIgnoreArmor(target, 5 * getPowerMultiplier(player, heart), player);
                             target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 40, 1));
                         }
                     }

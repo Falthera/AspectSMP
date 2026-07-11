@@ -44,7 +44,7 @@ public class InfernalChainsAbility extends BaseAbility {
             .orElse(null);
 
         if (target instanceof Player p) {
-            p.damage(4 * getPowerMultiplier(player, heart), player);
+            damageIgnoreArmor(p, 4 * getPowerMultiplier(player, heart), player);
             p.setFireTicks(p.getFireTicks() + 80);
             p.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 60, 2));
             player.getWorld().spawnParticle(Particle.FLAME, p.getLocation().add(0, 1, 0), 20, 0.5, 0.5, 0.5);

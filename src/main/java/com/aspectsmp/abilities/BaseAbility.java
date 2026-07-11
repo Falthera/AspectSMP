@@ -6,7 +6,11 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -157,6 +161,16 @@ public abstract class BaseAbility implements Ability {
         Heart heart = com.aspectsmp.AspectSMP.getInstance().getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart != null) {
             heart.addEssence(amount);
+        }
+    }
+
+    protected void damageIgnoreArmor(LivingEntity target, double amount, Entity source) {
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(source, target, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+        event.setDamage(EntityDamageEvent.DamageModifier.BASE, amount);
+        event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, 0.0);
+        org.bukkit.Bukkit.getPluginManager().callEvent(event);
+        if (!event.isCancelled() && event.getFinalDamage() > 0) {
+            target.setHealth(Math.max(0.0, target.getHealth() - event.getFinalDamage()));
         }
     }
 }

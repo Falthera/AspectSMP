@@ -49,7 +49,7 @@ public class OceanSurgeAbility extends BaseAbility {
                     Vector knockback = direction.clone().multiply(1.5).add(new Vector(0, 0.3, 0));
                     e.setVelocity(e.getVelocity().add(knockback));
                     if (e instanceof Player target) {
-                        target.damage(3 * getPowerMultiplier(player, heart), player);
+                        damageIgnoreArmor(target, 3 * getPowerMultiplier(player, heart), player);
                     }
                 });
         }

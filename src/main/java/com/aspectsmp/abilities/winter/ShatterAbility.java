@@ -47,7 +47,7 @@ public class ShatterAbility extends BaseAbility {
                     target.getPotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS) != null &&
                     target.getPotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS).getAmplifier() >= 4;
                 double damage = isFrozen ? FULL_DAMAGE : REDUCED_DAMAGE;
-                target.damage(damage + getPowerMultiplier(player, heart), player);
+                damageIgnoreArmor(target, damage + getPowerMultiplier(player, heart), player);
                 target.setFreezeTicks(0);
                 target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 30, 0.4, 0.6, 0.4, 0.1);
                 target.getWorld().playSound(target.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 2.0f, 1.0f);

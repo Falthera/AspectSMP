@@ -46,7 +46,7 @@ public class LavaBurstAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target && target != player) {
-                target.damage(6 * getPowerMultiplier(player, heart), player);
+                damageIgnoreArmor(target, 6 * getPowerMultiplier(player, heart), player);
                 target.setFireTicks(target.getFireTicks() + 60);
             }
         }
