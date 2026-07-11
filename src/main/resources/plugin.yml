@@ -52,6 +52,9 @@ commands:
   withdraw:
     description: Withdraw stability from your Heart
     usage: /<command> stability
+  leaveevent:
+    description: Leave the active Ninth Sky event
+    usage: /<command>
 permissions:
   aspect.use:
     description: Access to basic aspect commands
