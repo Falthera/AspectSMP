@@ -26,6 +26,10 @@ public class FrostMonarch {
         startAI();
     }
 
+    public LivingEntity getEntity() {
+        return entity;
+    }
+
     private void startAI() {
         new BukkitRunnable() {
             int tick = 0;

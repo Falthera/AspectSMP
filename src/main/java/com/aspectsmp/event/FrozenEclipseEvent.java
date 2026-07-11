@@ -29,6 +29,8 @@ public class FrozenEclipseEvent {
 
     private final Map<UUID, Long> lastFrostDamage = new ConcurrentHashMap<>();
     private static final long FROST_DAMAGE_INTERVAL_MS = 1000;
+    private UUID winner;
+    private org.bukkit.entity.LivingEntity frostMonarchEntity;
 
     public FrozenEclipseEvent(AspectSMP plugin) {
         this.plugin = plugin;
@@ -44,6 +46,14 @@ public class FrozenEclipseEvent {
 
     public Set<UUID> getParticipants() {
         return participants;
+    }
+
+    public UUID getWinner() {
+        return winner;
+    }
+
+    public org.bukkit.entity.LivingEntity getFrostMonarchEntity() {
+        return frostMonarchEntity;
     }
 
     public void startEvent() {
@@ -175,24 +185,30 @@ public class FrozenEclipseEvent {
             return;
         }
         Location spawn = winterWorld.getSpawnLocation().add(0, 15, 0);
-        new FrostMonarch(plugin, spawn);
+        FrostMonarch frostMonarch = new FrostMonarch(plugin, spawn);
+        frostMonarchEntity = frostMonarch.getEntity();
         Bukkit.broadcastMessage("§c§lFROST MONARCH SPAWNED!");
     }
 
     private void grantWinterAspect() {
-        for (UUID uuid : participants) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null && player.isOnline()) {
-                Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
-                if (heart != null) {
-                    heart.setAspect(AspectType.WINTER);
-                    heart.setWinterUnlocked(true);
-                    heart.setTier(1);
-                    heart.getCooldowns().clear();
-                    player.sendMessage("§b§lYou have unlocked the Aspect of Winter!");
-                }
+        if (winner == null) return;
+        Player player = Bukkit.getPlayer(winner);
+        if (player != null && player.isOnline()) {
+            Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+            if (heart != null) {
+                heart.setAspect(AspectType.WINTER);
+                heart.setWinterUnlocked(true);
+                heart.setTier(1);
+                heart.getCooldowns().clear();
+                player.sendMessage("§b§lYou have unlocked the Aspect of Winter!");
             }
+            Bukkit.broadcastMessage("§e§l" + player.getName() + " has conquered the Frozen Eclipse!");
         }
+    }
+
+    public void awardWinner(Player player) {
+        this.winner = player.getUniqueId();
+        this.active = false;
     }
 
     public void addParticipant(Player player) {

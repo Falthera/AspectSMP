@@ -378,6 +378,18 @@ public class ListenerManager implements Listener {
                 ninthSky.advancePhase(com.aspectsmp.event.EventPhase.COMPLETED);
             }
         }
+
+        com.aspectsmp.event.FrozenEclipseEvent frozenEclipse = plugin.getEventManager().getFrozenEclipseEvent();
+        if (frozenEclipse != null && frozenEclipse.isActive()) {
+            org.bukkit.entity.LivingEntity monarch = frozenEclipse.getFrostMonarchEntity();
+            if (monarch != null && event.getEntity().getUniqueId() == monarch.getUniqueId()) {
+                org.bukkit.entity.Player killer = event.getEntity().getKiller();
+                if (killer != null) {
+                    frozenEclipse.awardWinner(killer);
+                }
+                frozenEclipse.advancePhase(com.aspectsmp.event.EventPhase.COMPLETED);
+            }
+        }
     }
 
     @EventHandler
