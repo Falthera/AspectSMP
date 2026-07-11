@@ -4,6 +4,7 @@ import com.aspectsmp.AspectSMP;
 import com.aspectsmp.core.AspectType;
 import com.aspectsmp.core.Heart;
 import com.aspectsmp.event.NinthSkyEvent;
+import com.aspectsmp.event.EventPhase;
 import com.aspectsmp.items.*;
 import com.aspectsmp.core.RuleModifier;
 import org.bukkit.Bukkit;
@@ -275,6 +276,21 @@ public class ListenerManager implements Listener {
             if (ninthSky.isActive() && player.getWorld().getEnvironment() == World.Environment.NORMAL) {
                 ninthSky.addParticipant(player);
                 player.sendMessage("§eYou have joined the Awakening of the Ninth Sky event!");
+
+                EventPhase phase = ninthSky.getPhase();
+                if (phase == EventPhase.NINTH_SKY_REALM || phase == EventPhase.TRIALS || phase == EventPhase.SKY_GUARDIAN) {
+                    World skyWorld = Bukkit.getWorld("ninth_sky");
+                    if (skyWorld != null) {
+                        Location spawn = skyWorld.getSpawnLocation().add(0, 20, 0);
+                        int safeY = skyWorld.getHighestBlockYAt(spawn);
+                        spawn.setY(safeY + 2);
+                        if (spawn.getBlock().getType().isSolid()) {
+                            spawn.setY(safeY + 3);
+                        }
+                        player.teleport(spawn);
+                        player.sendMessage("§eYou have been transported to the Ninth Sky Realm.");
+                    }
+                }
             } else if (ninthSky.isCompleted() && ninthSky.getParticipants().contains(player.getUniqueId()) && heart.getAspect() != AspectType.CLOUD) {
                 ninthSky.grantCloudAspectToPlayer(player);
             }
@@ -307,9 +323,30 @@ public class ListenerManager implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            if (event.getPlayer().isOnline()) {
-                HeartOfTheSea.ensureBound(event.getPlayer());
-                plugin.getScoreboardManager().updatePlayer(event.getPlayer());
+            Player player = event.getPlayer();
+            if (player.isOnline()) {
+                HeartOfTheSea.ensureBound(player);
+                plugin.getScoreboardManager().updatePlayer(player);
+
+                if (plugin.getEventManager() != null && plugin.getEventManager().getNinthSkyEvent() != null) {
+                    NinthSkyEvent ninthSky = plugin.getEventManager().getNinthSkyEvent();
+                    if (ninthSky.isActive() && ninthSky.getParticipants().contains(player.getUniqueId())) {
+                        EventPhase phase = ninthSky.getPhase();
+                        if (phase == EventPhase.NINTH_SKY_REALM || phase == EventPhase.TRIALS || phase == EventPhase.SKY_GUARDIAN) {
+                            World skyWorld = Bukkit.getWorld("ninth_sky");
+                            if (skyWorld != null) {
+                                Location spawn = skyWorld.getSpawnLocation().add(0, 20, 0);
+                                int safeY = skyWorld.getHighestBlockYAt(spawn);
+                                spawn.setY(safeY + 2);
+                                if (spawn.getBlock().getType().isSolid()) {
+                                    spawn.setY(safeY + 3);
+                                }
+                                player.teleport(spawn);
+                                player.sendMessage("§eYou have been returned to the Ninth Sky.");
+                            }
+                        }
+                    }
+                }
             }
         }, 20L);
     }
