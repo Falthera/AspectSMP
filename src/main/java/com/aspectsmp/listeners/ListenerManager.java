@@ -675,14 +675,12 @@ public class ListenerManager implements Listener {
         AspectType newAspect = choices.get(new java.util.Random().nextInt(choices.size()));
         
         heart.setAspect(newAspect);
-        heart.setTier(1);
         heart.getCooldowns().clear();
         clearAspectEffects(player);
         
         player.sendMessage("§b§lYour Heart has been reforged!");
         player.sendMessage("§7Old Aspect: §f" + current.getDisplayName());
         player.sendMessage("§7New Aspect: §f" + newAspect.getDisplayName());
-        player.sendMessage("§7Tier reset to 1.");
         
         consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);

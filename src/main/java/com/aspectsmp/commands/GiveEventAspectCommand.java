@@ -58,7 +58,6 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
 
         heart.setAspect(aspect);
         heart.setWinterUnlocked(aspect == AspectType.WINTER);
-        heart.setTier(1);
         heart.setStability(100);
         heart.setDormant(false);
         heart.getCooldowns().clear();

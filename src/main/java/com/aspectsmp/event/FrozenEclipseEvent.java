@@ -727,7 +727,6 @@ public class FrozenEclipseEvent {
             if (heart != null) {
                 heart.setAspect(AspectType.WINTER);
                 heart.setWinterUnlocked(true);
-                heart.setTier(1);
                 heart.getCooldowns().clear();
                 player.sendMessage("§b§lYou have unlocked the Aspect of Winter!");
             }
