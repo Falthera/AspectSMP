@@ -582,9 +582,11 @@ public class ListenerManager implements Listener {
             player.sendMessage("§cYou need 10 Essence to use this!");
             return;
         }
-        heart.addStability(50);
+        int restoreAmount = com.aspectsmp.items.StabilityBottle.getStoredStability(item);
+        if (restoreAmount <= 0) restoreAmount = 50;
+        heart.addStability(restoreAmount);
         heart.addEssence(-10);
-        player.sendMessage("§aStability restored by 50!");
+        player.sendMessage("§aStability restored by " + restoreAmount + "!");
         consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
     }

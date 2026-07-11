@@ -13,6 +13,7 @@ import com.aspectsmp.commands.RepairCommand;
 import com.aspectsmp.commands.RerollCommand;
 import com.aspectsmp.commands.UltimateCommand;
 import com.aspectsmp.commands.TrustCommand;
+import com.aspectsmp.commands.WithdrawCommand;
 import com.aspectsmp.crafting.CraftingManager;
 import com.aspectsmp.core.RuleModifierManager;
 import com.aspectsmp.event.EventManager;
@@ -69,6 +70,7 @@ public class AspectSMP extends JavaPlugin {
         getServer().getPluginManager().registerEvents(guiManager, this);
         registerCommands();
         registerTrustCommand();
+        registerWithdrawCommand();
         
         getServer().getScheduler().runTaskTimerAsynchronously(this, heartManager::saveAll, 6000L, 6000L);
         getServer().getScheduler().runTaskTimer(this, scoreboardManager::updateAll, 20L, 20L);
@@ -176,6 +178,12 @@ public class AspectSMP extends JavaPlugin {
     private void registerTrustCommand() {
         getCommand("trust").setExecutor(new TrustCommand(this, trustManager));
         getCommand("trust").setTabCompleter(new TrustCommand(this, trustManager));
+    }
+
+    private void registerWithdrawCommand() {
+        WithdrawCommand withdrawCmd = new WithdrawCommand(this);
+        getCommand("withdraw").setExecutor(withdrawCmd);
+        getCommand("withdraw").setTabCompleter(withdrawCmd);
     }
 
     private void updateAllActionBars() {

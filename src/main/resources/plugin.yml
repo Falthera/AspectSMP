@@ -49,6 +49,9 @@ commands:
   trust:
     description: Manage trusted players
     usage: /<command> <add|remove|clear|list> [name]
+  withdraw:
+    description: Withdraw stability from your Heart
+    usage: /<command> stability
 permissions:
   aspect.use:
     description: Access to basic aspect commands

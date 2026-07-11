@@ -12,23 +12,40 @@ import java.util.List;
 
 public class StabilityBottle extends CustomItem {
 
+    public static final NamespacedKey STABILITY_KEY = new NamespacedKey("aspectsmp", "stability_amount");
+
     public StabilityBottle() {
         super("stability_bottle", "Stability Bottle", "Restores 50 Stability to your Heart, capped at 100");
     }
 
     @Override
     public ItemStack createItemStack() {
+        return createItemStack(50);
+    }
+
+    public ItemStack createItemStack(int stabilityAmount) {
         ItemStack item = new ItemStack(Material.POTION);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§b§lStability Bottle");
-        meta.lore(List.of(
-            Component.text("§7Restores §a50 Stability §7to your Heart"),
-            Component.text("§7Cannot exceed §b100 Stability§7."),
-            Component.text("§8Right-click to use")
-        ));
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "stability_bottle");
-        item.setItemMeta(meta);
+        if (meta != null) {
+            meta.setDisplayName("§b§lStability Bottle");
+            meta.lore(List.of(
+                Component.text("§7Restores §a" + stabilityAmount + " Stability §7to your Heart"),
+                Component.text("§7Cannot exceed §b100 Stability§7."),
+                Component.text("§8Right-click to use")
+            ));
+            PersistentDataContainer pdc = meta.getPersistentDataContainer();
+            pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "stability_bottle");
+            pdc.set(STABILITY_KEY, PersistentDataType.INTEGER, stabilityAmount);
+            item.setItemMeta(meta);
+        }
         return item;
+    }
+
+    public static int getStoredStability(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return 0;
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        if (!pdc.has(STABILITY_KEY, PersistentDataType.INTEGER)) return 0;
+        return pdc.get(STABILITY_KEY, PersistentDataType.INTEGER);
     }
 }
