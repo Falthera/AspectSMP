@@ -81,36 +81,52 @@ public class HeartOfTheSea {
         Heart heart = AspectSMP.getInstance().getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
 
-        boolean hasHeart = false;
+        int heartCount = 0;
+        int heartSlot = -1;
         for (ItemStack item : player.getInventory().getContents()) {
             if (isHeartOfTheSea(item)) {
-                hasHeart = true;
-                if (isBoundToPlayer(item, player)) {
-                    updateAspectName(item, heart.getAspect());
-                } else {
-                    ItemStack newHeart = create(player, heart.getAspect());
-                    int slot = player.getInventory().first(item);
-                    if (slot >= 0) {
-                        player.getInventory().setItem(slot, newHeart);
-                    }
-                }
-                break;
+                heartCount++;
+                heartSlot = player.getInventory().first(item);
             }
         }
+        ItemStack offHand = player.getInventory().getItemInOffHand();
+        if (isHeartOfTheSea(offHand)) {
+            heartCount++;
+        }
 
-        if (!hasHeart) {
-            ItemStack offHand = player.getInventory().getItemInOffHand();
-            if (isHeartOfTheSea(offHand)) {
-                if (!isBoundToPlayer(offHand, player)) {
-                    ItemStack newHeart = create(player, heart.getAspect());
-                    player.getInventory().setItemInOffHand(newHeart);
-                } else {
-                    updateAspectName(offHand, heart.getAspect());
+        if (heartCount > 1) {
+            int toRemove = heartCount - 1;
+            for (ItemStack item : player.getInventory().getContents()) {
+                if (toRemove <= 0) break;
+                if (isHeartOfTheSea(item)) {
+                    int slot = player.getInventory().first(item);
+                    player.getInventory().setItem(slot, null);
+                    toRemove--;
                 }
-            } else {
-                ItemStack heartItem = create(player, heart.getAspect());
-                player.getInventory().addItem(heartItem);
-                player.updateInventory();
+            }
+            offHand = player.getInventory().getItemInOffHand();
+            if (toRemove > 0 && isHeartOfTheSea(offHand)) {
+                player.getInventory().setItemInOffHand(null);
+                toRemove--;
+            }
+            player.updateInventory();
+        }
+
+        boolean hasHeart = heartCount > 0;
+        if (!hasHeart) {
+            ItemStack heartItem = create(player, heart.getAspect());
+            player.getInventory().addItem(heartItem);
+            player.updateInventory();
+        } else {
+            if (heartSlot >= 0) {
+                ItemStack item = player.getInventory().getItem(heartSlot);
+                if (isHeartOfTheSea(item) && isBoundToPlayer(item, player)) {
+                    updateAspectName(item, heart.getAspect());
+                }
+            }
+            offHand = player.getInventory().getItemInOffHand();
+            if (isHeartOfTheSea(offHand) && isBoundToPlayer(offHand, player)) {
+                updateAspectName(offHand, heart.getAspect());
             }
         }
     }

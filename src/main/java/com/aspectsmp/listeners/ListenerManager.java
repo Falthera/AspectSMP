@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -472,6 +473,22 @@ public class ListenerManager implements Listener {
         org.bukkit.inventory.Inventory topInv = event.getView().getTopInventory();
         if (topInv != null && !(topInv.getHolder() instanceof Player)) {
             event.setCancelled(true);
+            return;
+        }
+
+        if (heartCursor) {
+            int currentHeartCount = 0;
+            for (ItemStack item : player.getInventory().getContents()) {
+                if (HeartOfTheSea.isHeartOfTheSea(item)) currentHeartCount++;
+            }
+            ItemStack offHand = player.getInventory().getItemInOffHand();
+            if (HeartOfTheSea.isHeartOfTheSea(offHand)) currentHeartCount++;
+
+            if (currentHeartCount >= 1 && !heartCurrent) {
+                event.setCancelled(true);
+                player.sendMessage("§cYou can only have one Heart of the Sea in your inventory!");
+                return;
+            }
         }
     }
 
@@ -479,6 +496,25 @@ public class ListenerManager implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         if (HeartOfTheSea.isHeartOfTheSea(event.getItemDrop().getItemStack())) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onEntityPickupItem(EntityPickupItemEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        ItemStack item = event.getItem().getItemStack();
+        if (!HeartOfTheSea.isHeartOfTheSea(item)) return;
+
+        int currentHeartCount = 0;
+        for (ItemStack invItem : player.getInventory().getContents()) {
+            if (HeartOfTheSea.isHeartOfTheSea(invItem)) currentHeartCount++;
+        }
+        ItemStack offHand = player.getInventory().getItemInOffHand();
+        if (HeartOfTheSea.isHeartOfTheSea(offHand)) currentHeartCount++;
+
+        if (currentHeartCount >= 1) {
+            event.setCancelled(true);
+            player.sendMessage("§cYou can only have one Heart of the Sea in your inventory!");
         }
     }
 
@@ -498,7 +534,18 @@ public class ListenerManager implements Listener {
         if (!hasHeart) return;
         
         if (event.getInventory().getHolder() instanceof Player) {
-            return;
+            int currentHeartCount = 0;
+            for (ItemStack item : player.getInventory().getContents()) {
+                if (HeartOfTheSea.isHeartOfTheSea(item)) currentHeartCount++;
+            }
+            ItemStack offHand = player.getInventory().getItemInOffHand();
+            if (HeartOfTheSea.isHeartOfTheSea(offHand)) currentHeartCount++;
+
+            if (currentHeartCount >= 1) {
+                event.setCancelled(true);
+                player.sendMessage("§cYou can only have one Heart of the Sea in your inventory!");
+                return;
+            }
         }
         
         event.setCancelled(true);
