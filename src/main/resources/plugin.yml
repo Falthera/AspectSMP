@@ -55,6 +55,9 @@ commands:
   leaveevent:
     description: Leave the active Ninth Sky event
     usage: /<command>
+  eclipse:
+    description: Join the Frozen Eclipse event
+    usage: /<command>
 permissions:
   aspect.use:
     description: Access to basic aspect commands

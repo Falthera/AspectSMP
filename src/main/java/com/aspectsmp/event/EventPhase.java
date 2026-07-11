@@ -10,5 +10,6 @@ public enum EventPhase {
     COMPLETED,
     FIRST_FROST,
     FROZEN_KINGDOM,
-    FROST_MONARCH
+    FROST_MONARCH,
+    FROZEN_CRUCIBLE
 }

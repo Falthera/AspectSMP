@@ -395,6 +395,17 @@ public class ListenerManager implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack item = event.getItem();
+            if (item != null && (item.getType() == org.bukkit.Material.FLINT_AND_STEEL || item.getType() == org.bukkit.Material.FIRE_CHARGE)) {
+                com.aspectsmp.event.FrozenEclipseEvent eclipse = plugin.getEventManager().getFrozenEclipseEvent();
+                if (eclipse != null && eclipse.getPhase() == com.aspectsmp.event.EventPhase.TRIALS) {
+                    return;
+                }
+            }
+        }
+
         ItemStack mainHandItem = player.getInventory().getItemInMainHand();
         ItemStack offHandItem = player.getInventory().getItemInOffHand();
 
@@ -762,6 +773,20 @@ public class ListenerManager implements Listener {
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null || heart.isDormant()) return;
 
+        if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
+            com.aspectsmp.event.FrozenEclipseEvent frozenEclipse = plugin.getEventManager().getFrozenEclipseEvent();
+            if (frozenEclipse != null && frozenEclipse.isActive() && frozenEclipse.getPhase() == com.aspectsmp.event.EventPhase.FROZEN_CRUCIBLE) {
+                if (frozenEclipse.getParticipants().contains(player.getUniqueId())) {
+                    event.setCancelled(true);
+                    World winterWorld = Bukkit.getWorld("winter_kingdom");
+                    if (winterWorld != null) {
+                        player.teleport(winterWorld.getSpawnLocation());
+                    }
+                    return;
+                }
+            }
+        }
+
         if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK && event instanceof EntityDamageByEntityEvent damageByEntity && damageByEntity.getDamager() instanceof Player attacker) {
             if (!plugin.getTrustManager().isTrusted(player.getUniqueId(), attacker.getUniqueId())) {
                 plugin.getCombatManager().tagPlayer(player.getUniqueId());
@@ -843,6 +868,16 @@ public class ListenerManager implements Listener {
         }
 
         removeTrustBuffs(victim);
+        
+        com.aspectsmp.event.FrozenEclipseEvent frozenEclipse = plugin.getEventManager().getFrozenEclipseEvent();
+        if (frozenEclipse != null && frozenEclipse.isActive() && frozenEclipse.getPhase() == com.aspectsmp.event.EventPhase.FROZEN_CRUCIBLE) {
+            if (frozenEclipse.getParticipants().contains(victim.getUniqueId())) {
+                frozenEclipse.getParticipants().remove(victim.getUniqueId());
+                victim.setGameMode(org.bukkit.GameMode.SPECTATOR);
+                victim.sendMessage("§c§lYou have fallen in the Frozen Crucible!");
+                Bukkit.broadcastMessage("§c" + victim.getName() + " has been eliminated from the Frozen Eclipse!");
+            }
+        }
         
         if (!plugin.getConfig().getBoolean("features.obfuscated-death-messages", true)) return;
         

@@ -7,6 +7,7 @@ import com.aspectsmp.commands.Ability3Command;
 import com.aspectsmp.commands.GiveCommand;
 import com.aspectsmp.commands.GiveEventAspectCommand;
 import com.aspectsmp.commands.InfoCommand;
+import com.aspectsmp.commands.EclipseCommand;
 import com.aspectsmp.commands.LeaveEventCommand;
 import com.aspectsmp.commands.ListCommand;
 import com.aspectsmp.commands.ReloadCommand;
@@ -186,6 +187,7 @@ public class AspectSMP extends JavaPlugin {
         getCommand("withdraw").setExecutor(withdrawCmd);
         getCommand("withdraw").setTabCompleter(withdrawCmd);
         getCommand("leaveevent").setExecutor(new LeaveEventCommand(this));
+        getCommand("eclipse").setExecutor(new EclipseCommand(this));
     }
 
     private void updateAllActionBars() {
