@@ -1,11 +1,13 @@
 package com.aspectsmp.visual;
 
 import com.aspectsmp.AspectSMP;
+import com.aspectsmp.core.AspectType;
 import com.aspectsmp.event.EventPhase;
 import com.aspectsmp.visual.AspectVisualThemes.Theme;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -14,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DynamicSoundscapes {
 
     private final AspectSMP plugin;
-    private final Map<UUID, Map<String, BukkitRunnable>> activeSoundscapes = new ConcurrentHashMap<>();
+    private final Map<UUID, Map<String, BukkitTask>> activeSoundscapes = new ConcurrentHashMap<>();
     private final Random random = new Random();
 
     public DynamicSoundscapes(AspectSMP plugin) {
@@ -52,6 +54,10 @@ public class DynamicSoundscapes {
         }
     }
 
+    private void playSound(Player player, Sound sound, float volume, float pitch, long seed) {
+        player.playSound(player.getLocation(), sound, SoundCategory.MASTER, volume, pitch, seed);
+    }
+
     // ════════════════════════════════════════════════════════════════════
     // AMBIENT SOUNDSCAPES - Persistent per aspect
     // ════════════════════════════════════════════════════════════════════
@@ -60,7 +66,7 @@ public class DynamicSoundscapes {
         UUID id = player.getUniqueId();
         stopAmbientSoundscape(player);
 
-        BukkitRunnable task = new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             int tick = 0;
             @Override
             public void run() {
@@ -156,9 +162,9 @@ public class DynamicSoundscapes {
     }
 
     public void stopAmbientSoundscape(Player player) {
-        Map<String, BukkitRunnable> sounds = activeSoundscapes.get(player.getUniqueId());
+        Map<String, BukkitTask> sounds = activeSoundscapes.get(player.getUniqueId());
         if (sounds != null) {
-            BukkitRunnable task = sounds.remove("ambient");
+            BukkitTask task = sounds.remove("ambient");
             if (task != null) task.cancel();
         }
     }
@@ -222,7 +228,7 @@ public class DynamicSoundscapes {
         }
     }
 
-    public void playImpactSound(Player player, Theme theme, Location impactLoc, int tier, boolean isCritical) {
+    public void playImpactSound(Theme theme, Location impactLoc, int tier, boolean isCritical) {
         // Layer 1: Base impact
         float volume = 0.8f + tier * 0.15f;
         float pitch = 0.8f + random.nextFloat() * 0.4f;
@@ -239,7 +245,6 @@ public class DynamicSoundscapes {
 
         // Layer 4: Directional echo for nearby players
         for (Player nearby : impactLoc.getWorld().getPlayers()) {
-            if (player != null && nearby.equals(player)) continue;
             double dist = nearby.getLocation().distance(impactLoc);
             if (dist < 20) {
                 float vol = (float) (0.3 * (1 - dist / 20));
@@ -266,6 +271,14 @@ public class DynamicSoundscapes {
             case WINTER -> playSound(loc, Sound.BLOCK_GLASS_BREAK, vol, 1.5f);
             case SHADOW -> playSound(loc, Sound.ENTITY_WARDEN_SONIC_BOOM, vol, 0.5f);
             case STORM -> playSound(loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, vol, 1.3f);
+        }
+    }
+
+    public void playImpactSound(Player player, Theme theme, Location impactLoc, int tier, boolean isCritical) {
+        playImpactSound(theme, impactLoc, tier, isCritical);
+        // Also play for the player
+        if (player != null && player.isOnline()) {
+            playSound(player, theme.getImpactSound(), 0.5f, 1.0f + random.nextFloat() * 0.5f);
         }
     }
 
@@ -361,7 +374,7 @@ public class DynamicSoundscapes {
 
     // ═════════════════════════════════════════════════════════════════════
     // HEARTBEAT & STABILITY SOUNDS
-    // ═════════════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════════
 
     public void playHeartbeat(Player player, Theme theme, int stability) {
         if (!player.isOnline()) return;
@@ -370,7 +383,7 @@ public class DynamicSoundscapes {
         int interval = 1200 / bpm;
         
         String key = "heartbeat_" + System.currentTimeMillis();
-        BukkitRunnable task = new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             int tick = 0;
             @Override
             public void run() {
@@ -434,7 +447,7 @@ public class DynamicSoundscapes {
         }.runTaskLater(plugin, 20L);
     }
 
-    // ═════════════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════════
     // TIER PROGRESSION
     // ════════════════════════════════════════════════════════════════════
 
@@ -456,9 +469,9 @@ public class DynamicSoundscapes {
         }
     }
 
-    // ═════════════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════════
     // ASPECT TRANSITION
-    // ═════════════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════════
 
     public void playAspectTransitionSound(Player player, Theme oldTheme, Theme newTheme) {
         if (!player.isOnline()) return;
@@ -501,7 +514,7 @@ public class DynamicSoundscapes {
 
     // ═════════════════════════════════════════════════════════════════════
     // EVENT SOUNDS
-    // ═════════════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════════════
 
     public void playEventPhaseSound(Player player, Theme theme, EventPhase phase) {
         if (!player.isOnline()) return;
@@ -551,19 +564,19 @@ public class DynamicSoundscapes {
         playSound(player, theme.getUltimateSound(), 0.5f, 0.5f);
     }
 
-    // ═════════════════════════════════════════════════════════════════════
-    // CLEAR ALL
     // ════════════════════════════════════════════════════════════════════
+    // CLEAR ALL
+    // ═══════════════════════════════════════════════════════════════════
 
     public void clearPlayer(Player player) {
-        Map<String, BukkitRunnable> sounds = activeSoundscapes.remove(player.getUniqueId());
+        Map<String, BukkitTask> sounds = activeSoundscapes.remove(player.getUniqueId());
         if (sounds != null) {
-            sounds.values().forEach(BukkitRunnable::cancel);
+            sounds.values().forEach(BukkitTask::cancel);
         }
     }
 
     public void clearAll() {
-        activeSoundscapes.values().forEach(map -> map.values().forEach(BukkitRunnable::cancel));
+        activeSoundscapes.values().forEach(map -> map.values().forEach(BukkitTask::cancel));
         activeSoundscapes.clear();
     }
 }
