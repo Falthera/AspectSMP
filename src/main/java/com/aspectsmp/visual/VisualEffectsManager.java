@@ -316,7 +316,7 @@ public class VisualEffectsManager {
         particles.impact(null, theme, location, (int)intensity);
         
         // Sound
-        soundscapes.playImpactSound(location, theme, (int)intensity, intensity > 1.5);
+        soundscapes.playImpactSound(null, theme, location, (int)intensity, intensity > 1.5);
         
         // Screen shake for nearby players
         if (screenShakeEnabled) {
@@ -429,7 +429,7 @@ public class VisualEffectsManager {
             particles.spawnHeartDeathEffect(player.getLocation(), theme, particleQuality);
         } else if (newStability < 30 && oldStability >= 30) {
             screenEffects.criticalStabilityWarning(player, theme);
-            soundscapes.playCriticalWarningSound(player, theme);
+            soundscapes.playStabilityWarning(player, theme);
         } else if (newStability >= 90 && oldStability < 90) {
             screenEffects.awakenedFlash(player, theme);
             soundscapes.playAwakenedSound(player, theme);
@@ -484,7 +484,7 @@ public class VisualEffectsManager {
         
         AspectVisualThemes.Theme theme = themes.getTheme(eventAspect);
         screenEffects.eventPhaseTransition(player, theme, phase);
-        soundscapes.playEventPhaseSound(player, theme, phase.name());
+        soundscapes.playEventPhaseSound(player, theme, phase);
         
         // Phase transition particles
         Location loc = player.getLocation();
@@ -499,7 +499,7 @@ public class VisualEffectsManager {
         
         for (Player player : Bukkit.getOnlinePlayers()) {
             screenEffects.globalAnnouncement(player, title, subtitle, color);
-            soundscapes.playGlobalAnnouncementSound(player, theme.getUltimateSound(), 1.0f, 1.0f);
+            soundscapes.playGlobalAnnouncementSound(player, theme);
         }
         
         particles.spawnGlobalAnnouncementEffect(theme, particleQuality);

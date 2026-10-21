@@ -9,6 +9,7 @@ import org.bukkit.particle.DustOptions;
 import org.bukkit.particle.DustTransition;
 import org.bukkit.particle.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -17,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ParticleEffects {
 
     private final AspectSMP plugin;
-    private final Map<UUID, List<BukkitRunnable>> activeAnimations = new ConcurrentHashMap<>();
+    private final Map<UUID, List<BukkitTask>> activeAnimations = new ConcurrentHashMap<>();
     private final boolean useParticleBuilder;
     private final boolean useTrailParticles;
 
@@ -91,7 +92,7 @@ public class ParticleEffects {
         UUID id = player.getUniqueId();
         stopPassiveAura(player);
 
-        BukkitRunnable task = new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             double angle = 0;
             double height = 0;
             int tick = 0;
@@ -119,10 +120,6 @@ public class ParticleEffects {
                     spawnParticle(loc.getWorld(), auraParticle, loc, 1);
                     loc.subtract(v);
                 }
-
-                // Fetch current stability each tick
-                int currentStability = plugin.getHeartManager().getHeart(player.getUniqueId())
-                    .map(Heart::getStability).orElse(100);
 
                 // Stability-based secondary ring
                 if (currentStability < 50) {
@@ -170,8 +167,8 @@ public class ParticleEffects {
     }
 
     public void stopPassiveAura(Player player) {
-        List<BukkitRunnable> tasks = activeAnimations.remove(player.getUniqueId());
-        if (tasks != null) tasks.forEach(BukkitRunnable::cancel);
+        List<BukkitTask> tasks = activeAnimations.remove(player.getUniqueId());
+        if (tasks != null) tasks.forEach(BukkitTask::cancel);
     }
 
     // ════════════════════════════════════════════════════════════════════
@@ -181,7 +178,7 @@ public class ParticleEffects {
     public void startOrbitEffect(Player player, Theme theme, int tier) {
         UUID id = player.getUniqueId();
         
-        BukkitRunnable task = new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             double angle = 0;
             double verticalAngle = 0;
             @Override
@@ -218,7 +215,7 @@ public class ParticleEffects {
         UUID id = player.getUniqueId();
         Location lastLoc = player.getLocation();
 
-        BukkitRunnable task = new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
                 if (!player.isOnline() || player.isDead()) { cancel(); return; }
@@ -258,7 +255,7 @@ public class ParticleEffects {
 
     // ════════════════════════════════════════════════════════════════════
     // CAST EFFECTS - Ability charging/casting
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
 
     public void castCharge(Player player, Theme theme, int tier, int durationTicks) {
         Location loc = player.getLocation().add(0, 1, 0);
@@ -338,7 +335,7 @@ public class ParticleEffects {
 
     // ════════════════════════════════════════════════════════════════════
     // IMPACT EFFECTS - On hit/landing
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
 
     public void impact(Player player, Theme theme, Location location, int tier) {
         Color primary = theme.getPrimaryColor();
@@ -396,7 +393,7 @@ public class ParticleEffects {
 
     // ════════════════════════════════════════════════════════════════════
     // ULTIMATE EFFECTS - Major abilities
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
 
     public void ultimate(Player player, Theme theme) {
         Location loc = player.getLocation().add(0, 1, 0);
@@ -458,7 +455,7 @@ public class ParticleEffects {
                     }
                 }.runTaskTimer(plugin, 0L, 1L);
 
-                // Shockwave ring - 1.21.11 SONIC_BOOM
+                // Shockwave ring
                 new BukkitRunnable() {
                     double radius = 0;
                     @Override
@@ -479,7 +476,7 @@ public class ParticleEffects {
 
     // ════════════════════════════════════════════════════════════════════
     // BEAM EFFECTS - Directed abilities (1.21.11 TRAIL particle)
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
 
     public void beam(Player player, Theme theme, Location from, Location to, double width) {
         Vector direction = to.toVector().subtract(from.toVector());
@@ -523,7 +520,7 @@ public class ParticleEffects {
 
     // ════════════════════════════════════════════════════════════════════
     // SPIRAL EFFECTS
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
 
     public void spiral(Player player, Theme theme, Location center, double maxRadius, int height, int rotations) {
         new BukkitRunnable() {
@@ -548,9 +545,9 @@ public class ParticleEffects {
         }.runTaskTimer(plugin, 0L, 1L);
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
     // DOME/SHIELD EFFECTS
-    // ════════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════
 
     public void dome(Player player, Theme theme, Location center, double radius, int durationTicks) {
         new BukkitRunnable() {
@@ -577,9 +574,9 @@ public class ParticleEffects {
         }.runTaskTimer(plugin, 0L, 2L);
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
     // ENTITY TRAIL - For projectiles/mobs
-    // ════════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════
 
     public void entityTrail(Entity entity, Theme theme, int durationTicks) {
         new BukkitRunnable() {
@@ -608,7 +605,7 @@ public class ParticleEffects {
 
     // ═══════════════════════════════════════════════════════════════════
     // HEART BEAT PARTICLES - On player based on heart stability
-    // ═══════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════
 
     public void heartBeatParticles(Player player, Theme theme, int stability) {
         Location loc = player.getLocation().add(0, 1.5, 0);
@@ -654,23 +651,23 @@ public class ParticleEffects {
         }
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
     // CLEAR ALL
-    // ════════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════
 
     public void clearPlayer(Player player) {
-        List<BukkitRunnable> tasks = activeAnimations.remove(player.getUniqueId());
-        if (tasks != null) tasks.forEach(BukkitRunnable::cancel);
+        List<BukkitTask> tasks = activeAnimations.remove(player.getUniqueId());
+        if (tasks != null) tasks.forEach(BukkitTask::cancel);
     }
 
     public void clearAll() {
-        activeAnimations.values().forEach(list -> list.forEach(BukkitRunnable::cancel));
+        activeAnimations.values().forEach(list -> list.forEach(BukkitTask::cancel));
         activeAnimations.clear();
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
     // MISSING METHODS CALLED BY VISUALEFFECTSMANAGER
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
 
     public void spawnEssenceGainParticles(Location location, Theme theme, int count, int quality) {
         for (int i = 0; i < count * quality / 3; i++) {
@@ -753,17 +750,17 @@ public class ParticleEffects {
         }
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
     // CLEAR ALL
-    // ════════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════
 
     public void clearPlayer(Player player) {
-        List<BukkitRunnable> tasks = activeAnimations.remove(player.getUniqueId());
-        if (tasks != null) tasks.forEach(BukkitRunnable::cancel);
+        List<BukkitTask> tasks = activeAnimations.remove(player.getUniqueId());
+        if (tasks != null) tasks.forEach(BukkitTask::cancel);
     }
 
     public void clearAll() {
-        activeAnimations.values().forEach(list -> list.forEach(BukkitRunnable::cancel));
+        activeAnimations.values().forEach(list -> list.forEach(BukkitTask::cancel));
         activeAnimations.clear();
     }
 }

@@ -7,7 +7,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
-import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.*;
 import org.bukkit.Color;
@@ -155,7 +154,7 @@ public class ScreenEffectsAPI {
     }
 
     // ════════════════════════════════════════════════════════════════════
-    // VIGNETTE & COLOR GRADING - Using potion effects & resource pack tricks
+    // VIGNETTE & COLOR GRADING - Using potion effects
     // ════════════════════════════════════════════════════════════════════
 
     public void vignette(Player player, Color color, float intensity, int durationTicks) {
@@ -198,9 +197,8 @@ public class ScreenEffectsAPI {
         if (!player.isOnline()) return;
         if (!canChromaticAberration() || !canAffectPvP()) return; // This effect always affects PvP
         
-        // Simulate chromatic aberration with nausea + confusion
+        // Simulate chromatic aberration with nausea
         int nauseaAmp = Math.min(4, (int)(intensity * 4));
-        int confusionAmp = Math.min(2, (int)(intensity * 2));
         
         player.addPotionEffect(new PotionEffect(
             PotionEffectType.NAUSEA,
@@ -208,15 +206,6 @@ public class ScreenEffectsAPI {
             nauseaAmp,
             true, false, true
         ));
-        
-        if (confusionAmp > 0) {
-            player.addPotionEffect(new PotionEffect(
-                PotionEffectType.CONFUSION,
-                durationTicks,
-                confusionAmp,
-                true, false, true
-            ));
-        }
     }
 
     public void colorPulse(Player player, Color color, double intensity, int durationTicks, int pulses) {
@@ -263,17 +252,15 @@ public class ScreenEffectsAPI {
                 if (!player.isOnline() || ticks > 200) { cancel(); return; }
                 
                 if (ticks % beatInterval == 0) {
-                    // Screen pulse - only vignette if allowed, shake if allowed
+                    // Screen pulse
                     float pulseIntensity = (100 - stability) / 100.0f * 0.8f + 0.2f;
-                    if (canVignette()) {
-                        vignette(player, Color.RED, pulseIntensity, beatInterval);
-                    }
+                    if (canVignette()) vignette(player, Color.RED, pulseIntensity, beatInterval);
                     
-                    // Sound - always play
+                    // Sound
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HEARTBEAT, 
                         pulseIntensity, 1.0f + (100 - stability) / 100.0f);
                     
-                    // Subtle screen shake - only if allowed
+                    // Subtle screen shake
                     if (canScreenShake()) {
                         screenShake(player, pulseIntensity * 0.3, beatInterval / 2);
                     }
@@ -303,7 +290,7 @@ public class ScreenEffectsAPI {
             }.runTaskLater(plugin, i * 40L);
         }
         
-        // Warning title - always show
+        // Warning title
         player.showTitle(Title.title(
             Component.text("⚠ CRITICAL STABILITY ⚠").color(NamedTextColor.RED).decorate(TextDecoration.BOLD),
             Component.text("Your Heart is failing!").color(NamedTextColor.WHITE),
@@ -460,7 +447,7 @@ public class ScreenEffectsAPI {
     public void hitFlash(Player player, Theme theme) {
         if (!player.isOnline()) return;
         
-        // Quick red flash on hit - only cosmetic if not affectPvP
+        // Quick red flash on hit
         if (canVignette()) vignette(player, Color.RED, 0.6f, 5);
         if (canChromaticAberration() && canAffectPvP()) chromaticAberration(player, 0.3, 5);
         if (canScreenShake()) screenShake(player, 0.4, 5);
@@ -469,7 +456,7 @@ public class ScreenEffectsAPI {
     public void killFlash(Player player, Theme theme) {
         if (!player.isOnline()) return;
         
-        // Satisfying kill flash - cosmetic only
+        // Satisfying kill flash
         colorPulse(player, theme.getAccentColor(), 0.7, 15, 2);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 2.0f);
     }
@@ -638,7 +625,7 @@ public class ScreenEffectsAPI {
 
     // ════════════════════════════════════════════════════════════════════
     // CLEAR EFFECTS
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
 
     public void clearAll(Player player) {
         if (!player.isOnline()) return;
@@ -647,7 +634,6 @@ public class ScreenEffectsAPI {
         player.removePotionEffect(PotionEffectType.BLINDNESS);
         player.removePotionEffect(PotionEffectType.DARKNESS);
         player.removePotionEffect(PotionEffectType.NAUSEA);
-        player.removePotionEffect(PotionEffectType.CONFUSION);
         player.removePotionEffect(PotionEffectType.GLOWING);
         
         // Cancel active tasks
@@ -663,7 +649,7 @@ public class ScreenEffectsAPI {
 
     // ════════════════════════════════════════════════════════════════════
     // UTILITIES
-    // ════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
 
     private String formatPhaseName(EventPhase phase) {
         String name = phase.name().replace("_", " ");

@@ -106,7 +106,7 @@ public class DynamicSoundscapes {
         switch (aspect) {
             case INFERNO -> {
                 if (tick % 80 == 0) playSound(loc, Sound.BLOCK_FIRE_AMBIENT, 0.1f, 1.0f + random.nextFloat() * 0.5f);
-                if (stability < 30 && tick % 30 == 0) playSound(loc, Sound.ENTITY_BLAZE_BREATHE, 0.15f, 0.5f + random.nextFloat() * 0.5f);
+                if (stability < 30 && tick % 30 == 0) playSound(loc, Sound.ENTITY_BLAZE_AMBIENT, 0.15f, 0.5f + random.nextFloat() * 0.5f);
             }
             case TIDE -> {
                 if (tick % 60 == 0) playSound(loc, Sound.BLOCK_WATER_AMBIENT, 0.1f, 0.8f + random.nextFloat() * 0.4f);
@@ -125,7 +125,7 @@ public class DynamicSoundscapes {
                 if (stability >= 100 && tick % 60 == 0) playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 0.15f, 1.5f);
             }
             case WAR -> {
-                if (tick % 100 == 0) playSound(loc, Sound.ENTITY_IRON_GOLEM_HURT, 0.08f, 0.5f + random.nextFloat() * 0.5f);
+                if (tick % 100 == 0) playSound(loc, Sound.ENTITY_IRON_GOLEM_AMBIENT, 0.08f, 0.5f + random.nextFloat() * 0.5f);
                 if (stability < 30 && tick % 20 == 0) playSound(loc, Sound.ENTITY_RAVAGER_ROAR, 0.1f, 0.3f + random.nextFloat() * 0.4f);
             }
             case COSMOS -> {
@@ -163,9 +163,9 @@ public class DynamicSoundscapes {
         }
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
     // ABILITY SOUNDS - Layered, directional, reactive
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
 
     public void playCastSound(Player player, Theme theme, int tier, Location target) {
         Location loc = player.getLocation();
@@ -245,15 +245,6 @@ public class DynamicSoundscapes {
                 float vol = (float) (0.3 * (1 - dist / 20));
                 playSound(nearby, impactLoc, theme.getImpactSound(), vol, pitch * 0.8f);
             }
-        }
-    }
-
-    private void playSound(Player player, Location location, Sound sound, float volume, float pitch) {
-        if (!plugin.getConfig().getBoolean("visual-effects.sound-seed-enabled", true)) {
-            player.playSound(location, sound, volume, pitch);
-        } else {
-            long seed = getSoundSeed(player);
-            player.playSound(location, sound, SoundCategory.MASTER, volume, pitch, seed);
         }
     }
 
@@ -368,9 +359,9 @@ public class DynamicSoundscapes {
         }
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
     // HEARTBEAT & STABILITY SOUNDS
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
 
     public void playHeartbeat(Player player, Theme theme, int stability) {
         if (!player.isOnline()) return;
@@ -443,7 +434,7 @@ public class DynamicSoundscapes {
         }.runTaskLater(plugin, 20L);
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
     // TIER PROGRESSION
     // ════════════════════════════════════════════════════════════════════
 
@@ -465,9 +456,9 @@ public class DynamicSoundscapes {
         }
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
     // ASPECT TRANSITION
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
 
     public void playAspectTransitionSound(Player player, Theme oldTheme, Theme newTheme) {
         if (!player.isOnline()) return;
@@ -508,9 +499,9 @@ public class DynamicSoundscapes {
         }.runTaskLater(plugin, 20L);
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
     // EVENT SOUNDS
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
 
     public void playEventPhaseSound(Player player, Theme theme, EventPhase phase) {
         if (!player.isOnline()) return;
@@ -532,7 +523,7 @@ public class DynamicSoundscapes {
         playSound(player, theme.getUltimateSound(), 1.0f, 0.8f);
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
     // COMBAT SOUNDS
     // ════════════════════════════════════════════════════════════════════
 
@@ -560,7 +551,7 @@ public class DynamicSoundscapes {
         playSound(player, theme.getUltimateSound(), 0.5f, 0.5f);
     }
 
-    // ════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════
     // CLEAR ALL
     // ════════════════════════════════════════════════════════════════════
 

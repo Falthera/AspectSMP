@@ -574,26 +574,28 @@ public class ListenerManager implements Listener {
                 return;
             }
         }
-        
-        // Also check for drag events
-        if (event instanceof InventoryDragEvent dragEvent) {
-            boolean hasHeart = dragEvent.getNewItems().values().stream()
-                .anyMatch(HeartOfTheSea::isHeartOfTheSea);
-            if (!hasHeart) return;
-            
-            if (dragEvent.getInventory().getHolder() instanceof Player) {
-                int currentHeartCount = 0;
-                for (ItemStack item : player.getInventory().getContents()) {
-                    if (HeartOfTheSea.isHeartOfTheSea(item)) currentHeartCount++;
-                }
-                ItemStack offHand = player.getInventory().getItemInOffHand();
-                if (HeartOfTheSea.isHeartOfTheSea(offHand)) currentHeartCount++;
+    }
 
-                if (currentHeartCount >= 1) {
-                    dragEvent.setCancelled(true);
-                    player.sendMessage("§cYou can only have one Heart of the Sea in your inventory!");
-                    return;
-                }
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        
+        boolean hasHeart = event.getNewItems().values().stream()
+            .anyMatch(HeartOfTheSea::isHeartOfTheSea);
+        if (!hasHeart) return;
+        
+        if (event.getInventory().getHolder() instanceof Player) {
+            int currentHeartCount = 0;
+            for (ItemStack item : player.getInventory().getContents()) {
+                if (HeartOfTheSea.isHeartOfTheSea(item)) currentHeartCount++;
+            }
+            ItemStack offHand = player.getInventory().getItemInOffHand();
+            if (HeartOfTheSea.isHeartOfTheSea(offHand)) currentHeartCount++;
+
+            if (currentHeartCount >= 1) {
+                event.setCancelled(true);
+                player.sendMessage("§cYou can only have one Heart of the Sea in your inventory!");
+                return;
             }
         }
     }
