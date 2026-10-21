@@ -12,11 +12,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -56,6 +59,11 @@ public class FrozenEclipseEvent {
     private List<Location> frozenMonoliths = new ArrayList<>();
     private int monolithsActivated = 0;
     private static final int REQUIRED_MONOLITHS = 8;
+
+    // Missing fields
+    private boolean frostMonarchSpawned = false;
+    private BukkitTask monarchStageTask;
+    private BukkitTask crucibleBorderTask;
 
     public FrozenEclipseEvent(AspectSMP plugin) {
         this.plugin = plugin;
@@ -208,7 +216,7 @@ public class FrozenEclipseEvent {
                         player.getWorld().spawnParticle(org.bukkit.Particle.SNOWFLAKE,
                             player.getLocation().add(0, 2, 0), 5, 3, 1, 3, 0.02);
                         if (frostStage >= 2) {
-                            player.getWorld().spawnParticle(org.bukkit.Particle.FROST,
+                            player.getWorld().spawnParticle(org.bukkit.Particle.SNOWFLAKE,
                                 player.getLocation().add(0, 1, 0), 3, 2, 1, 2, 0.01);
                         }
                     }
@@ -352,7 +360,7 @@ public class FrozenEclipseEvent {
 
             // Particles and sound
             overworld.spawnParticle(org.bukkit.Particle.END_ROD, monolith.add(0, 3, 0), 50, 2, 3, 2, 0.05);
-            overworld.spawnParticle(org.bukkit.Particle.FROST, monolith.add(0, 2, 0), 30, 2, 2, 2, 0.02);
+            overworld.spawnParticle(org.bukkit.Particle.SNOWFLAKE, monolith.add(0, 2, 0), 30, 2, 2, 2, 0.02);
             overworld.playSound(monolith, Sound.BLOCK_BEACON_ACTIVATE, 1.5f, 0.5f);
         }
 
@@ -528,13 +536,13 @@ public class FrozenEclipseEvent {
         frostMonarchEntity.getWorld().playSound(frostMonarchEntity.getLocation(), Sound.ENTITY_WITHER_SPAWN, 2.0f, 0.5f);
 
         if (stage == 2) {
-            frostMonarchEntity.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 3, true, false));
+            frostMonarchEntity.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Integer.MAX_VALUE, 3, true, false));
             for (int i = 0; i < 4; i++) {
                 Location spawn = frostMonarchEntity.getLocation().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10);
                 new GlacierTitan(plugin, spawn);
             }
         } else if (stage == 3) {
-            frostMonarchEntity.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+            frostMonarchEntity.removePotionEffect(PotionEffectType.RESISTANCE);
             Bukkit.broadcastMessage("§4§lTHE FROST MONARCH ENRAGES!");
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.getWorld().equals(frostMonarchEntity.getWorld())) {
@@ -571,7 +579,6 @@ public class FrozenEclipseEvent {
         Bukkit.getServer().sendMessage(
             Component.text("THE MONARCH IS DEAD. ONLY ONE MAY CLAIM THE WINTER.")
                 .color(NamedTextColor.RED)
-                .build()
         );
 
         // Ice Core in the center
