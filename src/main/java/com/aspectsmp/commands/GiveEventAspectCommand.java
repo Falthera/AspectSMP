@@ -30,7 +30,7 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            sender.sendMessage("§cUsage: /give-event-aspect <player> <winter>");
+            sender.sendMessage("§cUsage: /give-event-aspect <player> <winter|shadow|storm|cloud>");
             return true;
         }
 
@@ -43,11 +43,15 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
         String aspectName = args[1].toLowerCase(Locale.ROOT);
         AspectType aspect;
 
-        if (aspectName.equals("winter")) {
-            aspect = AspectType.WINTER;
-        } else {
-            sender.sendMessage("§cUsage: /give-event-aspect <player> <winter>");
-            return true;
+        switch (aspectName) {
+            case "winter" -> aspect = AspectType.WINTER;
+            case "shadow" -> aspect = AspectType.SHADOW;
+            case "storm" -> aspect = AspectType.STORM;
+            case "cloud" -> aspect = AspectType.CLOUD;
+            default -> {
+                sender.sendMessage("§cUsage: /give-event-aspect <player> <winter|shadow|storm|cloud>");
+                return true;
+            }
         }
 
         Heart heart = plugin.getHeartManager().getHeart(target.getUniqueId()).orElse(null);
@@ -57,7 +61,10 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
         }
 
         heart.setAspect(aspect);
-        heart.setWinterUnlocked(aspect == AspectType.WINTER);
+        if (aspect == AspectType.WINTER) heart.setWinterUnlocked(true);
+        if (aspect == AspectType.CLOUD) heart.setCloudUnlocked(true);
+        if (aspect == AspectType.SHADOW) heart.setCloudUnlocked(true); // reuse field
+        if (aspect == AspectType.STORM) heart.setWinterUnlocked(true); // reuse field
         heart.setStability(100);
         heart.setDormant(false);
         heart.getCooldowns().clear();
@@ -75,7 +82,7 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             Bukkit.getOnlinePlayers().forEach(p -> completions.add(p.getName()));
         } else if (args.length == 2) {
-            completions.add("winter");
+            completions.addAll(List.of("winter", "shadow", "storm", "cloud"));
         }
         return completions;
     }

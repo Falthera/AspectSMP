@@ -41,8 +41,8 @@ public class GravityPullAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         org.bukkit.Location loc = player.getLocation();
-        player.getWorld().spawnParticle(Particle.PORTAL, loc, 80, 3, 3, 3);
-        player.getWorld().spawnParticle(Particle.END_ROD, loc, 30, 2, 2, 2);
+        player.getWorld().spawnParticle(Particle.PORTAL, loc, 60, 3, 3, 3);
+        player.getWorld().spawnParticle(Particle.END_ROD, loc, 25, 2, 2, 2);
         playSound(player, Sound.ENTITY_ENDER_DRAGON_HURT, 1.2f, 0.8f);
         playSound(player, Sound.BLOCK_BEACON_ACTIVATE, 0.8f, 1.5f);
 
@@ -54,11 +54,16 @@ public class GravityPullAbility extends BaseAbility {
             Vector vec = loc.clone().add(0, 1, 0).toVector().subtract(entity.getLocation().toVector()).normalize().multiply(0.7);
             entity.setVelocity(entity.getVelocity().add(vec));
             if (entity instanceof Player target) {
-                target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 1, true, false, true));
+                target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 0, true, false, true));
             }
         }
 
-        applyCooldown(player, getId(), 5000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 5000L;
     }
 }

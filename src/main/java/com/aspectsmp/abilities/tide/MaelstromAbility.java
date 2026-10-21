@@ -48,26 +48,31 @@ public class MaelstromAbility extends BaseAbility {
             int ticks = 0;
             @Override
             public void run() {
-                if (!player.isOnline() || ticks >= 100) {
+                if (!player.isOnline() || ticks >= 80) {
                     cancel();
                     return;
                 }
                 ticks += 10;
-                center.getWorld().spawnParticle(Particle.BUBBLE_COLUMN_UP, center, 40, 4, 1, 4);
+                center.getWorld().spawnParticle(Particle.BUBBLE_COLUMN_UP, center, 30, 4, 1, 4);
                 center.getWorld().getEntities().stream()
                     .filter(e -> e instanceof Player && e != player && e.getLocation().distanceSquared(center) <= 25)
                     .forEach(e -> {
-                        Vector pull = center.toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.5);
+                        Vector pull = center.toVector().subtract(e.getLocation().toVector()).normalize().multiply(0.4);
                         e.setVelocity(pull);
                         if (e instanceof Player target) {
-                            damageIgnoreArmor(target, 4 * getPowerMultiplier(player, heart), player);
-                            target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.MINING_FATIGUE, 30, 1));
+                            damageIgnoreArmor(target, 3.0 * getPowerMultiplier(player, heart), player);
+                            target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.MINING_FATIGUE, 20, 0));
                         }
                     });
             }
         }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, 10L);
 
-        applyCooldown(player, getId(), 60000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 80000L;
     }
 }

@@ -36,12 +36,12 @@ public class OreSenseAbility extends BaseAbility {
 
         player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, player.getLocation().add(0, 1, 0), 30, 0.5, 0.5, 0.5);
         playSound(player, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.0f);
-        player.sendMessage("§7Prospecting for ores...");
+        player.sendMessage("§7Prospecting for ores... §f(15 seconds)");
 
-        int radius = 10;
-        int heightRange = 5;
-        int duration = 100;
-        int interval = 10;
+        int radius = 15;
+        int heightRange = 8;
+        int duration = 150;
+        int interval = 5;
 
         new org.bukkit.scheduler.BukkitRunnable() {
             int ticks = 0;
@@ -54,7 +54,7 @@ public class OreSenseAbility extends BaseAbility {
                         for (int z = -radius; z <= radius; z++) {
                             org.bukkit.block.Block block = center.clone().add(x, y, z).getBlock();
                             if (block.getType().toString().contains("ORE")) {
-                                player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, block.getLocation().add(0.5, 0.5, 0.5), 2, 0.2, 0.2, 0.2);
+                                player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, block.getLocation().add(0.5, 0.5, 0.5), 3, 0.3, 0.3, 0.3);
                             }
                         }
                     }
@@ -63,7 +63,12 @@ public class OreSenseAbility extends BaseAbility {
             }
         }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, interval);
 
-        applyCooldown(player, getId(), 60000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 30000L;
     }
 }

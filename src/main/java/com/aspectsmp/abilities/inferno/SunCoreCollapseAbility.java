@@ -47,7 +47,7 @@ public class SunCoreCollapseAbility extends BaseAbility {
             org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
                 @Override
                 public void run() {
-                    player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().add(0, d, 0), 100, 2, 2, 2);
+                    player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().add(0, d, 0), 80, 2, 2, 2);
                 }
             };
             runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), (long) d * 5);
@@ -62,11 +62,16 @@ public class SunCoreCollapseAbility extends BaseAbility {
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
                 damageIgnoreArmor(target, 10 * getPowerMultiplier(player, heart), player);
-                target.setFireTicks(100);
+                target.setFireTicks(80);
             }
         }
 
-        applyCooldown(player, getId(), 60000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 90000L;
     }
 }

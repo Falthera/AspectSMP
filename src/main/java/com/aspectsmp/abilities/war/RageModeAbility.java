@@ -35,28 +35,19 @@ public class RageModeAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().add(0, 1, 0), 50, 1, 1, 1);
+        player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().add(0, 1, 0), 35, 1, 1, 1);
         playSound(player, Sound.ENTITY_WARDEN_ROAR, 1.0f, 0.5f);
 
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.STRENGTH, 100, 1));
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 100, 1));
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.STRENGTH, 80, 0));
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 80, 0));
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.RESISTANCE, 80, 0));
 
-        double damage = player.getAttribute(Attribute.ATTACK_DAMAGE).getValue() * getPowerMultiplier(player, heart);
-        org.bukkit.attribute.AttributeInstance speedAttr = player.getAttribute(Attribute.MOVEMENT_SPEED);
-        double originalSpeed = speedAttr.getBaseValue();
-        speedAttr.setBaseValue(originalSpeed * 1.5);
-
-        org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
-            @Override
-            public void run() {
-                if (player.isOnline()) {
-                    player.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(originalSpeed);
-                }
-            }
-        };
-        runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), 100L);
-
-        applyCooldown(player, getId(), 30000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 25000L;
     }
 }

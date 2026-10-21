@@ -35,7 +35,7 @@ public class LifeLinkAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         org.bukkit.Location loc = player.getLocation();
-        player.getWorld().spawnParticle(Particle.HEART, loc.add(0, 1, 0), 50);
+        player.getWorld().spawnParticle(Particle.HEART, loc.add(0, 1, 0), 40);
         playSound(player, Sound.ENTITY_WITCH_THROW, 1.0f, 1.0f);
 
         org.bukkit.entity.Entity target = loc.getWorld().getEntities().stream()
@@ -45,14 +45,19 @@ public class LifeLinkAbility extends BaseAbility {
             .orElse(null);
 
         if (target instanceof Player p) {
-            double damage = 2 * getPowerMultiplier(player, heart);
+            double damage = 3.0 * getPowerMultiplier(player, heart);
             damageIgnoreArmor(p, damage, player);
             player.heal(damage * 0.5);
-            player.getWorld().spawnParticle(Particle.HEART, loc.add(0, 1, 0), 50);
+            player.getWorld().spawnParticle(Particle.HEART, loc.add(0, 1, 0), 40);
             playSound(player, Sound.ENTITY_WITCH_THROW, 1.0f, 1.0f);
         }
 
-        applyCooldown(player, getId(), 12000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 12000L;
     }
 }

@@ -38,7 +38,7 @@ public class ExecutionChainAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         org.bukkit.Location loc = player.getLocation();
-        player.getWorld().spawnParticle(Particle.CRIT, loc, 100, 2, 2, 2);
+        player.getWorld().spawnParticle(Particle.CRIT, loc, 80, 2, 2, 2);
         playSound(player, Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.0f);
 
         List<Entity> nearby = loc.getWorld().getEntities().stream()
@@ -48,11 +48,16 @@ public class ExecutionChainAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                damageIgnoreArmor(target, 20 * getPowerMultiplier(player, heart), player);
+                damageIgnoreArmor(target, 12.0 * getPowerMultiplier(player, heart), player);
             }
         }
 
-        applyCooldown(player, getId(), 25000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 20000L;
     }
 }

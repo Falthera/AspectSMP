@@ -35,7 +35,7 @@ public class OrbitalShieldAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         player.setInvulnerable(true);
-        player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 2, 0), 50, 1, 1, 1);
+        player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 2, 0), 40, 1, 1, 1);
         playSound(player, Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.0f);
 
         org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
@@ -44,8 +44,8 @@ public class OrbitalShieldAbility extends BaseAbility {
             public void run() {
                 ticks++;
                 if (!player.isOnline()) { cancel(); return; }
-                player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 2, 0), 10, 0.5, 0.5, 0.5);
-                if (ticks >= 100) {
+                player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 2, 0), 8, 0.5, 0.5, 0.5);
+                if (ticks >= 60) {
                     player.setInvulnerable(false);
                     cancel();
                 }
@@ -53,7 +53,12 @@ public class OrbitalShieldAbility extends BaseAbility {
         };
         runnable.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, 2L);
 
-        applyCooldown(player, getId(), 20000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 25000L;
     }
 }

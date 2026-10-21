@@ -3,8 +3,8 @@ package com.aspectsmp.listeners;
 import com.aspectsmp.AspectSMP;
 import com.aspectsmp.core.AspectType;
 import com.aspectsmp.core.Heart;
-import com.aspectsmp.event.NinthSkyEvent;
 import com.aspectsmp.event.EventPhase;
+import com.aspectsmp.event.NinthSkyEvent;
 import com.aspectsmp.items.*;
 import com.aspectsmp.core.RuleModifier;
 import org.bukkit.Bukkit;
@@ -245,10 +245,17 @@ public class ListenerManager implements Listener {
         Heart heart = plugin.getHeartManager().getOrCreateHeart(player.getUniqueId());
         
         boolean hasCloudheart = false;
+        boolean hasShadowheart = false;
+        boolean hasStormheart = false;
         for (ItemStack item : player.getInventory().getContents()) {
             if (CustomItem.isCustomItem(item, "cloudheart")) {
                 hasCloudheart = true;
-                break;
+            }
+            if (CustomItem.isCustomItem(item, "shadowheart")) {
+                hasShadowheart = true;
+            }
+            if (CustomItem.isCustomItem(item, "stormheart")) {
+                hasStormheart = true;
             }
         }
         if (!hasCloudheart) {
@@ -256,55 +263,118 @@ public class ListenerManager implements Listener {
             if (CustomItem.isCustomItem(offHand, "cloudheart")) {
                 hasCloudheart = true;
             }
+            if (CustomItem.isCustomItem(offHand, "shadowheart")) {
+                hasShadowheart = true;
+            }
+            if (CustomItem.isCustomItem(offHand, "stormheart")) {
+                hasStormheart = true;
+            }
         }
 
         if (hasCloudheart) {
             if (heart.getAspect() != AspectType.CLOUD) {
+                AspectType oldAspect = heart.getAspect();
                 heart.setAspect(AspectType.CLOUD);
                 player.sendMessage("§b§lThe Cloudheart pulses... You are bound to the Cloud Aspect!");
+                plugin.getVisualEffectsManager().playAspectShiftVisuals(player, oldAspect, AspectType.CLOUD);
             }
             heart.setCloudUnlocked(true);
         } else if (heart.getAspect() == AspectType.CLOUD) {
-            AspectType[] nonCloud = java.util.Arrays.stream(AspectType.values())
-                    .filter(a -> a != AspectType.CLOUD && a != AspectType.WINTER)
+            AspectType oldAspect = heart.getAspect();
+            AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
+                    .filter(a -> !a.isEventAspect())
                     .toArray(AspectType[]::new);
-            AspectType random = nonCloud[new java.util.Random().nextInt(nonCloud.length)];
+            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
             heart.setAspect(random);
             heart.setCloudUnlocked(false);
             player.sendMessage("§cThe Aspect of the Cloud has been removed. Win the Ninth Sky event to unlock it.");
+            plugin.getVisualEffectsManager().playAspectShiftVisuals(player, oldAspect, random);
+        }
+
+        if (hasShadowheart) {
+            if (heart.getAspect() != AspectType.SHADOW) {
+                AspectType oldAspect = heart.getAspect();
+                heart.setAspect(AspectType.SHADOW);
+                player.sendMessage("§8§lThe Shadowheart whispers... You are bound to the Shadow Aspect!");
+                plugin.getVisualEffectsManager().playAspectShiftVisuals(player, oldAspect, AspectType.SHADOW);
+            }
+            heart.setCloudUnlocked(true);
+        } else if (heart.getAspect() == AspectType.SHADOW) {
+            AspectType oldAspect = heart.getAspect();
+            AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
+                    .filter(a -> !a.isEventAspect())
+                    .toArray(AspectType[]::new);
+            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+            heart.setAspect(random);
+            heart.setCloudUnlocked(false);
+            player.sendMessage("§cThe Aspect of Shadow has been removed. Win the Shadow's Descent event to unlock it.");
+            plugin.getVisualEffectsManager().playAspectShiftVisuals(player, oldAspect, random);
+        }
+
+        if (hasStormheart) {
+            if (heart.getAspect() != AspectType.STORM) {
+                AspectType oldAspect = heart.getAspect();
+                heart.setAspect(AspectType.STORM);
+                player.sendMessage("§b§lThe Stormheart howls... You are bound to the Storm Aspect!");
+                plugin.getVisualEffectsManager().playAspectShiftVisuals(player, oldAspect, AspectType.STORM);
+            }
+            heart.setWinterUnlocked(true);
+        } else if (heart.getAspect() == AspectType.STORM) {
+            AspectType oldAspect = heart.getAspect();
+            AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
+                    .filter(a -> !a.isEventAspect())
+                    .toArray(AspectType[]::new);
+            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+            heart.setAspect(random);
+            heart.setWinterUnlocked(false);
+            player.sendMessage("§cThe Aspect of Storm has been removed. Win the Tempest's Fury event to unlock it.");
+            plugin.getVisualEffectsManager().playAspectShiftVisuals(player, oldAspect, random);
         }
 
         if (plugin.getEventManager() != null && plugin.getEventManager().getNinthSkyEvent() != null) {
             NinthSkyEvent ninthSky = plugin.getEventManager().getNinthSkyEvent();
             if (ninthSky.isActive() && player.getWorld().getEnvironment() == World.Environment.NORMAL) {
+                // Save location for /leaveevent
+                plugin.setEventJoinLocation(player.getUniqueId(), player.getLocation());
                 ninthSky.addParticipant(player);
                 player.sendMessage("§eYou have joined the Awakening of the Ninth Sky event!");
-
-                EventPhase phase = ninthSky.getPhase();
-                if (phase == EventPhase.NINTH_SKY_REALM || phase == EventPhase.TRIALS || phase == EventPhase.SKY_GUARDIAN) {
-                    World skyWorld = Bukkit.getWorld("ninth_sky");
-                    if (skyWorld != null) {
-                        Location spawn = skyWorld.getSpawnLocation().add(0, 20, 0);
-                        int safeY = skyWorld.getHighestBlockYAt(spawn);
-                        spawn.setY(safeY + 2);
-                        if (spawn.getBlock().getType().isSolid()) {
-                            spawn.setY(safeY + 3);
-                        }
-                        player.teleport(spawn);
-                        player.sendMessage("§eYou have been transported to the Ninth Sky Realm.");
-                    }
-                }
             }
         }
         
         if (heart.getAspect() == AspectType.WINTER && !heart.isWinterUnlocked()) {
-            AspectType[] nonWinter = java.util.Arrays.stream(AspectType.values())
-                    .filter(a -> a != AspectType.WINTER)
+            AspectType oldAspect = heart.getAspect();
+            AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
+                    .filter(a -> !a.isEventAspect())
                     .toArray(AspectType[]::new);
-            AspectType random = nonWinter[new java.util.Random().nextInt(nonWinter.length)];
+            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
             heart.setAspect(random);
             heart.setWinterUnlocked(false);
             player.sendMessage("§cThe Aspect of Winter has been removed. Win the Frozen Eclipse event to unlock it.");
+            plugin.getVisualEffectsManager().playAspectShiftVisuals(player, oldAspect, random);
+        }
+        
+        if (heart.getAspect() == AspectType.SHADOW && !heart.isCloudUnlocked()) {
+            AspectType oldAspect = heart.getAspect();
+            AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
+                    .filter(a -> !a.isEventAspect())
+                    .toArray(AspectType[]::new);
+            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+            heart.setAspect(random);
+            heart.setCloudUnlocked(false);
+            player.sendMessage("§cThe Aspect of Shadow has been removed. Win the Shadow event to unlock it.");
+            plugin.getVisualEffectsManager().playAspectShiftVisuals(player, oldAspect, random);
+        }
+        
+        if (heart.getAspect() == AspectType.STORM && !heart.isWinterUnlocked()) {
+            AspectType oldAspect = heart.getAspect();
+            AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
+                    .filter(a -> !a.isEventAspect())
+                    .toArray(AspectType[]::new);
+            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+            heart.setAspect(random);
+            heart.setWinterUnlocked(false);
+            player.sendMessage("§cThe Aspect of Storm has been removed. Win the Storm event to unlock it.");
+            plugin.getVisualEffectsManager().playAspectShiftVisuals(player, oldAspect, random);
         }
         
         if (player.isOnline()) {
@@ -317,6 +387,9 @@ public class ListenerManager implements Listener {
             if (player.isOnline()) {
                 HeartOfTheSea.ensureBound(player);
                 plugin.getScoreboardManager().updatePlayer(player);
+                if (heart != null && !heart.isDormant()) {
+                    plugin.getVisualEffectsManager().startPassiveEffects(player);
+                }
             }
         }, 20L);
     }
@@ -328,25 +401,9 @@ public class ListenerManager implements Listener {
             if (player.isOnline()) {
                 HeartOfTheSea.ensureBound(player);
                 plugin.getScoreboardManager().updatePlayer(player);
-
-                if (plugin.getEventManager() != null && plugin.getEventManager().getNinthSkyEvent() != null) {
-                    NinthSkyEvent ninthSky = plugin.getEventManager().getNinthSkyEvent();
-                    if (ninthSky.isActive() && ninthSky.getParticipants().contains(player.getUniqueId())) {
-                        EventPhase phase = ninthSky.getPhase();
-                        if (phase == EventPhase.NINTH_SKY_REALM || phase == EventPhase.TRIALS || phase == EventPhase.SKY_GUARDIAN) {
-                            World skyWorld = Bukkit.getWorld("ninth_sky");
-                            if (skyWorld != null) {
-                                Location spawn = skyWorld.getSpawnLocation().add(0, 20, 0);
-                                int safeY = skyWorld.getHighestBlockYAt(spawn);
-                                spawn.setY(safeY + 2);
-                                if (spawn.getBlock().getType().isSolid()) {
-                                    spawn.setY(safeY + 3);
-                                }
-                                player.teleport(spawn);
-                                player.sendMessage("§eYou have been returned to the Ninth Sky.");
-                            }
-                        }
-                    }
+                Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+                if (heart != null && !heart.isDormant()) {
+                    plugin.getVisualEffectsManager().startPassiveEffects(player);
                 }
             }
         }, 20L);
@@ -362,6 +419,7 @@ public class ListenerManager implements Listener {
         plugin.getScoreboardManager().onPlayerQuit(player);
         plugin.getCombatManager().handleLogout(player);
         removeTrustBuffs(player);
+        plugin.getVisualEffectsManager().stopPassiveEffects(player);
     }
 
     @EventHandler
@@ -375,7 +433,7 @@ public class ListenerManager implements Listener {
                 if (killer != null) {
                     ninthSky.awardWinner(killer);
                 }
-                ninthSky.advancePhase(com.aspectsmp.event.EventPhase.COMPLETED);
+                ninthSky.advancePhase(com.aspectsmp.event.EventPhase.SKY_CONVERGENCE);
             }
         }
 
@@ -387,7 +445,7 @@ public class ListenerManager implements Listener {
                 if (killer != null) {
                     frozenEclipse.awardWinner(killer);
                 }
-                frozenEclipse.advancePhase(com.aspectsmp.event.EventPhase.COMPLETED);
+                frozenEclipse.advancePhase(com.aspectsmp.event.EventPhase.FROZEN_CRUCIBLE);
             }
         }
     }
@@ -400,7 +458,14 @@ public class ListenerManager implements Listener {
             ItemStack item = event.getItem();
             if (item != null && (item.getType() == org.bukkit.Material.FLINT_AND_STEEL || item.getType() == org.bukkit.Material.FIRE_CHARGE)) {
                 com.aspectsmp.event.FrozenEclipseEvent eclipse = plugin.getEventManager().getFrozenEclipseEvent();
-                if (eclipse != null && eclipse.getPhase() == com.aspectsmp.event.EventPhase.TRIALS) {
+                if (eclipse != null && eclipse.getPhase() == com.aspectsmp.event.EventPhase.DEEP_FREEZE) {
+                    // Allow monolith activation
+                    Location blockLoc = event.getClickedBlock().getLocation();
+                    if (eclipse.getFrozenMonoliths() != null && eclipse.getFrozenMonoliths().contains(blockLoc.clone().add(0, -6, 0))) {
+                        eclipse.activateMonolith(player, blockLoc.clone().add(0, -6, 0));
+                        event.setCancelled(true);
+                        return;
+                    }
                     return;
                 }
             }
@@ -472,14 +537,6 @@ public class ListenerManager implements Listener {
     }
 
     @EventHandler
-    public void onItemDrop(PlayerDropItemEvent event) {
-        ItemStack item = event.getItemDrop().getItemStack();
-        if (HeartOfTheSea.isHeartOfTheSea(item)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         
@@ -490,11 +547,13 @@ public class ListenerManager implements Listener {
         
         if (!heartCurrent && !heartCursor) return;
         
+        // Cancel drop
         if (event.getClick() == org.bukkit.event.inventory.ClickType.DROP) {
             event.setCancelled(true);
             return;
         }
         
+        // Cancel moving to non-player inventories (hoppers, chests, etc.)
         org.bukkit.inventory.Inventory topInv = event.getView().getTopInventory();
         if (topInv != null && !(topInv.getHolder() instanceof Player)) {
             event.setCancelled(true);
@@ -515,12 +574,27 @@ public class ListenerManager implements Listener {
                 return;
             }
         }
-    }
+        
+        // Also check for drag events
+        if (event instanceof InventoryDragEvent dragEvent) {
+            boolean hasHeart = dragEvent.getNewItems().values().stream()
+                .anyMatch(HeartOfTheSea::isHeartOfTheSea);
+            if (!hasHeart) return;
+            
+            if (dragEvent.getInventory().getHolder() instanceof Player) {
+                int currentHeartCount = 0;
+                for (ItemStack item : player.getInventory().getContents()) {
+                    if (HeartOfTheSea.isHeartOfTheSea(item)) currentHeartCount++;
+                }
+                ItemStack offHand = player.getInventory().getItemInOffHand();
+                if (HeartOfTheSea.isHeartOfTheSea(offHand)) currentHeartCount++;
 
-    @EventHandler
-    public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (HeartOfTheSea.isHeartOfTheSea(event.getItemDrop().getItemStack())) {
-            event.setCancelled(true);
+                if (currentHeartCount >= 1) {
+                    dragEvent.setCancelled(true);
+                    player.sendMessage("§cYou can only have one Heart of the Sea in your inventory!");
+                    return;
+                }
+            }
         }
     }
 
@@ -549,24 +623,6 @@ public class ListenerManager implements Listener {
             event.setCancelled(true);
         }
     }
-
-    @EventHandler
-    public void onInventoryDrag(InventoryDragEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) return;
-        
-        boolean hasHeart = event.getNewItems().values().stream()
-            .anyMatch(HeartOfTheSea::isHeartOfTheSea);
-        if (!hasHeart) return;
-        
-        if (event.getInventory().getHolder() instanceof Player) {
-            int currentHeartCount = 0;
-            for (ItemStack item : player.getInventory().getContents()) {
-                if (HeartOfTheSea.isHeartOfTheSea(item)) currentHeartCount++;
-            }
-            ItemStack offHand = player.getInventory().getItemInOffHand();
-            if (HeartOfTheSea.isHeartOfTheSea(offHand)) currentHeartCount++;
-
-            if (currentHeartCount >= 1) {
                 event.setCancelled(true);
                 player.sendMessage("§cYou can only have one Heart of the Sea in your inventory!");
                 return;
@@ -620,6 +676,7 @@ public class ListenerManager implements Listener {
         player.sendMessage("§6Heart upgraded to Tier 2!");
         consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
+        plugin.getVisualEffectsManager().playHeartUpgradeVisuals(player, 2);
     }
 
     private void handleHeartResonator(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
@@ -642,6 +699,7 @@ public class ListenerManager implements Listener {
         player.sendMessage("§dHeart upgraded to Tier 3!");
         consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
+        plugin.getVisualEffectsManager().playHeartUpgradeVisuals(player, 3);
     }
 
     private void handleHeartRestorationKit(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
@@ -655,12 +713,14 @@ public class ListenerManager implements Listener {
             player.sendMessage("§cYou need 30 Essence to restore your Heart!");
             return;
         }
+        int oldStability = heart.getStability();
         heart.setDormant(false);
         heart.setStability(50);
         heart.addEssence(-30);
         player.sendMessage("§bHeart restored!");
         consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
+        plugin.getVisualEffectsManager().playStabilityChangeVisuals(player, oldStability, 50);
     }
 
     private void handleReforgingCore(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
@@ -684,6 +744,7 @@ public class ListenerManager implements Listener {
         
         consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
+        plugin.getVisualEffectsManager().playAspectShiftVisuals(player, current, newAspect);
     }
 
     private void handleStabilityBottle(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
@@ -699,11 +760,13 @@ public class ListenerManager implements Listener {
         }
         int restoreAmount = com.aspectsmp.items.StabilityBottle.getStoredStability(item);
         if (restoreAmount <= 0) restoreAmount = 50;
+        int oldStability = heart.getStability();
         heart.addStability(restoreAmount);
         heart.addEssence(-10);
         player.sendMessage("§aStability restored by " + restoreAmount + "!");
         consumeOneItem(player, hand, item);
         plugin.getScoreboardManager().updatePlayer(player);
+        plugin.getVisualEffectsManager().playStabilityChangeVisuals(player, oldStability, heart.getStability());
     }
 
     @EventHandler
@@ -723,6 +786,10 @@ public class ListenerManager implements Listener {
         }
         
         heart.addEssence((long) (event.getDamage() * 2));
+        long essenceGained = (long) (event.getDamage() * 2);
+        if (essenceGained > 0) {
+            plugin.getVisualEffectsManager().playEssenceGainVisuals(player, essenceGained);
+        }
         
         if (heart.getAspect() == AspectType.INFERNO && event.getEntity() instanceof org.bukkit.entity.LivingEntity target && target.getFireTicks() > 0) {
             event.setDamage(event.getDamage() * 1.2);
@@ -747,8 +814,13 @@ public class ListenerManager implements Listener {
             Heart heart = plugin.getHeartManager().getHeart(killer.getUniqueId()).orElse(null);
             if (heart == null || heart.isDormant()) return;
             
+            int oldStability = heart.getStability();
             heart.addStability(5);
             heart.addEssence(10);
+            
+            plugin.getVisualEffectsManager().playKillVisuals(killer, event.getEntity());
+            plugin.getVisualEffectsManager().playStabilityChangeVisuals(killer, oldStability, heart.getStability());
+            plugin.getVisualEffectsManager().playEssenceGainVisuals(killer, 10);
         }
     }
 
@@ -758,7 +830,10 @@ public class ListenerManager implements Listener {
             if (player.getHealth() - event.getFinalDamage() <= 0) {
                 Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
                 if (heart != null && !heart.isDormant()) {
+                    int oldStability = heart.getStability();
                     heart.addStability(-10);
+                    plugin.getVisualEffectsManager().playDeathVisuals(player);
+                    plugin.getVisualEffectsManager().playStabilityChangeVisuals(player, oldStability, heart.getStability());
                 }
             }
         }
@@ -776,9 +851,9 @@ public class ListenerManager implements Listener {
             if (frozenEclipse != null && frozenEclipse.isActive() && frozenEclipse.getPhase() == com.aspectsmp.event.EventPhase.FROZEN_CRUCIBLE) {
                 if (frozenEclipse.getParticipants().contains(player.getUniqueId())) {
                     event.setCancelled(true);
-                    World winterWorld = Bukkit.getWorld("winter_kingdom");
-                    if (winterWorld != null) {
-                        player.teleport(winterWorld.getSpawnLocation());
+                    World overworld = Bukkit.getWorlds().get(0);
+                    if (overworld != null) {
+                        player.teleport(overworld.getSpawnLocation());
                     }
                     return;
                 }

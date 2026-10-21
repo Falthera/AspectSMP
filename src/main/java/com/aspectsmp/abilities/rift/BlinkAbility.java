@@ -37,14 +37,19 @@ public class BlinkAbility extends BaseAbility {
         org.bukkit.Location loc = player.getLocation().add(player.getLocation().getDirection().multiply(5));
         if (loc.getBlock().getType().isSolid()) return false;
         
-        loc.getWorld().spawnParticle(Particle.PORTAL, player.getLocation().add(0, 1, 0), 30);
-        loc.getWorld().spawnParticle(Particle.PORTAL, loc.add(0, 1, 0), 30);
+        loc.getWorld().spawnParticle(Particle.PORTAL, player.getLocation().add(0, 1, 0), 25);
+        loc.getWorld().spawnParticle(Particle.PORTAL, loc.add(0, 1, 0), 25);
         playSound(player, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
         
         loc.getWorld().playSound(loc, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
         player.teleport(loc);
 
-        applyCooldown(player, getId(), 6000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 7000L;
     }
 }

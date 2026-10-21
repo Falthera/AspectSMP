@@ -13,10 +13,10 @@ import java.util.List;
 
 public class MeteorCallAbility extends BaseAbility {
 
-    private static final double TARGET_RANGE = 30.0;
-    private static final int METEOR_DELAY_TICKS = 40;
-    private static final double DAMAGE_RADIUS = 5.0;
-    private static final double BASE_DAMAGE = 14.0;
+    private static final double TARGET_RANGE = 25.0;
+    private static final int METEOR_DELAY_TICKS = 50;
+    private static final double DAMAGE_RADIUS = 4.0;
+    private static final double BASE_DAMAGE = 10.0;
 
     @Override
     public String getId() {
@@ -58,8 +58,8 @@ public class MeteorCallAbility extends BaseAbility {
         org.bukkit.Location startLoc = player.getLocation().clone().add(direction.multiply(3)).add(0, 25, 0);
         org.bukkit.Location targetLoc = target.getLocation().clone().add(0, 15, 0);
 
-        player.getWorld().spawnParticle(Particle.END_ROD, startLoc, 20, 1.0, 0.5, 1.0, 0.02);
-        player.getWorld().spawnParticle(Particle.PORTAL, startLoc, 30, 0.5, 0.5, 0.5, 0.01);
+        player.getWorld().spawnParticle(Particle.END_ROD, startLoc, 15, 1.0, 0.5, 1.0, 0.02);
+        player.getWorld().spawnParticle(Particle.PORTAL, startLoc, 20, 0.5, 0.5, 0.5, 0.01);
         playSound(player, Sound.ENTITY_WITHER_SHOOT, 1.0f, 0.6f);
         player.sendMessage("§d§lMeteor incoming! Tracking " + target.getName() + "...");
 
@@ -74,10 +74,10 @@ public class MeteorCallAbility extends BaseAbility {
 
                 targetLoc = target.getLocation().clone().add(0, 15, 0);
                 Vector toTarget = targetLoc.toVector().subtract(startLoc.toVector()).normalize();
-                startLoc.add(toTarget.multiply(1.5));
+                startLoc.add(toTarget.multiply(1.2));
 
-                startLoc.getWorld().spawnParticle(Particle.FLAME, startLoc, 3, 0.3, 0.3, 0.3, 0.02);
-                startLoc.getWorld().spawnParticle(Particle.SMOKE, startLoc, 2, 0.2, 0.2, 0.2, 0.01);
+                startLoc.getWorld().spawnParticle(Particle.FLAME, startLoc, 2, 0.3, 0.3, 0.3, 0.02);
+                startLoc.getWorld().spawnParticle(Particle.SMOKE, startLoc, 1, 0.2, 0.2, 0.2, 0.01);
 
                 tick++;
                 if (tick >= METEOR_DELAY_TICKS) {
@@ -88,7 +88,7 @@ public class MeteorCallAbility extends BaseAbility {
         };
         trackingTask.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, 1L);
 
-        applyCooldown(player, getId(), 25000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
     }
 
@@ -118,9 +118,9 @@ public class MeteorCallAbility extends BaseAbility {
     }
 
     private void landMeteor(Player player, Heart heart, org.bukkit.Location targetLoc, Player trackedTarget) {
-        targetLoc.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, targetLoc, 20, 2.0, 2.0, 2.0, 0.1);
-        targetLoc.getWorld().spawnParticle(Particle.LAVA, targetLoc, 40, 1.5, 1.5, 1.5, 0.05);
-        targetLoc.getWorld().spawnParticle(Particle.FLAME, targetLoc, 60, DAMAGE_RADIUS, 1.0, DAMAGE_RADIUS, 0.1);
+        targetLoc.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, targetLoc, 15, 2.0, 2.0, 2.0, 0.1);
+        targetLoc.getWorld().spawnParticle(Particle.LAVA, targetLoc, 30, 1.5, 1.5, 1.5, 0.05);
+        targetLoc.getWorld().spawnParticle(Particle.FLAME, targetLoc, 50, DAMAGE_RADIUS, 1.0, DAMAGE_RADIUS, 0.1);
         targetLoc.getWorld().playSound(targetLoc, Sound.ENTITY_GENERIC_EXPLODE, 2.0f, 0.7f);
         targetLoc.getWorld().playSound(targetLoc, Sound.BLOCK_LAVA_EXTINGUISH, 1.0f, 0.5f);
 
@@ -129,12 +129,12 @@ public class MeteorCallAbility extends BaseAbility {
             .filter(e -> e.getLocation().distanceSquared(targetLoc) <= DAMAGE_RADIUS * DAMAGE_RADIUS)
             .toList();
 
-        double damage = BASE_DAMAGE + (getPowerMultiplier(heart) * 3.0);
+        double damage = BASE_DAMAGE + (getPowerMultiplier(heart) * 2.0);
         for (Entity entity : nearby) {
             if (entity instanceof Player p && p != player) {
                 damageIgnoreArmor(p, damage, player);
                 p.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 60, 1));
-                p.getWorld().spawnParticle(Particle.CRIT, p.getLocation().add(0, 1, 0), 20, 0.4, 0.6, 0.4, 0.1);
+                p.getWorld().spawnParticle(Particle.CRIT, p.getLocation().add(0, 1, 0), 15, 0.4, 0.6, 0.4, 0.1);
             }
         }
 
@@ -148,6 +148,6 @@ public class MeteorCallAbility extends BaseAbility {
 
     @Override
     protected long getCooldownBase() {
-        return 25000L;
+        return 75000L;
     }
 }

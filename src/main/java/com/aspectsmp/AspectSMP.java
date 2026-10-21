@@ -13,20 +13,34 @@ import com.aspectsmp.commands.ListCommand;
 import com.aspectsmp.commands.ReloadCommand;
 import com.aspectsmp.commands.RepairCommand;
 import com.aspectsmp.commands.RerollCommand;
-import com.aspectsmp.commands.UltimateCommand;
+import com.aspectsmp.commands.ShadowCommand;
+import com.aspectsmp.commands.TempestCommand;
+import com.aspectsmp.commands.TeamCommand;
 import com.aspectsmp.commands.TrustCommand;
+import com.aspectsmp.commands.UltimateCommand;
 import com.aspectsmp.commands.WithdrawCommand;
 import com.aspectsmp.crafting.CraftingManager;
+import com.aspectsmp.core.AspectType;
 import com.aspectsmp.core.RuleModifierManager;
 import com.aspectsmp.event.EventManager;
-import com.aspectsmp.event.SkyRealmManager;
+import com.aspectsmp.event.EventPhase;
 import com.aspectsmp.gui.GuiManager;
 import com.aspectsmp.listeners.ListenerManager;
 import com.aspectsmp.storage.StorageManager;
+import com.aspectsmp.team.TeamManager;
 import com.aspectsmp.trust.TrustManager;
 import com.aspectsmp.util.ScoreboardManager;
+import com.aspectsmp.visual.VisualEffectsManager;
 import com.aspectsmp.combat.CombatManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.UUID;
 
 public class AspectSMP extends JavaPlugin {
 
@@ -40,9 +54,19 @@ public class AspectSMP extends JavaPlugin {
     private RuleModifierManager ruleModifierManager;
     private ScoreboardManager scoreboardManager;
     private TrustManager trustManager;
+    private TeamManager teamManager;
     private CombatManager combatManager;
     private EventManager eventManager;
-    private SkyRealmManager skyRealmManager;
+    private VisualEffectsManager visualEffectsManager;
+    
+    // Event aspect exclusivity tracking
+    private UUID cloudAspectHolder = null;
+    private UUID winterAspectHolder = null;
+    private UUID shadowAspectHolder = null;
+    private UUID stormAspectHolder = null;
+    
+    // Event participant locations for /leaveevent
+    private final java.util.Map<UUID, Location> eventJoinLocations = new java.util.HashMap<>();
 
     @Override
     public void onEnable() {
@@ -58,9 +82,13 @@ public class AspectSMP extends JavaPlugin {
         this.listenerManager = new ListenerManager(this);
         this.ruleModifierManager = new RuleModifierManager(this);
         this.trustManager = new TrustManager(this);
+        this.teamManager = new TeamManager(this, trustManager);
         this.combatManager = new CombatManager(this, trustManager);
         this.eventManager = new EventManager(this);
-        this.skyRealmManager = new SkyRealmManager(this);
+        this.visualEffectsManager = new VisualEffectsManager(this);
+        
+        // Load claimed aspects from storage
+        loadClaimedAspects();
         
         storageManager.initialize();
         abilityManager.initialize();
@@ -72,13 +100,14 @@ public class AspectSMP extends JavaPlugin {
         getServer().getPluginManager().registerEvents(guiManager, this);
         registerCommands();
         registerTrustCommand();
+        registerTeamCommand();
         registerWithdrawCommand();
         
         getServer().getScheduler().runTaskTimerAsynchronously(this, heartManager::saveAll, 6000L, 6000L);
         getServer().getScheduler().runTaskTimer(this, scoreboardManager::updateAll, 20L, 20L);
         getServer().getScheduler().runTaskTimer(this, this::updateAllActionBars, 20L, 20L);
         getServer().getScheduler().runTaskTimer(this, trustManager::save, 6000L, 6000L);
-        getServer().getScheduler().runTaskTimer(this, this::enforceCloudheartRules, 20L, 20L);
+        getServer().getScheduler().runTaskTimer(this, this::enforceCloudheartRules, 20L, 1200L);
         
         getLogger().info("Aspect SMP enabled!");
     }
@@ -97,6 +126,8 @@ public class AspectSMP extends JavaPlugin {
         if (storageManager != null) {
             storageManager.shutdown();
         }
+        saveClaimedAspects();
+        
         getLogger().info("Aspect SMP disabled!");
     }
 
@@ -140,6 +171,10 @@ public class AspectSMP extends JavaPlugin {
         return trustManager;
     }
 
+    public TeamManager getTeamManager() {
+        return teamManager;
+    }
+
     public CombatManager getCombatManager() {
         return combatManager;
     }
@@ -148,70 +183,86 @@ public class AspectSMP extends JavaPlugin {
         return eventManager;
     }
 
-    public SkyRealmManager getSkyRealmManager() {
-        return skyRealmManager;
+    public VisualEffectsManager getVisualEffectsManager() {
+        return visualEffectsManager;
     }
 
-    private void registerCommands() {
-        InfoCommand infoCmd = new InfoCommand(this);
-        getCommand("info").setExecutor(infoCmd);
-        getCommand("info").setTabCompleter(infoCmd);
-        getCommand("list").setExecutor(new ListCommand(this));
-        getCommand("ability1").setExecutor(new Ability1Command(this));
-        getCommand("ability2").setExecutor(new Ability2Command(this));
-        getCommand("ability3").setExecutor(new Ability3Command(this));
-        getCommand("ultimate").setExecutor(new UltimateCommand(this));
-        GiveCommand giveCmd = new GiveCommand(this);
-        getCommand("aspect-give").setExecutor(giveCmd);
-        getCommand("aspect-give").setTabCompleter(giveCmd);
-        GiveEventAspectCommand giveEventCmd = new GiveEventAspectCommand(this);
-        getCommand("give-event-aspect").setExecutor(giveEventCmd);
-        getCommand("give-event-aspect").setTabCompleter(giveEventCmd);
-        RerollCommand rerollCmd = new RerollCommand(this);
-        getCommand("reroll").setExecutor(rerollCmd);
-        getCommand("reroll").setTabCompleter(rerollCmd);
-        RepairCommand repairCmd = new RepairCommand(this);
-        getCommand("repair").setExecutor(repairCmd);
-        getCommand("repair").setTabCompleter(repairCmd);
-        getCommand("reload").setExecutor(new ReloadCommand(this));
-        getCommand("event").setExecutor(eventManager);
-        getCommand("event").setTabCompleter(eventManager);
+    // Event aspect exclusivity methods
+    public boolean isAspectClaimed(AspectType aspect) {
+        return switch (aspect) {
+            case CLOUD -> cloudAspectHolder != null;
+            case WINTER -> winterAspectHolder != null;
+            case SHADOW -> shadowAspectHolder != null;
+            case STORM -> stormAspectHolder != null;
+            default -> false;
+        };
     }
 
-    private void registerTrustCommand() {
-        getCommand("trust").setExecutor(new TrustCommand(this, trustManager));
-        getCommand("trust").setTabCompleter(new TrustCommand(this, trustManager));
+    public UUID getAspectHolder(AspectType aspect) {
+        return switch (aspect) {
+            case CLOUD -> cloudAspectHolder;
+            case WINTER -> winterAspectHolder;
+            case SHADOW -> shadowAspectHolder;
+            case STORM -> stormAspectHolder;
+            default -> null;
+        };
     }
 
-    private void registerWithdrawCommand() {
-        WithdrawCommand withdrawCmd = new WithdrawCommand(this);
-        getCommand("withdraw").setExecutor(withdrawCmd);
-        getCommand("withdraw").setTabCompleter(withdrawCmd);
-        getCommand("leaveevent").setExecutor(new LeaveEventCommand(this));
-        getCommand("eclipse").setExecutor(new EclipseCommand(this));
-    }
-
-    private void updateAllActionBars() {
-        for (org.bukkit.entity.Player player : getServer().getOnlinePlayers()) {
-            scoreboardManager.updateActionBar(player);
+    public void claimAspect(AspectType aspect, UUID player) {
+        switch (aspect) {
+            case CLOUD -> cloudAspectHolder = player;
+            case WINTER -> winterAspectHolder = player;
+            case SHADOW -> shadowAspectHolder = player;
+            case STORM -> stormAspectHolder = player;
         }
+        saveClaimedAspects();
     }
 
-    private void enforceCloudheartRules() {
-        for (org.bukkit.entity.Player player : getServer().getOnlinePlayers()) {
-            org.bukkit.inventory.Inventory inv = player.getInventory();
-            for (int i = 0; i < inv.getContents().length; i++) {
-                org.bukkit.inventory.ItemStack item = inv.getItem(i);
-                if (com.aspectsmp.items.CustomItem.isCustomItem(item, "cloudheart")) {
-                    com.aspectsmp.items.Cloudheart.fixCloudheart(item);
-                    inv.setItem(i, item);
-                }
-            }
-            org.bukkit.inventory.ItemStack offHand = inv.getItemInOffHand();
-            if (com.aspectsmp.items.CustomItem.isCustomItem(offHand, "cloudheart")) {
-                com.aspectsmp.items.Cloudheart.fixCloudheart(offHand);
-                inv.setItemInOffHand(offHand);
-            }
+    public void releaseAspect(AspectType aspect) {
+        switch (aspect) {
+            case CLOUD -> cloudAspectHolder = null;
+            case WINTER -> winterAspectHolder = null;
+            case SHADOW -> shadowAspectHolder = null;
+            case STORM -> stormAspectHolder = null;
         }
+        saveClaimedAspects();
     }
-}
+
+    private void loadClaimedAspects() {
+        FileConfiguration config = getConfig();
+        String cloud = config.getString("claimed-aspects.cloud");
+        String winter = config.getString("claimed-aspects.winter");
+        String shadow = config.getString("claimed-aspects.shadow");
+        String storm = config.getString("claimed-aspects.storm");
+        
+        if (cloud != null) cloudAspectHolder = UUID.fromString(cloud);
+        if (winter != null) winterAspectHolder = UUID.fromString(winter);
+        if (shadow != null) shadowAspectHolder = UUID.fromString(shadow);
+        if (storm != null) stormAspectHolder = UUID.fromString(storm);
+    }
+
+    private void saveClaimedAspects() {
+        FileConfiguration config = getConfig();
+        if (cloudAspectHolder != null) config.set("claimed-aspects.cloud", cloudAspectHolder.toString());
+        if (winterAspectHolder != null) config.set("claimed-aspects.winter", winterAspectHolder.toString());
+        if (shadowAspectHolder != null) config.set("claimed-aspects.shadow", shadowAspectHolder.toString());
+        if (stormAspectHolder != null) config.set("claimed-aspects.storm", stormAspectHolder.toString());
+        saveConfig();
+    }
+
+    // Event location tracking for /leaveevent
+    public void setEventJoinLocation(UUID player, Location location) {
+        eventJoinLocations.put(player, location.clone());
+    }
+
+    public Location getEventJoinLocation(UUID player) {
+        return eventJoinLocations.get(player);
+    }
+
+    public void removeEventJoinLocation(UUID player) {
+        eventJoinLocations.remove(player);
+    }
+
+    public boolean hasEventJoinLocation(UUID player) {
+        return eventJoinLocations.containsKey(player);
+    }

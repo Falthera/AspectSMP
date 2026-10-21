@@ -50,23 +50,28 @@ public class GenesisFieldAbility extends BaseAbility {
             int ticks = 0;
             @Override
             public void run() {
-                if (!player.isOnline() || ticks >= 100) {
+                if (!player.isOnline() || ticks >= 80) {
                     cancel();
                     return;
                 }
                 ticks += 20;
-                loc.getWorld().spawnParticle(Particle.HEART, loc.clone().add(Math.random() - 0.5, 0.5, Math.random() - 0.5), 15);
+                loc.getWorld().spawnParticle(Particle.HEART, loc.clone().add(Math.random() - 0.5, 0.5, Math.random() - 0.5), 10);
                 for (Entity entity : loc.getWorld().getEntities()) {
                     if (entity instanceof Player target && entity.getLocation().distanceSquared(loc) <= 36) {
                         if (target == player || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(player.getUniqueId(), target.getUniqueId()) || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(target.getUniqueId(), player.getUniqueId())) {
-                            target.heal(2 * getPowerMultiplier(player, heart));
+                            target.heal(3.0 * getPowerMultiplier(player, heart));
                         }
                     }
                 }
             }
         }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, 20L);
 
-        applyCooldown(player, getId(), 60000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 90000L;
     }
 }

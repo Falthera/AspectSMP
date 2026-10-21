@@ -14,7 +14,7 @@ import org.bukkit.util.Vector;
 
 public class IciclesAbility extends BaseAbility {
 
-    private static final double RADIUS = 8.0;
+    private static final double RADIUS = 6.0;
     private static final int FALL_DELAY_TICKS = 10;
     private static final int FROST_DURATION_TICKS = 60;
 
@@ -46,7 +46,7 @@ public class IciclesAbility extends BaseAbility {
         for (Entity entity : player.getNearbyEntities(RADIUS, 5.0, RADIUS)) {
             if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 Location targetLoc = target.getLocation().add(0, 8, 0);
-                target.getWorld().spawnParticle(Particle.CRIMSON_SPORE, targetLoc, 20, 0.5, 0.2, 0.5, 0.02);
+                target.getWorld().spawnParticle(Particle.CRIMSON_SPORE, targetLoc, 15, 0.5, 0.2, 0.5, 0.02);
                 target.getWorld().playSound(targetLoc, Sound.BLOCK_POINTED_DRIPSTONE_LAND, 1.0f, 1.2f);
 
                 new BukkitRunnable() {
@@ -56,9 +56,9 @@ public class IciclesAbility extends BaseAbility {
                             cancel();
                             return;
                         }
-                        damageIgnoreArmor(target, 4.0 + getPowerMultiplier(player, heart), player);
+                        damageIgnoreArmor(target, 2.5 + getPowerMultiplier(player, heart), player);
                         target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, FROST_DURATION_TICKS, 0));
-                        target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 30, 0.3, 0.5, 0.3, 0.05);
+                        target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 20, 0.3, 0.5, 0.3, 0.05);
                         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 1.0f, 1.0f);
                     }
                 }.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), FALL_DELAY_TICKS);
@@ -71,6 +71,6 @@ public class IciclesAbility extends BaseAbility {
 
     @Override
     protected long getCooldownBase() {
-        return 4000L;
+        return 5000L;
     }
 }

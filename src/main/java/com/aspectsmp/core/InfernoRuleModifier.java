@@ -2,6 +2,8 @@ package com.aspectsmp.core;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class InfernoRuleModifier implements RuleModifier {
 
@@ -25,5 +27,11 @@ public class InfernoRuleModifier implements RuleModifier {
 
     @Override
     public void applyPassive(Player player) {
+        if (player.getLocation().getBlock().getBiome().getKey().toString().contains("nether") ||
+            player.getLocation().getBlock().getBiome().getKey().toString().contains("desert") ||
+            player.getLocation().getBlock().getBiome().getKey().toString().contains("badlands")) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 60, 0, false, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 80, 0, false, false, true), true);
+        }
     }
 }

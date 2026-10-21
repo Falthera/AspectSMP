@@ -1,4 +1,5 @@
 package com.aspectsmp.core;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
@@ -39,5 +40,9 @@ public class RiftRuleModifier implements RuleModifier {
 
     @Override
     public void applyPassive(Player player) {
+        if (player.getLocation().getY() < 64 || player.getLocation().getBlock().getLightLevel() < 5) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 60, 0, false, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0, false, false, true), true);
+        }
     }
 }

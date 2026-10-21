@@ -12,7 +12,9 @@ public enum AspectType {
     COSMOS("Cosmos", "🌠"),
     FORTUNE("Fortune", "💎"),
     CLOUD("Cloud", "☁"),
-    WINTER("Winter", "❄");
+    WINTER("Winter", "❄"),
+    SHADOW("Shadow", "🌑"),
+    STORM("Storm", "🌪");
 
     private final String displayName;
     private final String emoji;
@@ -40,5 +42,13 @@ public enum AspectType {
         } catch (IllegalArgumentException e) {
             return INFERNO;
         }
+    }
+
+    public boolean isEventAspect() {
+        return this == CLOUD || this == WINTER || this == SHADOW || this == STORM;
+    }
+
+    public boolean isBaseAspect() {
+        return !isEventAspect();
     }
 }

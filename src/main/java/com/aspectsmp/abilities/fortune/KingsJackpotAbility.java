@@ -39,15 +39,24 @@ public class KingsJackpotAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, player.getLocation(), 200, 5, 5, 5);
+        player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, player.getLocation(), 150, 5, 5, 5);
         playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 2.0f, 1.0f);
         
-        long essence = (long) (25 * getPowerMultiplier(player, heart));
+        long essence = (long) (50 * getPowerMultiplier(player, heart));
         heart.addEssence(essence);
         
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.LUCK, 600, 1));
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE, 600, 0));
+        
         player.sendMessage("§6+§e" + essence + "§6 Essence!");
+        player.sendMessage("§7Fortune smiles upon you!");
 
-        applyCooldown(player, getId(), 120000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 120000L;
     }
 }

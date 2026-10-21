@@ -37,7 +37,7 @@ public class LavaBurstAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.LAVA, player.getLocation().add(0, 1, 0), 50, 1, 1, 1);
+        player.getWorld().spawnParticle(Particle.LAVA, player.getLocation().add(0, 1, 0), 35, 1, 1, 1);
         playSound(player, Sound.ENTITY_BLAZE_DEATH, 1.0f, 0.5f);
 
         List<Entity> nearby = player.getWorld().getEntities().stream()
@@ -46,12 +46,17 @@ public class LavaBurstAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target && target != player) {
-                damageIgnoreArmor(target, 6 * getPowerMultiplier(player, heart), player);
-                target.setFireTicks(target.getFireTicks() + 60);
+                damageIgnoreArmor(target, 4.0 * getPowerMultiplier(player, heart), player);
+                target.setFireTicks(target.getFireTicks() + 40);
             }
         }
 
-        applyCooldown(player, getId(), 12000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 12000L;
     }
 }

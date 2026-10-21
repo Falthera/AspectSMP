@@ -13,8 +13,8 @@ import org.bukkit.util.Vector;
 
 public class AbsoluteZeroAbility extends BaseAbility {
 
-    private static final double RADIUS = 7.5;
-    private static final int FREEZE_DURATION_TICKS = 100;
+    private static final double RADIUS = 6.0;
+    private static final int FREEZE_DURATION_TICKS = 80;
 
     @Override
     public String getId() {
@@ -49,21 +49,21 @@ public class AbsoluteZeroAbility extends BaseAbility {
         Vector center = player.getLocation().toVector();
         for (Entity entity : player.getNearbyEntities(RADIUS, 5.0, RADIUS)) {
             if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
-                target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, FREEZE_DURATION_TICKS, 4));
-                target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, FREEZE_DURATION_TICKS, 4));
+                target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, FREEZE_DURATION_TICKS, 2));
+                target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, FREEZE_DURATION_TICKS, 2));
                 target.setFreezeTicks(FREEZE_DURATION_TICKS);
-                target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 30, 0.4, 0.8, 0.4, 0.1);
+                target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 25, 0.4, 0.8, 0.4, 0.1);
             }
         }
 
-        player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(0, 1, 0), 100, RADIUS, 2.0, RADIUS, 0.02);
-        player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 1, 0), 60, RADIUS * 0.6, 1.0, RADIUS * 0.6, 0.02);
+        player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(0, 1, 0), 80, RADIUS, 2.0, RADIUS, 0.02);
+        player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 1, 0), 50, RADIUS * 0.6, 1.0, RADIUS * 0.6, 0.02);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 2.0f, 0.5f);
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                player.getWorld().spawnParticle(Particle.CRIT, player.getLocation().add(0, 0.5, 0), 40, RADIUS * 0.5, 0.5, RADIUS * 0.5, 0.05);
+                player.getWorld().spawnParticle(Particle.CRIT, player.getLocation().add(0, 0.5, 0), 30, RADIUS * 0.5, 0.5, RADIUS * 0.5, 0.05);
                 player.getWorld().playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 1.5f, 0.8f);
             }
         }.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), 20L);
@@ -74,6 +74,6 @@ public class AbsoluteZeroAbility extends BaseAbility {
 
     @Override
     protected long getCooldownBase() {
-        return 120000L;
+        return 100000L;
     }
 }

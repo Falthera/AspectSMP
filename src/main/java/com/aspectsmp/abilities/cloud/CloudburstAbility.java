@@ -13,8 +13,8 @@ import org.bukkit.util.Vector;
 
 public class CloudburstAbility extends BaseAbility {
 
-    private static final double LAUNCH_FORCE = 1.8;
-    private static final double DAMAGE_RADIUS = 6.0;
+    private static final double LAUNCH_FORCE = 1.5;
+    private static final double DAMAGE_RADIUS = 5.0;
     private static final int SLAM_DELAY_TICKS = 40;
 
     @Override
@@ -52,11 +52,11 @@ public class CloudburstAbility extends BaseAbility {
             if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 Vector launch = new Vector(0, LAUNCH_FORCE, 0);
                 target.setVelocity(launch);
-                target.getWorld().spawnParticle(Particle.CLOUD, target.getLocation().add(0, 1, 0), 15, 0.3, 0.5, 0.3, 0.03);
+                target.getWorld().spawnParticle(Particle.CLOUD, target.getLocation().add(0, 1, 0), 10, 0.3, 0.5, 0.3, 0.03);
             }
         }
 
-        player.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, player.getLocation().add(0, 1, 0), 10, DAMAGE_RADIUS * 0.5, 1.0, DAMAGE_RADIUS * 0.5, 0.1);
+        player.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, player.getLocation().add(0, 1, 0), 8, DAMAGE_RADIUS * 0.5, 1.0, DAMAGE_RADIUS * 0.5, 0.1);
         playSound(player, Sound.ENTITY_BREEZE_WIND_BURST, 2.0f, 0.6f);
 
         new BukkitRunnable() {
@@ -64,13 +64,13 @@ public class CloudburstAbility extends BaseAbility {
             public void run() {
                 for (Entity entity : player.getNearbyEntities(DAMAGE_RADIUS, 5.0, DAMAGE_RADIUS)) {
                     if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
-                        Vector slam = new Vector(0, -1.2, 0);
+                        Vector slam = new Vector(0, -1.0, 0);
                         target.setVelocity(slam);
-                        damageIgnoreArmor(target, 8.0 + getPowerMultiplier(player, heart), player);
-                        target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 20, 0.4, 0.6, 0.4, 0.1);
+                        damageIgnoreArmor(target, 6.0 + getPowerMultiplier(player, heart), player);
+                        target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 15, 0.4, 0.6, 0.4, 0.1);
                     }
                 }
-                player.getWorld().spawnParticle(Particle.LARGE_SMOKE, player.getLocation().add(0, 0.5, 0), 40, DAMAGE_RADIUS * 0.5, 0.5, DAMAGE_RADIUS * 0.5, 0.05);
+                player.getWorld().spawnParticle(Particle.LARGE_SMOKE, player.getLocation().add(0, 0.5, 0), 30, DAMAGE_RADIUS * 0.5, 0.5, DAMAGE_RADIUS * 0.5, 0.05);
                 playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 1.5f, 0.8f);
             }
         }.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), SLAM_DELAY_TICKS);
@@ -81,6 +81,6 @@ public class CloudburstAbility extends BaseAbility {
 
     @Override
     protected long getCooldownBase() {
-        return 90000L;
+        return 75000L;
     }
 }

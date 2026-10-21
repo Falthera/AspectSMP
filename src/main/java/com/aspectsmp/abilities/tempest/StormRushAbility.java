@@ -36,10 +36,10 @@ public class StormRushAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         player.setInvulnerable(true);
-        Vector direction = player.getLocation().getDirection().multiply(2.0);
+        Vector direction = player.getLocation().getDirection().multiply(1.8);
         player.setVelocity(direction);
 
-        player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, player.getLocation(), 100, 0.5, 0.5, 0.5);
+        player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, player.getLocation(), 80, 0.5, 0.5, 0.5);
         playSound(player, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 1.0f);
 
         org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
@@ -50,9 +50,14 @@ public class StormRushAbility extends BaseAbility {
                 }
             }
         };
-        runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), 40L);
+        runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), 30L);
 
-        applyCooldown(player, getId(), 20000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 18000L;
     }
 }

@@ -2,6 +2,8 @@ package com.aspectsmp.core;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
 import java.util.UUID;
@@ -31,6 +33,11 @@ public class WarRuleModifier implements RuleModifier {
 
     @Override
     public void applyPassive(Player player) {
+        long now = System.currentTimeMillis();
+        if (lastCombat.containsKey(player.getUniqueId()) && now - lastCombat.get(player.getUniqueId()) < COMBAT_DURATION) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 0, false, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 40, 0, false, false, true), true);
+        }
     }
 
     @Override

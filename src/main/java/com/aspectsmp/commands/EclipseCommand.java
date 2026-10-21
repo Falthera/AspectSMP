@@ -28,11 +28,21 @@ public class EclipseCommand implements CommandExecutor {
             return true;
         }
 
-        if (eclipse.getPhase() != com.aspectsmp.event.EventPhase.FIRST_FROST) {
+        if (eclipse.getPhase() != com.aspectsmp.event.EventPhase.FIRST_FROST &&
+            eclipse.getPhase() != com.aspectsmp.event.EventPhase.DEEP_FREEZE) {
             player.sendMessage("§cThe join period has ended.");
             return true;
         }
 
+        // Check if player already left this event
+        if (plugin.hasEventJoinLocation(player.getUniqueId())) {
+            player.sendMessage("§cYou have already left this event and cannot rejoin.");
+            return true;
+        }
+
+        // Save player's current location for /leaveevent
+        plugin.setEventJoinLocation(player.getUniqueId(), player.getLocation());
+        
         eclipse.addParticipant(player);
         return true;
     }

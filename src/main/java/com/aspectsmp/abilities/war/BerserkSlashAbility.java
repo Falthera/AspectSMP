@@ -38,7 +38,7 @@ public class BerserkSlashAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         org.bukkit.Location loc = player.getLocation();
-        loc.getWorld().spawnParticle(Particle.CRIT, loc.add(loc.getDirection()), 30, 1, 1, 1);
+        loc.getWorld().spawnParticle(Particle.CRIT, loc.add(loc.getDirection()), 25, 1, 1, 1);
         playSound(player, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1.0f, 1.0f);
 
         List<Entity> nearby = loc.getWorld().getEntities().stream()
@@ -48,11 +48,16 @@ public class BerserkSlashAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                damageIgnoreArmor(target, 6 * getPowerMultiplier(player, heart), player);
+                damageIgnoreArmor(target, 3.0 * getPowerMultiplier(player, heart), player);
             }
         }
 
-        applyCooldown(player, getId(), 6000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 6000L;
     }
 }

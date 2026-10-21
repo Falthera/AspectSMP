@@ -44,14 +44,19 @@ public class InfernalChainsAbility extends BaseAbility {
             .orElse(null);
 
         if (target instanceof Player p) {
-            damageIgnoreArmor(p, 4 * getPowerMultiplier(player, heart), player);
-            p.setFireTicks(p.getFireTicks() + 80);
-            p.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 60, 2));
+            damageIgnoreArmor(p, 5.0 * getPowerMultiplier(player, heart), player);
+            p.setFireTicks(p.getFireTicks() + 60);
+            p.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 60, 1));
             player.getWorld().spawnParticle(Particle.FLAME, p.getLocation().add(0, 1, 0), 20, 0.5, 0.5, 0.5);
             playSound(player, Sound.ENTITY_BLAZE_SHOOT, 1.0f, 1.0f);
         }
 
-        applyCooldown(player, getId(), 15000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 15000L;
     }
 }

@@ -35,16 +35,16 @@ public class TidalPrisonAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         org.bukkit.Location loc = player.getLocation();
-        player.getWorld().spawnParticle(Particle.BUBBLE, loc, 50, 2, 2, 2);
+        player.getWorld().spawnParticle(Particle.BUBBLE, loc, 35, 2, 2, 2);
         playSound(player, Sound.ENTITY_DOLPHIN_PLAY, 1.0f, 1.0f);
 
         player.getWorld().getEntities().stream()
             .filter(e -> e instanceof Player && e != player && e.getLocation().distanceSquared(loc) <= 16)
             .forEach(e -> {
                 if (e instanceof Player target) {
-                    damageIgnoreArmor(target, 4 * getPowerMultiplier(player, heart), player);
+                    damageIgnoreArmor(target, 3.0 * getPowerMultiplier(player, heart), player);
                     target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.LEVITATION, 40, 0));
-                    target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 60, 1));
+                    target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 60, 0));
                     
                     org.bukkit.Location targetLoc = target.getLocation();
                     for (int x = -2; x <= 2; x++) {
@@ -81,7 +81,12 @@ public class TidalPrisonAbility extends BaseAbility {
                 }
             });
 
-        applyCooldown(player, getId(), 15000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 15000L;
     }
 }

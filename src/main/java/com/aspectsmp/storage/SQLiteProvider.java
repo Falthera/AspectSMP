@@ -34,7 +34,7 @@ public class SQLiteProvider implements StorageProvider {
                     aspect TEXT NOT NULL,
                     tier INTEGER NOT NULL,
                     stability INTEGER NOT NULL,
-                    essence INTEGER NOT NULL,
+                    essence BIGINT NOT NULL,
                     dormant INTEGER NOT NULL,
                     cloud_unlocked INTEGER NOT NULL DEFAULT 0,
                     winter_unlocked INTEGER NOT NULL DEFAULT 0,

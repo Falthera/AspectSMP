@@ -49,10 +49,15 @@ public class InhaleAbility extends BaseAbility {
             }
         }
 
-        player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 1, 0), 30, 1.5, 1.0, 1.5, 0.02);
+        player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 1, 0), 25, 1.5, 1.0, 1.5, 0.02);
         playSound(player, Sound.ENTITY_BREEZE_IDLE_GROUND, 1.5f, 0.8f);
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 10000L;
     }
 }

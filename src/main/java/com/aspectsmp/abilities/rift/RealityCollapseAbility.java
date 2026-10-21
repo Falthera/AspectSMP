@@ -49,7 +49,7 @@ public class RealityCollapseAbility extends BaseAbility {
             org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
                 @Override
                 public void run() {
-                    loc.getWorld().spawnParticle(Particle.PORTAL, loc.clone().add(Math.random() - 0.5, Math.random(), Math.random() - 0.5), 30);
+                    loc.getWorld().spawnParticle(Particle.PORTAL, loc.clone().add(Math.random() - 0.5, Math.random(), Math.random() - 0.5), 25);
                 }
             };
             runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), i * 10L);
@@ -63,11 +63,16 @@ public class RealityCollapseAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                damageIgnoreArmor(target, 12 * getPowerMultiplier(player, heart), player);
+                damageIgnoreArmor(target, 8.0 * getPowerMultiplier(player, heart), player);
             }
         }
 
-        applyCooldown(player, getId(), 60000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 80000L;
     }
 }

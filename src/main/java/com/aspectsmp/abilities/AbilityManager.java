@@ -131,6 +131,18 @@ public class AbilityManager {
                     abilities.add(new com.aspectsmp.abilities.winter.ShatterAbility());
                     abilities.add(new com.aspectsmp.abilities.winter.AbsoluteZeroAbility());
                 }
+                case SHADOW -> {
+                    abilities.add(new com.aspectsmp.abilities.shadow.ShadowStepAbility());
+                    abilities.add(new com.aspectsmp.abilities.shadow.UmbralBladesAbility());
+                    abilities.add(new com.aspectsmp.abilities.shadow.ShadowMeldAbility());
+                    abilities.add(new com.aspectsmp.abilities.shadow.VoidReaperAbility());
+                }
+                case STORM -> {
+                    abilities.add(new com.aspectsmp.abilities.storm.WindStepAbility());
+                    abilities.add(new com.aspectsmp.abilities.storm.GaleForceAbility());
+                    abilities.add(new com.aspectsmp.abilities.storm.CycloneAbility());
+                    abilities.add(new com.aspectsmp.abilities.storm.TempestAvatarAbility());
+                }
             }
             abilities.forEach(ability -> registeredAbilities.put(ability.getId(), ability));
         }
@@ -161,6 +173,7 @@ public class AbilityManager {
             .orElse(null);
             
         if (tier1Ability != null && canUseAbility(player, tier1Ability)) {
+            plugin.getVisualEffectsManager().playAbilityCastVisuals(player, tier1Ability.getId(), heart.getAspect(), 1);
             tier1Ability.execute(player, heart, null);
             heart.addEssence(5);
             player.sendMessage("§7You have used §f" + tier1Ability.getName() + "§7.");
@@ -183,6 +196,7 @@ public class AbilityManager {
             .orElse(null);
             
         if (tier2Ability != null && canUseAbility(player, tier2Ability)) {
+            plugin.getVisualEffectsManager().playAbilityCastVisuals(player, tier2Ability.getId(), heart.getAspect(), 2);
             tier2Ability.execute(player, heart, null);
             heart.addEssence(10);
             player.sendMessage("§7You have used §f" + tier2Ability.getName() + "§7.");
@@ -210,6 +224,7 @@ public class AbilityManager {
             .orElse(null);
             
         if (tier3Ability != null && canUseAbility(player, tier3Ability)) {
+            plugin.getVisualEffectsManager().playAbilityCastVisuals(player, tier3Ability.getId(), heart.getAspect(), 3);
             tier3Ability.execute(player, heart, null);
             heart.addEssence(15);
             player.sendMessage("§7You have used §f" + tier3Ability.getName() + "§7.");
@@ -238,6 +253,7 @@ public class AbilityManager {
             .orElse(null);
             
         if (ultimate != null && canUseAbility(player, ultimate)) {
+            plugin.getVisualEffectsManager().playAbilityCastVisuals(player, ultimate.getId(), heart.getAspect(), 3);
             ultimate.execute(player, heart, null);
             heart.addEssence(25);
             player.sendMessage("§7You have used §f" + ultimate.getName() + "§7.");

@@ -15,6 +15,8 @@ public class EventManager implements CommandExecutor, TabCompleter {
     private final AspectSMP plugin;
     private NinthSkyEvent ninthSkyEvent;
     private FrozenEclipseEvent frozenEclipseEvent;
+    private ShadowsDescentEvent shadowsDescentEvent;
+    private TempestsFuryEvent tempestsFuryEvent;
 
     public EventManager(AspectSMP plugin) {
         this.plugin = plugin;
@@ -26,6 +28,14 @@ public class EventManager implements CommandExecutor, TabCompleter {
 
     public FrozenEclipseEvent getFrozenEclipseEvent() {
         return frozenEclipseEvent;
+    }
+
+    public ShadowsDescentEvent getShadowsDescentEvent() {
+        return shadowsDescentEvent;
+    }
+
+    public TempestsFuryEvent getTempestsFuryEvent() {
+        return tempestsFuryEvent;
     }
 
     public void startNinthSkyEvent() {
@@ -42,12 +52,32 @@ public class EventManager implements CommandExecutor, TabCompleter {
         }
     }
 
+    public void startShadowsDescentEvent() {
+        if (shadowsDescentEvent == null || !shadowsDescentEvent.isActive()) {
+            shadowsDescentEvent = new ShadowsDescentEvent(plugin);
+            shadowsDescentEvent.startEvent();
+        }
+    }
+
+    public void startTempestsFuryEvent() {
+        if (tempestsFuryEvent == null || !tempestsFuryEvent.isActive()) {
+            tempestsFuryEvent = new TempestsFuryEvent(plugin);
+            tempestsFuryEvent.startEvent();
+        }
+    }
+
     public void stopActiveEvents() {
         if (ninthSkyEvent != null && ninthSkyEvent.isActive()) {
             ninthSkyEvent.stopEvent();
         }
         if (frozenEclipseEvent != null && frozenEclipseEvent.isActive()) {
             frozenEclipseEvent.stopEvent();
+        }
+        if (shadowsDescentEvent != null && shadowsDescentEvent.isActive()) {
+            shadowsDescentEvent.stopEvent();
+        }
+        if (tempestsFuryEvent != null && tempestsFuryEvent.isActive()) {
+            tempestsFuryEvent.stopEvent();
         }
     }
 
@@ -59,20 +89,28 @@ public class EventManager implements CommandExecutor, TabCompleter {
         }
         if (args.length == 0) {
             sender.sendMessage("§eUsage: /event <event_name|stop>");
+            sender.sendMessage("§eEvents: the_awakening, the_frozen_eclipse, shadows_descent, tempests_fury");
             return true;
         }
-        String eventName = String.join("_", args);
-        if (eventName.equalsIgnoreCase("The_Awakening_of_the_Ninth_Sky")) {
+        String eventName = String.join("_", args).toLowerCase();
+        if (eventName.equals("the_awakening") || eventName.equals("awakening") || eventName.equals("ninth_sky")) {
             startNinthSkyEvent();
             sender.sendMessage("§aStarted The Awakening of the Ninth Sky event!");
-        } else if (eventName.equalsIgnoreCase("The_Frozen_Eclipse")) {
+        } else if (eventName.equals("the_frozen_eclipse") || eventName.equals("frozen_eclipse") || eventName.equals("eclipse")) {
             startFrozenEclipseEvent();
             sender.sendMessage("§aStarted The Frozen Eclipse event!");
-        } else if (eventName.equalsIgnoreCase("stop")) {
+        } else if (eventName.equals("shadows_descent") || eventName.equals("shadow_descent") || eventName.equals("shadow")) {
+            startShadowsDescentEvent();
+            sender.sendMessage("§aStarted The Shadow's Descent event!");
+        } else if (eventName.equals("tempests_fury") || eventName.equals("tempest_fury") || eventName.equals("storm")) {
+            startTempestsFuryEvent();
+            sender.sendMessage("§aStarted The Tempest's Fury event!");
+        } else if (eventName.equals("stop")) {
             stopActiveEvents();
             sender.sendMessage("§cStopped all active events.");
         } else {
             sender.sendMessage("§cUnknown event: " + eventName);
+            sender.sendMessage("§eAvailable: the_awakening, the_frozen_eclipse, shadows_descent, tempests_fury, stop");
         }
         return true;
     }
@@ -80,9 +118,13 @@ public class EventManager implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
-        completions.add("The_Awakening_of_the_Ninth_Sky");
-        completions.add("The_Frozen_Eclipse");
-        completions.add("stop");
+        if (args.length == 1) {
+            completions.add("the_awakening");
+            completions.add("the_frozen_eclipse");
+            completions.add("shadows_descent");
+            completions.add("tempests_fury");
+            completions.add("stop");
+        }
         return completions;
     }
 }

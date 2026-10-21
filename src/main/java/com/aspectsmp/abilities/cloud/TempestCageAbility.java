@@ -14,7 +14,7 @@ public class TempestCageAbility extends BaseAbility {
 
     private static final double OUTER_RADIUS = 5.0;
     private static final double INNER_RADIUS = 3.0;
-    private static final int DURATION_TICKS = 100;
+    private static final int DURATION_TICKS = 80;
 
     @Override
     public String getId() {
@@ -47,18 +47,23 @@ public class TempestCageAbility extends BaseAbility {
                 Vector toCenter = center.clone().subtract(target.getLocation().toVector());
                 double dist = toCenter.length();
                 if (dist > INNER_RADIUS) {
-                    Vector push = toCenter.normalize().multiply(0.2);
+                    Vector push = toCenter.normalize().multiply(0.15);
                     target.setVelocity(target.getVelocity().add(push));
                 }
-                target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, DURATION_TICKS, 1));
+                target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, DURATION_TICKS, 0));
             }
         }
 
-        player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(0, 1, 0), 50, OUTER_RADIUS, 1.5, OUTER_RADIUS, 0.02);
-        player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 1, 0), 30, OUTER_RADIUS * 0.6, 1.0, OUTER_RADIUS * 0.6, 0.02);
+        player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(0, 1, 0), 40, OUTER_RADIUS, 1.5, OUTER_RADIUS, 0.02);
+        player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 1, 0), 25, OUTER_RADIUS * 0.6, 1.0, OUTER_RADIUS * 0.6, 0.02);
         playSound(player, Sound.ENTITY_BREEZE_WIND_BURST, 1.2f, 0.7f);
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 15000L;
     }
 }

@@ -11,7 +11,7 @@ import org.bukkit.event.Event;
 
 public class VoidSwapAbility extends BaseAbility {
 
-    private static final double MAX_RANGE = 200.0;
+    private static final double MAX_RANGE = 100.0;
     private static final double MAX_RANGE_SQ = MAX_RANGE * MAX_RANGE;
 
     @Override
@@ -55,8 +55,8 @@ public class VoidSwapAbility extends BaseAbility {
             Location playerLoc = player.getLocation().clone();
             Location targetLoc = p.getLocation().clone();
 
-            player.getWorld().spawnParticle(Particle.PORTAL, playerLoc.add(0, 1, 0), 50);
-            player.getWorld().spawnParticle(Particle.PORTAL, targetLoc.add(0, 1, 0), 50);
+            player.getWorld().spawnParticle(Particle.PORTAL, playerLoc.add(0, 1, 0), 40);
+            player.getWorld().spawnParticle(Particle.PORTAL, targetLoc.add(0, 1, 0), 40);
 
             playSound(player, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
 
@@ -67,7 +67,12 @@ public class VoidSwapAbility extends BaseAbility {
             return false;
         }
 
-        applyCooldown(player, getId(), 15000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 15000L;
     }
 }

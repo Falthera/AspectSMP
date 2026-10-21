@@ -40,21 +40,26 @@ public class OceanSurgeAbility extends BaseAbility {
         Vector direction = player.getLocation().getDirection().normalize();
         playSound(player, Sound.ENTITY_DOLPHIN_PLAY, 1.0f, 0.5f);
 
-        for (double i = 1; i <= 10; i += 0.5) {
+        for (double i = 1; i <= 8; i += 0.5) {
             Location point = player.getLocation().add(direction.clone().multiply(i));
             point.getWorld().spawnParticle(Particle.SPLASH, point, 3, 0.3, 0.3, 0.3);
             point.getWorld().getEntities().stream()
-                .filter(e -> e instanceof Player && e != player && e.getLocation().distanceSquared(point) <= 8)
+                .filter(e -> e instanceof Player && e != player && e.getLocation().distanceSquared(point) <= 6)
                 .forEach(e -> {
-                    Vector knockback = direction.clone().multiply(1.5).add(new Vector(0, 0.3, 0));
+                    Vector knockback = direction.clone().multiply(1.2).add(new Vector(0, 0.2, 0));
                     e.setVelocity(e.getVelocity().add(knockback));
                     if (e instanceof Player target) {
-                        damageIgnoreArmor(target, 3 * getPowerMultiplier(player, heart), player);
+                        damageIgnoreArmor(target, 3.0 * getPowerMultiplier(player, heart), player);
                     }
                 });
         }
 
-        applyCooldown(player, getId(), 25000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 20000L;
     }
 }

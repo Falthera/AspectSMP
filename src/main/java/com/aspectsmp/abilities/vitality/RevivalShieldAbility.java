@@ -35,13 +35,18 @@ public class RevivalShieldAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.HEART, player.getLocation().add(0, 1, 0), 100, 1, 1, 1);
+        player.getWorld().spawnParticle(Particle.HEART, player.getLocation().add(0, 1, 0), 80, 1, 1, 1);
         playSound(player, Sound.ITEM_TOTEM_USE, 1.0f, 1.0f);
         
         player.setMetadata("revival_shield", new FixedMetadataValue(com.aspectsmp.AspectSMP.getInstance(), 
-            System.currentTimeMillis() + 300000));
+            System.currentTimeMillis() + 180000));
         
-        applyCooldown(player, getId(), 180000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 120000L;
     }
 }

@@ -49,17 +49,18 @@ public class WarGodStateAbility extends BaseAbility {
         Location center = player.getLocation();
         World world = player.getWorld();
 
-        world.spawnParticle(Particle.FLAME, center, 100, 5.0, 2.0, 5.0, 0.2);
-        world.spawnParticle(Particle.EXPLOSION_EMITTER, center, 5);
+        world.spawnParticle(Particle.FLAME, center, 80, 5.0, 2.0, 5.0, 0.2);
+        world.spawnParticle(Particle.EXPLOSION_EMITTER, center, 3);
         playSound(player, Sound.ENTITY_ENDER_DRAGON_GROWL, 2.0f, 0.5f);
 
-        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 400, 3));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 400, 1));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 400, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 300, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 0));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 300, 0));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 300, 0));
 
-        for (Entity entity : center.getWorld().getNearbyEntities(center, 12.0, 6.0, 12.0)) {
+        for (Entity entity : center.getWorld().getNearbyEntities(center, 10.0, 5.0, 10.0)) {
             if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
-                damageIgnoreArmor(target, 10.0 + getPowerMultiplier(player, heart) * 2, player);
+                damageIgnoreArmor(target, 8.0 + getPowerMultiplier(player, heart), player);
             }
         }
 
@@ -68,8 +69,8 @@ public class WarGodStateAbility extends BaseAbility {
             @Override
             public void run() {
                 ticks++;
-                if (ticks > 300) { cancel(); return; }
-                world.spawnParticle(Particle.FLAME, center, 15, 4.0 - (ticks * 0.013), 1.0, 4.0 - (ticks * 0.013), 0.1);
+                if (ticks > 200) { cancel(); return; }
+                world.spawnParticle(Particle.FLAME, center, 10, 4.0 - (ticks * 0.02), 1.0, 4.0 - (ticks * 0.02), 0.1);
             }
         }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, 2L);
 
@@ -79,6 +80,6 @@ public class WarGodStateAbility extends BaseAbility {
 
     @Override
     protected long getCooldownBase() {
-        return 470000L;
+        return 300000L;
     }
 }

@@ -37,7 +37,7 @@ public class HealPulseAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.HEART, player.getLocation().add(0, 1, 0), 30, 2, 2, 2);
+        player.getWorld().spawnParticle(Particle.HEART, player.getLocation().add(0, 1, 0), 25, 2, 2, 2);
         playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 
         List<Entity> nearby = player.getWorld().getEntities().stream()
@@ -48,12 +48,17 @@ public class HealPulseAbility extends BaseAbility {
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
                 if (target == player || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(player.getUniqueId(), target.getUniqueId()) || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(target.getUniqueId(), player.getUniqueId())) {
-                    target.heal(6 * getPowerMultiplier(player, heart));
+                    target.heal(4 * getPowerMultiplier(player, heart));
                 }
             }
         }
 
-        applyCooldown(player, getId(), 8000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 8000L;
     }
 }

@@ -29,23 +29,27 @@ public class YAMLProvider implements StorageProvider {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    @Override
+@Override
     public CompletableFuture<Void> saveHeart(Heart heart) {
         return CompletableFuture.runAsync(() -> {
             String path = heart.getOwner().toString();
-            config.set(path + ".aspect", heart.getAspect().name());
-            config.set(path + ".tier", heart.getTier());
-            config.set(path + ".stability", heart.getStability());
-            config.set(path + ".essence", heart.getEssence());
-            config.set(path + ".dormant", heart.isDormant());
-            config.set(path + ".cloud_unlocked", heart.isCloudUnlocked());
-            config.set(path + ".winter_unlocked", heart.isWinterUnlocked());
-            config.set(path + ".cooldowns", heart.getCooldowns());
-            try {
-                config.save(file);
-            } catch (IOException e) {
-                e.printStackTrace();
+            synchronized (config) {
+                config.set(path + ".aspect", heart.getAspect().name());
+                config.set(path + ".tier", heart.getTier());
+                config.set(path + ".stability", heart.getStability());
+                config.set(path + ".essence", heart.getEssence());
+                config.set(path + ".dormant", heart.isDormant());
+                config.set(path + ".cloud_unlocked", heart.isCloudUnlocked());
+                config.set(path + ".winter_unlocked", heart.isWinterUnlocked());
+                config.set(path + ".cooldowns", heart.getCooldowns());
+                try {
+                    config.save(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+        });
+    }
         });
     }
 

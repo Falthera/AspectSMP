@@ -44,12 +44,17 @@ public class StaticBoltAbility extends BaseAbility {
             .orElse(null);
 
         if (target instanceof Player p) {
-            p.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, p.getLocation().add(0, 1, 0), 50);
-            damageIgnoreArmor(p, 8 * getPowerMultiplier(player, heart), player);
+            p.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, p.getLocation().add(0, 1, 0), 35);
+            damageIgnoreArmor(p, 5.0 * getPowerMultiplier(player, heart), player);
             playSound(player, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1.0f, 1.0f);
         }
 
-        applyCooldown(player, getId(), 10000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 10000L;
     }
 }

@@ -48,8 +48,8 @@ public class BlackStarCollapseAbility extends BaseAbility {
             org.bukkit.scheduler.BukkitRunnable runnable = new org.bukkit.scheduler.BukkitRunnable() {
                 @Override
                 public void run() {
-                    loc.getWorld().spawnParticle(Particle.PORTAL, loc.clone().add(Math.random() - 0.5, Math.random(), Math.random() - 0.5), 30);
-                    loc.getWorld().spawnParticle(Particle.END_ROD, loc.clone().add(Math.random() - 0.5, Math.random(), Math.random() - 0.5), 20);
+                    loc.getWorld().spawnParticle(Particle.PORTAL, loc.clone().add(Math.random() - 0.5, Math.random(), Math.random() - 0.5), 25);
+                    loc.getWorld().spawnParticle(Particle.END_ROD, loc.clone().add(Math.random() - 0.5, Math.random(), Math.random() - 0.5), 15);
                 }
             };
             runnable.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), i * 5L);
@@ -64,11 +64,16 @@ public class BlackStarCollapseAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                damageIgnoreArmor(target, 15 * getPowerMultiplier(player, heart), player);
+                damageIgnoreArmor(target, 10.0 * getPowerMultiplier(player, heart), player);
             }
         }
 
-        applyCooldown(player, getId(), 60000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 80000L;
     }
 }

@@ -30,7 +30,7 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            sender.sendMessage("§cUsage: /aspect-give <player> <catalyst|resonator|restoration|reforging>");
+            sender.sendMessage("§cUsage: /aspect-give <player> <catalyst|resonator|restoration|reforging|stability>");
             return true;
         }
 
@@ -46,11 +46,12 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
             case "resonator" -> new HeartResonator().createItemStack();
             case "restoration" -> new HeartRestorationKit().createItemStack();
             case "reforging" -> new ReforgingCore().createItemStack();
+            case "stability" -> new StabilityBottle().createItemStack();
             default -> null;
         };
 
         if (item == null) {
-            sender.sendMessage("§cUsage: /aspect-give <player> <catalyst|resonator|restoration|reforging>");
+            sender.sendMessage("§cUsage: /aspect-give <player> <catalyst|resonator|restoration|reforging|stability>");
             return true;
         }
 
@@ -65,7 +66,7 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             Bukkit.getOnlinePlayers().forEach(p -> completions.add(p.getName()));
         } else if (args.length == 2) {
-            completions.addAll(List.of("catalyst", "resonator", "restoration", "reforging"));
+            completions.addAll(List.of("catalyst", "resonator", "restoration", "reforging", "stability"));
         }
         return completions;
     }

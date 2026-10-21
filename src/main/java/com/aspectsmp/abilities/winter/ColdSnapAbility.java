@@ -46,16 +46,16 @@ public class ColdSnapAbility extends BaseAbility {
                 Vector toTarget = target.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
                 double dot = direction.dot(toTarget);
                 if (dot > 0.3) {
-                    target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, FREEZE_DURATION_TICKS, 4));
-                    target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, FREEZE_DURATION_TICKS, 4));
+                    target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, FREEZE_DURATION_TICKS, 2));
+                    target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, FREEZE_DURATION_TICKS, 2));
                     target.setFreezeTicks(FREEZE_DURATION_TICKS);
-                    target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 40, 0.4, 0.8, 0.4, 0.1);
+                    target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 25, 0.4, 0.8, 0.4, 0.1);
                     target.getWorld().playSound(target.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 1.5f, 0.6f);
                 }
             }
         }
 
-        player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(0, 1, 0), 30, 2.0, 1.0, 2.0, 0.02);
+        player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(0, 1, 0), 25, 2.0, 1.0, 2.0, 0.02);
         playSound(player, Sound.BLOCK_GLASS_BREAK, 1.0f, 0.5f);
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
@@ -64,6 +64,6 @@ public class ColdSnapAbility extends BaseAbility {
 
     @Override
     protected long getCooldownBase() {
-        return 6000L;
+        return 10000L;
     }
 }

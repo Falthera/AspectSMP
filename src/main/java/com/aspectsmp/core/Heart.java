@@ -138,7 +138,7 @@ public class Heart {
         return 0;
     }
 
-    public void save(ConfigurationSection section) {
+public void save(ConfigurationSection section) {
         section.set("aspect", aspect.name());
         section.set("tier", tier);
         section.set("stability", stability);
@@ -158,16 +158,21 @@ public class Heart {
         boolean dormant = section.getBoolean("dormant", false);
         boolean cloudUnlocked = section.getBoolean("cloud_unlocked", false);
         boolean winterUnlocked = section.getBoolean("winter_unlocked", false);
-        
-        Heart heart = new Heart(UUID.fromString(section.getName()), aspect, tier, stability, essence, dormant);
+
+        UUID owner = UUID.fromString(section.getName());
+        Heart heart = new Heart(owner, aspect, tier, stability, essence, dormant);
         heart.setCloudUnlocked(cloudUnlocked);
         heart.setWinterUnlocked(winterUnlocked);
-        heart.getCooldowns().putAll(section.getConfigurationSection("cooldowns") != null ? 
-            section.getConfigurationSection("cooldowns").getValues(false).entrySet().stream()
-                .collect(java.util.stream.Collectors.toMap(
-                    e -> e.getKey(),
-                    e -> ((Number) e.getValue()).longValue())) : 
-            new java.util.HashMap<>());
+        
+        ConfigurationSection cooldownSection = section.getConfigurationSection("cooldowns");
+        if (cooldownSection != null) {
+            for (String key : cooldownSection.getKeys(false)) {
+                Object value = cooldownSection.get(key);
+                if (value instanceof Number) {
+                    heart.getCooldowns().put(key, ((Number) value).longValue());
+                }
+            }
+        }
         return heart;
     }
 }

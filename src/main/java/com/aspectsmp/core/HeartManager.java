@@ -9,10 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class HeartManager {
 
-    private static final AspectType[] ASPECTS = Arrays.stream(AspectType.values())
-            .filter(a -> a != AspectType.CLOUD)
-            .filter(a -> a != AspectType.WINTER)
-            .toArray(AspectType[]::new);
+    private static final AspectType[] ASPECTS = AspectType.values();
 
     private final AspectSMP plugin;
     private final ConcurrentHashMap<UUID, Heart> heartCache;

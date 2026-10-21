@@ -12,7 +12,7 @@ import org.bukkit.potion.PotionEffect;
 
 public class ShatterAbility extends BaseAbility {
 
-    private static final double FULL_DAMAGE = 6.0;
+    private static final double FULL_DAMAGE = 5.0;
     private static final double REDUCED_DAMAGE = 2.0;
     private static final double RADIUS = 5.0;
 
@@ -45,11 +45,11 @@ public class ShatterAbility extends BaseAbility {
             if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 boolean isFrozen = target.getFreezeTicks() > 0 ||
                     target.getPotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS) != null &&
-                    target.getPotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS).getAmplifier() >= 4;
+                    target.getPotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS).getAmplifier() >= 2;
                 double damage = isFrozen ? FULL_DAMAGE : REDUCED_DAMAGE;
                 damageIgnoreArmor(target, damage + getPowerMultiplier(player, heart), player);
                 target.setFreezeTicks(0);
-                target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 30, 0.4, 0.6, 0.4, 0.1);
+                target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 25, 0.4, 0.6, 0.4, 0.1);
                 target.getWorld().playSound(target.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 2.0f, 1.0f);
             }
         }
@@ -60,7 +60,7 @@ public class ShatterAbility extends BaseAbility {
 
     @Override
     protected long getCooldownBase() {
-        return 3000L;
+        return 5000L;
     }
 }
 

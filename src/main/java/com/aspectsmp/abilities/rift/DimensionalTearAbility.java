@@ -40,9 +40,9 @@ public class DimensionalTearAbility extends BaseAbility {
         if (isOnCooldown(player, getId())) return false;
 
         org.bukkit.Location loc = player.getLocation();
-        loc.getWorld().spawnParticle(Particle.DRIPPING_OBSIDIAN_TEAR, loc, 100, 2, 2, 2);
-        loc.getWorld().spawnParticle(Particle.PORTAL, loc, 50, 1, 1, 1);
-        loc.getWorld().spawnParticle(Particle.END_ROD, loc, 30, 0.5, 0.5, 0.5);
+        loc.getWorld().spawnParticle(Particle.DRIPPING_OBSIDIAN_TEAR, loc, 80, 2, 2, 2);
+        loc.getWorld().spawnParticle(Particle.PORTAL, loc, 40, 1, 1, 1);
+        loc.getWorld().spawnParticle(Particle.END_ROD, loc, 25, 0.5, 0.5, 0.5);
         playSound(player, Sound.BLOCK_PORTAL_AMBIENT, 1.0f, 1.0f);
 
         List<Entity> nearby = loc.getWorld().getEntities().stream()
@@ -51,14 +51,19 @@ public class DimensionalTearAbility extends BaseAbility {
 
         for (Entity entity : nearby) {
             if (entity instanceof Player target) {
-                damageIgnoreArmor(target, 6 * getPowerMultiplier(player, heart), player);
-                Vector pull = loc.toVector().subtract(target.getLocation().toVector()).normalize().multiply(0.8);
+                damageIgnoreArmor(target, 5.0 * getPowerMultiplier(player, heart), player);
+                Vector pull = loc.toVector().subtract(target.getLocation().toVector()).normalize().multiply(0.6);
                 target.setVelocity(pull);
                 target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.BLINDNESS, 40, 0));
             }
         }
 
-        applyCooldown(player, getId(), 25000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 20000L;
     }
 }

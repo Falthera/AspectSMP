@@ -50,12 +50,17 @@ public class ThunderExecutionAbility extends BaseAbility {
             .stream().toList();
 
         for (Player target : nearby) {
-            damageIgnoreArmor(target, 20 * getPowerMultiplier(player, heart), player);
-            player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, target.getLocation().add(0, 1, 0), 100);
+            damageIgnoreArmor(target, 12.0 * getPowerMultiplier(player, heart), player);
+            player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, target.getLocation().add(0, 1, 0), 80);
             playSound(player, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0f, 0.5f);
         }
 
-        applyCooldown(player, getId(), 45000L);
+        applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
+    }
+
+    @Override
+    protected long getCooldownBase() {
+        return 60000L;
     }
 }

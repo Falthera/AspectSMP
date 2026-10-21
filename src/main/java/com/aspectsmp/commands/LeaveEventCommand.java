@@ -1,6 +1,10 @@
 package com.aspectsmp.commands;
 
 import com.aspectsmp.AspectSMP;
+import com.aspectsmp.event.NinthSkyEvent;
+import com.aspectsmp.event.FrozenEclipseEvent;
+import com.aspectsmp.event.ShadowsDescentEvent;
+import com.aspectsmp.event.TempestsFuryEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -29,28 +33,72 @@ public class LeaveEventCommand implements CommandExecutor {
             return true;
         }
 
-        var ninthSky = plugin.getEventManager().getNinthSkyEvent();
-        if (ninthSky == null || !ninthSky.isActive()) {
-            player.sendMessage("§cThere is no active Ninth Sky event.");
+        boolean left = false;
+        String eventName = "";
+        Location returnLoc = plugin.getEventJoinLocation(player.getUniqueId());
+
+        // Check Ninth Sky Event
+        NinthSkyEvent ninthSky = plugin.getEventManager().getNinthSkyEvent();
+        if (ninthSky != null && ninthSky.isActive() && ninthSky.getParticipants().contains(player.getUniqueId())) {
+            ninthSky.getParticipants().remove(player.getUniqueId());
+            left = true;
+            eventName = "Awakening of the Ninth Sky";
+        }
+
+        // Check Frozen Eclipse Event
+        FrozenEclipseEvent frozenEclipse = plugin.getEventManager().getFrozenEclipseEvent();
+        if (frozenEclipse != null && frozenEclipse.isActive() && frozenEclipse.getParticipants().contains(player.getUniqueId())) {
+            frozenEclipse.getParticipants().remove(player.getUniqueId());
+            left = true;
+            eventName = "Frozen Eclipse";
+        }
+
+        // Check Shadow's Descent Event
+        ShadowsDescentEvent shadowsDescent = plugin.getEventManager().getShadowsDescentEvent();
+        if (shadowsDescent != null && shadowsDescent.isActive() && shadowsDescent.getParticipants().contains(player.getUniqueId())) {
+            shadowsDescent.getParticipants().remove(player.getUniqueId());
+            left = true;
+            eventName = "Shadow's Descent";
+        }
+
+        // Check Tempest's Fury Event
+        TempestsFuryEvent tempestsFury = plugin.getEventManager().getTempestsFuryEvent();
+        if (tempestsFury != null && tempestsFury.isActive() && tempestsFury.getParticipants().contains(player.getUniqueId())) {
+            tempestsFury.getParticipants().remove(player.getUniqueId());
+            left = true;
+            eventName = "Tempest's Fury";
+        }
+
+        if (!left) {
+            player.sendMessage("§cYou are not participating in any active event.");
             return true;
         }
 
-        if (!ninthSky.getParticipants().contains(player.getUniqueId())) {
-            player.sendMessage("§cYou are not participating in the Ninth Sky event.");
-            return true;
+        player.sendMessage("§eYou have left the " + eventName + " event.");
+        player.sendMessage("§7You cannot rejoin this event instance.");
+        
+        plugin.removeEventJoinLocation(player.getUniqueId());
+
+        // Teleport back to original location or overworld spawn
+        Location targetLoc = returnLoc != null ? returnLoc : getOverworldSpawn();
+        if (targetLoc != null) {
+            player.teleport(targetLoc);
+            player.sendMessage("§aReturned to your previous location.");
+        } else {
+            player.sendMessage("§aReturned to spawn.");
         }
 
-        ninthSky.getParticipants().remove(player.getUniqueId());
-        player.sendMessage("§eYou have left the Ninth Sky event.");
+        return true;
+    }
 
+    private Location getOverworldSpawn() {
         World overworld = Bukkit.getWorlds().get(0);
         if (overworld != null) {
             Location spawn = overworld.getSpawnLocation();
             int safeY = overworld.getHighestBlockYAt(spawn);
             spawn.setY(safeY + 1);
-            player.teleport(spawn);
+            return spawn;
         }
-
-        return true;
+        return null;
     }
 }
