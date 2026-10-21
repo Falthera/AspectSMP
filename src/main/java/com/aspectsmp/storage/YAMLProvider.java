@@ -29,7 +29,7 @@ public class YAMLProvider implements StorageProvider {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-@Override
+    @Override
     public CompletableFuture<Void> saveHeart(Heart heart) {
         return CompletableFuture.runAsync(() -> {
             String path = heart.getOwner().toString();
@@ -50,8 +50,6 @@ public class YAMLProvider implements StorageProvider {
             }
         });
     }
-        });
-    }
 
     @Override
     public Heart loadHeart(UUID playerId) {
@@ -66,15 +64,15 @@ public class YAMLProvider implements StorageProvider {
         boolean dormant = config.getBoolean(path + ".dormant", false);
         boolean cloudUnlocked = config.getBoolean(path + ".cloud_unlocked", false);
         boolean winterUnlocked = config.getBoolean(path + ".winter_unlocked", false);
-        
+
         Heart heart = new Heart(playerId, aspect, tier, stability, essence, dormant);
         heart.setCloudUnlocked(cloudUnlocked);
         heart.setWinterUnlocked(winterUnlocked);
-        heart.getCooldowns().putAll(config.getConfigurationSection(path + ".cooldowns") != null ? 
+        heart.getCooldowns().putAll(config.getConfigurationSection(path + ".cooldowns") != null ?
             config.getConfigurationSection(path + ".cooldowns").getValues(false).entrySet().stream()
                 .collect(java.util.stream.Collectors.toMap(
                     e -> e.getKey(),
-                    e -> ((Number) e.getValue()).longValue())) : 
+                    e -> ((Number) e.getValue()).longValue())) :
                 new java.util.HashMap<>());
         return heart;
     }
