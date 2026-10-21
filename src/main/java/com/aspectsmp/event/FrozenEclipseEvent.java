@@ -129,7 +129,7 @@ public class FrozenEclipseEvent {
 
         Bukkit.broadcastMessage("§b§l═══════════════════════════════════════════════");
         Bukkit.broadcastMessage("§b§l      THE FROZEN ECLIPSE HAS BEGUN");
-        Bukkit§b§l═══════════════════════════════════════════════");
+        Bukkit.broadcastMessage("§b§l═══════════════════════════════════════════════");
         Bukkit.broadcastMessage("§7An unnatural winter descends upon the overworld...");
         Bukkit.broadcastMessage("§7The sun dims. Frost creeps across the land.");
         Bukkit.broadcastMessage("§e§lFind the Frozen Monoliths §7and activate them to survive the Deep Freeze.");

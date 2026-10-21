@@ -266,3 +266,4 @@ public class AspectSMP extends JavaPlugin {
     public boolean hasEventJoinLocation(UUID player) {
         return eventJoinLocations.containsKey(player);
     }
+}

@@ -49,6 +49,15 @@ commands:
   trust:
     description: Manage trusted players
     usage: /<command> <add|remove|clear|list> [name]
+  withdraw:
+    description: Withdraw stability from your Heart
+    usage: /<command> stability
+  leaveevent:
+    description: Leave the active Ninth Sky event
+    usage: /<command>
+  eclipse:
+    description: Join the Frozen Eclipse event
+    usage: /<command>
 permissions:
   aspect.use:
     description: Access to basic aspect commands
@@ -56,3 +65,24 @@ permissions:
   aspect.admin:
     description: Admin access to aspect commands
     default: op
+
+# Visual Effects Configuration
+visual-effects:
+  enabled: true
+  particle-quality: 3  # 1=low, 2=medium, 3=high, 4=ultra
+  screen-shake: true
+  vignette: true
+  chromatic-aberration: true
+  affect-pvp: false  # When false, screen effects don't modify player view/movement (PvP safe)
+  ambient-sounds: true
+  passive-aura: true
+  orbit-particles: true
+  movement-trails: true
+  ability-charge-effects: true
+  impact-effects: true
+  ultimate-effects: true
+  kill-effects: true
+  death-effects: true
+  event-effects: true
+  tier-up-effects: true
+  stability-effects: true

@@ -1,0 +1,27 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "minecraft:custom_model_data",
+    "index": 0,
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/potion"
+    },
+    "entries": [
+      {
+        "threshold": 6,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/bottled_essence"
+        }
+      },
+      {
+        "threshold": 5,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/stability_bottle"
+        }
+      }
+    ]
+  }
+}

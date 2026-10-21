@@ -623,14 +623,6 @@ public class ListenerManager implements Listener {
             event.setCancelled(true);
         }
     }
-                event.setCancelled(true);
-                player.sendMessage("§cYou can only have one Heart of the Sea in your inventory!");
-                return;
-            }
-        }
-        
-        event.setCancelled(true);
-    }
 
     private void handleCustomItemUse(PlayerInteractEvent event, ItemStack item, EquipmentSlot hand) {
         if (CustomItem.isCustomItem(item, "heart_catalyst")) {
