@@ -155,7 +155,7 @@ public class EventEffects {
             public void run() {
                 if (!player.isOnline() || ticks >= durationTicks) { cancel(); return; }
                 if (ticks % beatInterval == 0) {
-                    player.playSound(player.getLocation(), net.kyori.adventure.sound.Sound.ENTITY_PLAYER_HEARTBEAT, 1.0f, 1.0f);
+                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_HEARTBEAT, 1.0f, 1.0f);
                 }
                 ticks++;
             }

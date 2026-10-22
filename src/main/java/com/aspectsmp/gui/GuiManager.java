@@ -254,6 +254,8 @@ public class GuiManager implements Listener {
             case FORTUNE -> "Lucky Charm";
             case CLOUD -> "Air Walker";
             case WINTER -> "Frost Aura";
+            case SHADOW -> "Shadow Meld";
+            case STORM -> "Wind Stride";
         };
     }
 
@@ -319,6 +321,18 @@ public class GuiManager implements Listener {
                 case 3 -> "Shatter";
                 default -> "Unknown";
             };
+            case SHADOW -> switch (tier) {
+                case 1 -> "Shadow Step";
+                case 2 -> "Void Shroud";
+                case 3 -> "Eclipse Veil";
+                default -> "Unknown";
+            };
+            case STORM -> switch (tier) {
+                case 1 -> "Gust Dash";
+                case 2 -> "Lightning Chain";
+                case 3 -> "Tempest Avatar";
+                default -> "Unknown";
+            };
         };
     }
 
@@ -334,6 +348,8 @@ public class GuiManager implements Listener {
             case FORTUNE -> "King's Jackpot";
             case CLOUD -> "Cloudburst";
             case WINTER -> "Absolute Zero";
+            case SHADOW -> "Void Eclipse";
+            case STORM -> "Storm Ascension";
         };
     }
 

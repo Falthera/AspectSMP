@@ -63,11 +63,8 @@ public class ParticleEffects {
 
     private void spawnTrailParticle(World world, Location from, Location to, Color color, int duration) {
         if (!useTrailParticles) return;
-        Particle.TRAIL.builder()
-            .location(from)
-            .count(1)
-            .trail(new Particle.Trail(to, color, duration))
-            .spawn();
+        // TRAIL particle requires legacy API in 1.21.11
+        world.spawnParticle(Particle.TRAIL, from, 1, 0, 0, 0, 0, new Particle.Trail(to, color, duration), true);
     }
 
     // ════════════════════════════════════════════════════════════════════
