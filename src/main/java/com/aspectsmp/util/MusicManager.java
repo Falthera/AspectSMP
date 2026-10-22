@@ -292,7 +292,20 @@ public class MusicManager {
                 currentTrack = file;
                 sendPlayPacket(file, currentVolume);
             } else {
-                playNextTrack();
+                // Track missing - try next one (max 10 attempts to avoid infinite recursion)
+                int retries = 0;
+                while (retries < 10 && !playlist.isEmpty()) {
+                    trackName = playlist.poll();
+                    file = musicFiles.get(trackName);
+                    if (file != null && file.exists()) {
+                        currentTrack = file;
+                        sendPlayPacket(file, currentVolume);
+                        return;
+                    }
+                    retries++;
+                }
+                // No valid tracks - stop
+                stop();
             }
         }
         
