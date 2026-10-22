@@ -56,7 +56,7 @@ public class MeteorCallAbility extends BaseAbility {
 
         Vector direction = target.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
         org.bukkit.Location startLoc = player.getLocation().clone().add(direction.multiply(3)).add(0, 25, 0);
-        org.bukkit.Location targetLoc = target.getLocation().clone().add(0, 15, 0);
+        org.bukkit.Location[] targetLoc = { target.getLocation().clone().add(0, 15, 0) };
 
         player.getWorld().spawnParticle(Particle.END_ROD, startLoc, 15, 1.0, 0.5, 1.0, 0.02);
         player.getWorld().spawnParticle(Particle.PORTAL, startLoc, 20, 0.5, 0.5, 0.5, 0.01);
@@ -72,8 +72,8 @@ public class MeteorCallAbility extends BaseAbility {
                     return;
                 }
 
-                targetLoc = target.getLocation().clone().add(0, 15, 0);
-                Vector toTarget = targetLoc.toVector().subtract(startLoc.toVector()).normalize();
+                targetLoc[0] = target.getLocation().clone().add(0, 15, 0);
+                Vector toTarget = targetLoc[0].toVector().subtract(startLoc.toVector()).normalize();
                 startLoc.add(toTarget.multiply(1.2));
 
                 startLoc.getWorld().spawnParticle(Particle.FLAME, startLoc, 2, 0.3, 0.3, 0.3, 0.02);
@@ -82,7 +82,7 @@ public class MeteorCallAbility extends BaseAbility {
                 tick++;
                 if (tick >= METEOR_DELAY_TICKS) {
                     this.cancel();
-                    landMeteor(player, heart, targetLoc, target);
+                    landMeteor(player, heart, targetLoc[0], target);
                 }
             }
         };
