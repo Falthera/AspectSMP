@@ -5,12 +5,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.*;
 import org.bukkit.entity.*;
-import org.bukkit.Sound; // Bukkit Sound enum
+import org.bukkit.Sound;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -114,7 +113,7 @@ public class EventEffects {
     // SOUNDSCAPE - LAYERED, DYNAMIC, DIRECTIONAL
     // ══════════════════════════════════════════════════════════════
 
-    public void playGlobalSoundscape(World world, Location center, int radius, Sound baseSound, float volume, float pitch, int layers) {
+    public void playGlobalSoundscape(World world, Location center, int radius, org.bukkit.Sound baseSound, float volume, float pitch, int layers) {
         for (Player p : world.getPlayers()) {
             if (p.getLocation().distance(center) <= radius) {
                 double dist = p.getLocation().distance(center);
@@ -141,7 +140,7 @@ public class EventEffects {
         }
     }
 
-    public void playDirectionalSound(Player player, Location source, Sound sound, float volume, float pitch) {
+    public void playDirectionalSound(Player player, Location source, org.bukkit.Sound sound, float volume, float pitch) {
         Vector toSource = source.toVector().subtract(player.getLocation().toVector());
         double dist = toSource.length();
         float attenuatedVol = (float) (volume / (1.0 + dist * 0.02));
@@ -156,7 +155,7 @@ public class EventEffects {
             public void run() {
                 if (!player.isOnline() || ticks >= durationTicks) { cancel(); return; }
                 if (ticks % beatInterval == 0) {
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HEARTBEAT, 1.0f, 1.0f);
+                    player.playSound(player.getLocation(), net.kyori.adventure.sound.Sound.ENTITY_PLAYER_HEARTBEAT, 1.0f, 1.0f);
                 }
                 ticks++;
             }
@@ -414,7 +413,7 @@ public class EventEffects {
         }.runTaskLater(plugin, 20L);
     }
 
-    public void globalPhaseAnnouncement(String phaseName, String description, Sound sound, float volume, float pitch) {
+    public void globalPhaseAnnouncement(String phaseName, String description, org.bukkit.Sound sound, float volume, float pitch) {
         Component title = Component.text(phaseName).color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD);
         Component desc = Component.text(description).color(NamedTextColor.GRAY);
         

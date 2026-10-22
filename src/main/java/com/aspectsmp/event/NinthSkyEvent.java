@@ -569,7 +569,6 @@ public class NinthSkyEvent extends BaseEvent {
         }
         
         // Play visual effects for winner
-        Heart heart = plugin.getHeartManager().getHeart(winner.getUniqueId()).orElse(null);
         int tier = heart != null ? heart.getTier() : 2;
         plugin.getVisualEffectsManager().playHeartUpgradeVisuals(winner, tier);
         plugin.getVisualEffectsManager().playGlobalEventAnnouncement(
