@@ -168,10 +168,10 @@ public class ListenerManager implements Listener {
             case WAR -> java.util.Set.of(PotionEffectType.STRENGTH);
             case COSMOS -> java.util.Set.of(PotionEffectType.RESISTANCE);
             case FORTUNE -> java.util.Set.of(PotionEffectType.LUCK, PotionEffectType.HERO_OF_THE_VILLAGE);
-            case CLOUD -> java.util.Set.of(PotionEffectType.SPEED, PotionEffectType.JUMP_BOOST);
+            case CLOUD -> java.util.Set.of(PotionEffectType.SPEED);
             case WINTER -> java.util.Set.of(PotionEffectType.RESISTANCE, PotionEffectType.SLOWNESS);
             case SHADOW -> java.util.Set.of(PotionEffectType.INVISIBILITY, PotionEffectType.NIGHT_VISION);
-            case STORM -> java.util.Set.of(PotionEffectType.SPEED, PotionEffectType.SLOW_FALLING);
+            case STORM -> java.util.Set.of(PotionEffectType.SPEED);
         };
     }
     
@@ -186,7 +186,7 @@ public class ListenerManager implements Listener {
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.DOLPHINS_GRACE, 80, 0), true);
             }
             case TEMPEST -> {
-                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 80, 0), true);
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 80, 1), true);
             }
             case RIFT -> {
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.NIGHT_VISION, 80, 0), true);
@@ -206,7 +206,6 @@ public class ListenerManager implements Listener {
             }
             case CLOUD -> {
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 80, 0), true);
-                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, 80, 0), true);
             }
             case WINTER -> {
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.RESISTANCE, 80, 0), true);
@@ -218,7 +217,6 @@ public class ListenerManager implements Listener {
             }
             case STORM -> {
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 80, 0), true);
-                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOW_FALLING, 80, 0), true);
             }
         }
     }
@@ -236,6 +234,8 @@ public class ListenerManager implements Listener {
         player.removePotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE);
         player.removePotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST);
         player.removePotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.SLOW_FALLING);
+        player.removePotionEffect(org.bukkit.potion.PotionEffectType.INVISIBILITY);
     }
 
     public void clearAspectEffects(Player player) {
@@ -429,6 +429,14 @@ public class ListenerManager implements Listener {
         plugin.getScoreboardManager().onPlayerQuit(player);
         plugin.getCombatManager().handleLogout(player);
         removeTrustBuffs(player);
+        
+        // Clean up shadow stealth teams
+        com.aspectsmp.core.ShadowRuleModifier shadowModifier = 
+            (com.aspectsmp.core.ShadowRuleModifier) plugin.getRuleModifierManager().getModifier(AspectType.SHADOW);
+        if (shadowModifier != null) {
+            // The shadow modifier handles its own cleanup via modifyMovement when not sneaking
+        }
+        
         plugin.getVisualEffectsManager().stopPassiveEffects(player);
     }
 

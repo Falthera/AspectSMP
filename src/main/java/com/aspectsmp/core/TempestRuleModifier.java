@@ -18,12 +18,18 @@ public class TempestRuleModifier implements RuleModifier {
         if (cause == EntityDamageEvent.DamageCause.FALL) {
             return 0;
         }
+        
+        // Tempest deals more damage when sprinting/momentum
+        int level = momentum.getOrDefault(player.getUniqueId(), 0);
+        if (level > 0) {
+            return damage * (1.0 + level * 0.1); // +10% per momentum level
+        }
         return damage;
     }
 
     @Override
     public void modifyMovement(Player player) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0, false, false, true));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1, false, false, true)); // Speed 2
         if (player.isSprinting()) {
             int level = momentum.getOrDefault(player.getUniqueId(), 0);
             if (level < 5) {
@@ -38,9 +44,9 @@ public class TempestRuleModifier implements RuleModifier {
     public void applyPassive(Player player) {
         int level = momentum.getOrDefault(player.getUniqueId(), 0);
         if (level > 0) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, level, false, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, level + 1, false, false, true)); // Speed 2+
         } else {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0, false, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1, false, false, true)); // Speed 2 base
         }
     }
 }

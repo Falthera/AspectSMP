@@ -2,8 +2,6 @@ package com.aspectsmp.core;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
 import java.util.UUID;
@@ -33,7 +31,6 @@ public class StormRuleModifier implements RuleModifier {
 
         if (player.getLocation().getY() > 100 || player.getWorld().hasStorm()) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 40, 0, true, false), true);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 80, 0, true, false), true);
             lastWind.put(player.getUniqueId(), now);
         }
     }
