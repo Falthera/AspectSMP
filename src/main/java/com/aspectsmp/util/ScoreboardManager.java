@@ -21,6 +21,10 @@ public class ScoreboardManager {
     private final java.util.Map<Player, org.bukkit.scoreboard.Scoreboard> playerScoreboards;
     private final java.util.Map<Player, Set<String>> playerEntries;
 
+    // Small caps character mapping
+    private static final String SMALL_CAPS = "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀꜱᴛᴜᴠᴡxʏᴢ";
+    private static final String REGULAR = "abcdefghijklmnopqrstuvwxyz";
+
     public ScoreboardManager(AspectSMP plugin) {
         this.plugin = plugin;
         this.playerScoreboards = new java.util.HashMap<>();
@@ -70,7 +74,7 @@ public class ScoreboardManager {
             }
             if (!first) actionBar.append(" §8| ");
             first = false;
-            actionBar.append(ability.getName().toLowerCase()).append(": ").append(status);
+            actionBar.append(toSmallCaps(ability.getName())).append(": ").append(status);
         }
 
         player.sendActionBar(net.kyori.adventure.text.Component.text(actionBar.toString()));
@@ -176,5 +180,18 @@ public class ScoreboardManager {
             case SHADOW -> ChatColor.DARK_GRAY;
             case STORM -> ChatColor.GRAY;
         };
+    }
+
+    private String toSmallCaps(String input) {
+        StringBuilder result = new StringBuilder();
+        for (char c : input.toLowerCase().toCharArray()) {
+            int index = REGULAR.indexOf(c);
+            if (index >= 0) {
+                result.append(SMALL_CAPS.charAt(index));
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
 }
