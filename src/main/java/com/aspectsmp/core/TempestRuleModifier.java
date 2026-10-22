@@ -43,10 +43,7 @@ public class TempestRuleModifier implements RuleModifier {
     @Override
     public void applyPassive(Player player) {
         int level = momentum.getOrDefault(player.getUniqueId(), 0);
-        if (level > 0) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, level + 1, false, false, true)); // Speed 2+
-        } else {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1, false, false, true)); // Speed 2 base
-        }
+        // Cap passive speed at Speed 2 (amplifier 1) - no scaling with momentum
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1, false, false, true)); // Speed 2 base
     }
 }

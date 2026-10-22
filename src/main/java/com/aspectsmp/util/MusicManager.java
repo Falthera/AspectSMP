@@ -315,7 +315,7 @@ public class MusicManager {
                 
                 try {
                     // Use a music disc sound for custom music
-                    org.bukkit.Sound sound = org.bukkit.Sound.valueOf("ITEM_MUSIC_DISC_13");
+                    org.bukkit.Sound sound = org.bukkit.Sound.ITEM_MUSIC_DISC_13;
                     player.stopSound(sound, org.bukkit.SoundCategory.RECORDS);
                     player.playSound(player.getLocation(), sound, volume, 1.0f);
                     
@@ -331,7 +331,7 @@ public class MusicManager {
             plugin.getServer().getScheduler().runTask(plugin, () -> {
                 if (player.isOnline()) {
                     try {
-                        org.bukkit.Sound sound = org.bukkit.Sound.valueOf("ITEM_MUSIC_DISC_13");
+                        org.bukkit.Sound sound = org.bukkit.Sound.ITEM_MUSIC_DISC_13;
                         player.stopSound(sound, org.bukkit.SoundCategory.RECORDS);
                     } catch (Exception ignored) {}
                 }
@@ -343,7 +343,7 @@ public class MusicManager {
             plugin.getServer().getScheduler().runTask(plugin, () -> {
                 if (player.isOnline()) {
                     try {
-                        org.bukkit.Sound sound = org.bukkit.Sound.valueOf("ITEM_MUSIC_DISC_13");
+                        org.bukkit.Sound sound = org.bukkit.Sound.ITEM_MUSIC_DISC_13;
                         player.stopSound(sound, org.bukkit.SoundCategory.RECORDS);
                     } catch (Exception ignored) {}
                 }
