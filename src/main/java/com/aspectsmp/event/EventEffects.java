@@ -156,12 +156,13 @@ public class EventEffects {
             public void run() {
                 if (!player.isOnline() || ticks >= durationTicks) { cancel(); return; }
                 if (ticks % beatInterval == 0) {
-                    // Use Adventure Sound API with key for compatibility
-                    player.playSound(player.getLocation(), net.kyori.adventure.sound.Sound.sound(
+                    Location loc = player.getLocation();
+                    // Use Adventure Sound API - playSound(Sound, double x, double y, double z)
+                    player.playSound(net.kyori.adventure.sound.Sound.sound(
                         net.kyori.adventure.key.Key.key("entity.player.heartbeat"),
                         net.kyori.adventure.sound.Sound.Source.MASTER,
                         1.0f, 1.0f
-                    ));
+                    ), loc.getX(), loc.getY(), loc.getZ());
                 }
                 ticks++;
             }
