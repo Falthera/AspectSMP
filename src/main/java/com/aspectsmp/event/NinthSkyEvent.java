@@ -21,7 +21,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
-public class NinthSkyEvent {
+public class NinthSkyEvent extends BaseEvent {
 
     private final AspectSMP plugin;
     private EventPhase phase = EventPhase.SKY_AWAKENS;

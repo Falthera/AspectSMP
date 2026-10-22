@@ -523,6 +523,4 @@ public class VisualEffectsManager {
     public void setVignetteEnabled(boolean enabled) { this.vignetteEnabled = enabled; }
     public boolean isChromaticAberrationEnabled() { return chromaticAberrationEnabled; }
     public void setChromaticAberrationEnabled(boolean enabled) { this.chromaticAberrationEnabled = enabled; }
-    public boolean isAffectPvP() { return affectPvP; }
-    public void setAffectPvP(boolean affectPvP) { this.affectPvP = affectPvP; }
 }

@@ -30,7 +30,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FrozenEclipseEvent {
+public class FrozenEclipseEvent extends BaseEvent {
 
     private final AspectSMP plugin;
     private EventPhase phase = EventPhase.FIRST_FROST;

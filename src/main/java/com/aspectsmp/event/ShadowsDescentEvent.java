@@ -21,7 +21,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ShadowsDescentEvent {
+public class ShadowsDescentEvent extends BaseEvent {
 
     private final AspectSMP plugin;
     private EventPhase phase = EventPhase.SHADOW_AWAKENS;
