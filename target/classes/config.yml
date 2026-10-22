@@ -26,6 +26,10 @@ features:
 visual-effects:
   enabled: true
   particle-quality: 3
+  # Performance settings
+  max-particles-per-tick: 150
+  max-particles-per-effect: 40
+  max-view-distance: 40.0
   screen-shake: true
   vignette: true
   chromatic-aberration: true
