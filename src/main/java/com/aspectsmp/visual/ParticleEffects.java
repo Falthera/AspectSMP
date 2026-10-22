@@ -196,7 +196,7 @@ public class ParticleEffects {
 
     public void startTrailEffect(Player player, Theme theme) {
         UUID id = player.getUniqueId();
-        Location lastLoc = player.getLocation();
+        Location[] lastLoc = { player.getLocation() };
 
         BukkitTask task = new BukkitRunnable() {
             @Override
@@ -206,7 +206,7 @@ public class ParticleEffects {
                 Location loc = player.getLocation();
                 
                 // Only spawn if moved
-                if (loc.distance(lastLoc) > 0.2) {
+                if (loc.distance(lastLoc[0]) > 0.2) {
                     
                     for (int i = 0; i < theme.getTrailParticleCount(); i++) {
                         Vector offset = new Vector(
@@ -221,10 +221,10 @@ public class ParticleEffects {
                     
                     // 1.21.11 TRAIL particle toward last location
                     if (useTrailParticles && theme.getTrailParticleAlt() != null) {
-                        spawnTrailParticle(loc.getWorld(), loc, lastLoc, theme.getPrimaryColor(), 20);
+                        spawnTrailParticle(loc.getWorld(), loc, lastLoc[0], theme.getPrimaryColor(), 20);
                     }
                     
-                    lastLoc = loc.clone();
+                    lastLoc[0] = loc.clone();
                 }
             }
         }.runTaskTimer(plugin, 0L, 2L);
