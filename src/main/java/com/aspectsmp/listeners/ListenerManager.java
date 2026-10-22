@@ -665,6 +665,7 @@ public class ListenerManager implements Listener {
     }
 
     private void handleHeartCatalyst(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
+        event.setCancelled(true);
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         if (heart.getTier() >= 2) {
@@ -684,6 +685,7 @@ public class ListenerManager implements Listener {
     }
 
     private void handleHeartResonator(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
+        event.setCancelled(true);
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         if (heart.getTier() >= 3) {
@@ -707,6 +709,7 @@ public class ListenerManager implements Listener {
     }
 
     private void handleHeartRestorationKit(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
+        event.setCancelled(true);
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         if (!heart.isDormant()) {
@@ -728,6 +731,7 @@ public class ListenerManager implements Listener {
     }
 
     private void handleReforgingCore(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
+        event.setCancelled(true);
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         
@@ -752,6 +756,7 @@ public class ListenerManager implements Listener {
     }
 
     private void handleStabilityBottle(Player player, PlayerInteractEvent event, EquipmentSlot hand, ItemStack item) {
+        event.setCancelled(true);
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         if (heart.getStability() >= 100) {
