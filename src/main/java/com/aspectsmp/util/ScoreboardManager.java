@@ -70,7 +70,7 @@ public class ScoreboardManager {
             }
             if (!first) actionBar.append(" §8| ");
             first = false;
-            actionBar.append(ability.getName()).append(": ").append(status);
+            actionBar.append(ability.getName().toLowerCase()).append(": ").append(status);
         }
 
         player.sendActionBar(net.kyori.adventure.text.Component.text(actionBar.toString()));
