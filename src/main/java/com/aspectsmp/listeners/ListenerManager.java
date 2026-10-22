@@ -170,6 +170,8 @@ public class ListenerManager implements Listener {
             case FORTUNE -> java.util.Set.of(PotionEffectType.LUCK, PotionEffectType.HERO_OF_THE_VILLAGE);
             case CLOUD -> java.util.Set.of(PotionEffectType.SPEED, PotionEffectType.JUMP_BOOST);
             case WINTER -> java.util.Set.of(PotionEffectType.RESISTANCE, PotionEffectType.SLOWNESS);
+            case SHADOW -> java.util.Set.of(PotionEffectType.INVISIBILITY, PotionEffectType.NIGHT_VISION);
+            case STORM -> java.util.Set.of(PotionEffectType.SPEED, PotionEffectType.SLOW_FALLING);
         };
     }
     
@@ -209,6 +211,14 @@ public class ListenerManager implements Listener {
             case WINTER -> {
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.RESISTANCE, 80, 0), true);
                 ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, 80, 0), true);
+            }
+            case SHADOW -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.INVISIBILITY, 80, 0), true);
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.NIGHT_VISION, 80, 0), true);
+            }
+            case STORM -> {
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 80, 0), true);
+                ally.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOW_FALLING, 80, 0), true);
             }
         }
     }

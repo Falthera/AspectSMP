@@ -7,9 +7,10 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.key.Key;
 import org.bukkit.*;
 import org.bukkit.entity.*;
-import org.bukkit.Sound;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -155,7 +156,12 @@ public class EventEffects {
             public void run() {
                 if (!player.isOnline() || ticks >= durationTicks) { cancel(); return; }
                 if (ticks % beatInterval == 0) {
-                    player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_HEARTBEAT, 1.0f, 1.0f);
+                    // Use Adventure Sound API with key for compatibility
+                    player.playSound(player.getLocation(), net.kyori.adventure.sound.Sound.sound(
+                        net.kyori.adventure.key.Key.key("entity.player.heartbeat"),
+                        net.kyori.adventure.sound.Sound.Source.MASTER,
+                        1.0f, 1.0f
+                    ));
                 }
                 ticks++;
             }
