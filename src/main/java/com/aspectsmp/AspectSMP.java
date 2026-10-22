@@ -298,7 +298,25 @@ public VisualEffectsManager getVisualEffectsManager() {
     }
 
     private void registerCommands() {
-        // Command registration is handled by plugin.yml and command classes
+        getCommand("ability1").setExecutor(new Ability1Command(this));
+        getCommand("ability2").setExecutor(new Ability2Command(this));
+        getCommand("ability3").setExecutor(new Ability3Command(this));
+        getCommand("ultimate").setExecutor(new UltimateCommand(this));
+        getCommand("info").setExecutor(new InfoCommand(this));
+        getCommand("list").setExecutor(new ListCommand(this));
+        getCommand("reroll").setExecutor(new RerollCommand(this));
+        getCommand("repair").setExecutor(new RepairCommand(this));
+        getCommand("reload").setExecutor(new ReloadCommand(this));
+        getCommand("aspect-give").setExecutor(new GiveCommand(this));
+        getCommand("give-event-aspect").setExecutor(new GiveEventAspectCommand(this));
+        getCommand("event").setExecutor(new EclipseCommand(this));
+        getCommand("trust").setExecutor(new TrustCommand(this, trustManager));
+        getCommand("withdraw").setExecutor(new WithdrawCommand(this));
+        getCommand("leaveevent").setExecutor(new LeaveEventCommand(this));
+        getCommand("eclipse").setExecutor(new EclipseCommand(this));
+        getCommand("shadow").setExecutor(new ShadowCommand(this));
+        getCommand("tempest").setExecutor(new TempestCommand(this));
+        getCommand("team").setExecutor(new TeamCommand(this, teamManager));
     }
 
     private void registerTrustCommand() {
@@ -318,6 +336,7 @@ public VisualEffectsManager getVisualEffectsManager() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (scoreboardManager != null) {
                 scoreboardManager.updatePlayer(player);
+                scoreboardManager.updateActionBar(player);
             }
         }
     }
