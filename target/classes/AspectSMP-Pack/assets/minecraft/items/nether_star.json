@@ -9,31 +9,10 @@
     },
     "entries": [
       {
-        "threshold": 1,
+        "threshold": 1005,
         "model": {
           "type": "minecraft:model",
-          "model": "aspectsmp:item/catalyst"
-        }
-      },
-      {
-        "threshold": 2,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/resonator"
-        }
-      },
-      {
-        "threshold": 4,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/reforging"
-        }
-      },
-      {
-        "threshold": 1002,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/frostheart"
+          "model": "aspectsmp:item/stormheart"
         }
       },
       {
@@ -44,10 +23,31 @@
         }
       },
       {
-        "threshold": 1005,
+        "threshold": 1002,
         "model": {
           "type": "minecraft:model",
-          "model": "aspectsmp:item/stormheart"
+          "model": "aspectsmp:item/frostheart"
+        }
+      },
+      {
+        "threshold": 4,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/reforging"
+        }
+      },
+      {
+        "threshold": 2,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/resonator"
+        }
+      },
+      {
+        "threshold": 1,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/catalyst"
         }
       }
     ]

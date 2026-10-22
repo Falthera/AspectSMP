@@ -21,6 +21,7 @@ public class HeartCatalyst extends CustomItem {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§6§lHeart Catalyst");
+        meta.setCustomModelData(1);
         meta.lore(List.of(Component.text("§7Unlock Tier 2 abilities"), Component.text("§7Right-click to upgrade your Heart")));
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "heart_catalyst");

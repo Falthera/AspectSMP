@@ -21,6 +21,7 @@ public class HeartResonator extends CustomItem {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§d§lHeart Resonator");
+        meta.setCustomModelData(2);
         meta.lore(List.of(Component.text("§7Unlock Tier 3 abilities and Ultimate"), Component.text("§7Right-click to upgrade your Heart")));
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "heart_resonator");
