@@ -98,7 +98,7 @@ public class HeartOfTheSea {
     }
 
     public static void ensureBound(Player player) {
-        Heart heart = AspectSMP.getInstance().getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        Heart heart = AspectSMP.getInstance().getHeartManager().getOrCreateHeart(player.getUniqueId());
         if (heart == null) return;
 
         boolean foundAny = false;
