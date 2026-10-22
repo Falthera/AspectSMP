@@ -29,6 +29,8 @@ import com.aspectsmp.listeners.ListenerManager;
 import com.aspectsmp.storage.StorageManager;
 import com.aspectsmp.team.TeamManager;
 import com.aspectsmp.trust.TrustManager;
+import com.aspectsmp.util.MusicManager;
+import com.aspectsmp.util.ResourcePackManager;
 import com.aspectsmp.util.ScoreboardManager;
 import com.aspectsmp.visual.VisualEffectsManager;
 import com.aspectsmp.combat.CombatManager;
@@ -37,12 +39,17 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.UUID;
 
-public class AspectSMP extends JavaPlugin {
+public class AspectSMP extends JavaPlugin implements Listener {
 
     private static AspectSMP instance;
     private com.aspectsmp.core.HeartManager heartManager;
@@ -58,6 +65,8 @@ public class AspectSMP extends JavaPlugin {
     private CombatManager combatManager;
     private EventManager eventManager;
     private VisualEffectsManager visualEffectsManager;
+    private ResourcePackManager resourcePackManager;
+    private MusicManager musicManager;
     
     // Event aspect exclusivity tracking
     private UUID cloudAspectHolder = null;
@@ -86,6 +95,8 @@ public class AspectSMP extends JavaPlugin {
         this.combatManager = new CombatManager(this, trustManager);
         this.eventManager = new EventManager(this);
         this.visualEffectsManager = new VisualEffectsManager(this);
+        this.resourcePackManager = new ResourcePackManager(this);
+        this.musicManager = new MusicManager(this);
         
         // Load claimed aspects from storage
         loadClaimedAspects();
@@ -98,6 +109,7 @@ public class AspectSMP extends JavaPlugin {
         scoreboardManager = new ScoreboardManager(this);
         getServer().getPluginManager().registerEvents(ruleModifierManager, this);
         getServer().getPluginManager().registerEvents(guiManager, this);
+        getServer().getPluginManager().registerEvents(this, this);
         registerCommands();
         registerTrustCommand();
         registerTeamCommand();
@@ -108,6 +120,13 @@ public class AspectSMP extends JavaPlugin {
         getServer().getScheduler().runTaskTimer(this, this::updateAllActionBars, 20L, 20L);
         getServer().getScheduler().runTaskTimer(this, trustManager::save, 6000L, 6000L);
         getServer().getScheduler().runTaskTimer(this, this::enforceCloudheartRules, 20L, 1200L);
+        
+        // Send resource pack to online players
+        resourcePackManager.sendToAll();
+        
+        // Start global music playlist
+        musicManager.playGlobalPlaylist(musicManager.getCurrentGlobalPlaylist() != null 
+            ? musicManager.getCurrentGlobalPlaylist() : "ambient");
         
         getLogger().info("Aspect SMP enabled!");
     }
@@ -125,6 +144,9 @@ public class AspectSMP extends JavaPlugin {
         }
         if (storageManager != null) {
             storageManager.shutdown();
+        }
+        if (musicManager != null) {
+            musicManager.shutdown();
         }
         saveClaimedAspects();
         
@@ -183,10 +205,18 @@ public class AspectSMP extends JavaPlugin {
         return eventManager;
     }
 
-    public VisualEffectsManager getVisualEffectsManager() {
+public VisualEffectsManager getVisualEffectsManager() {
         return visualEffectsManager;
     }
-
+    
+    public ResourcePackManager getResourcePackManager() {
+        return resourcePackManager;
+    }
+    
+    public MusicManager getMusicManager() {
+        return musicManager;
+    }
+    
     // Event aspect exclusivity methods
     public boolean isAspectClaimed(AspectType aspect) {
         return switch (aspect) {
@@ -300,6 +330,32 @@ public class AspectSMP extends JavaPlugin {
                     ninthSky.enforceCloudheartRules();
                 }
             });
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        if (resourcePackManager != null) {
+            resourcePackManager.onPlayerJoin(player);
+        }
+        if (musicManager != null) {
+            musicManager.onPlayerJoin(player);
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        if (musicManager != null) {
+            musicManager.onPlayerQuit(player);
+        }
+    }
+    
+    @EventHandler
+    public void onResourcePackStatus(PlayerResourcePackStatusEvent event) {
+        if (resourcePackManager != null) {
+            resourcePackManager.onResourcePackStatus(event.getPlayer(), event.getStatus().name().toLowerCase());
         }
     }
 }

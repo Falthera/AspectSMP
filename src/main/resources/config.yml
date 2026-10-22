@@ -45,3 +45,25 @@ visual-effects:
   use-particle-builder: true
   use-trail-particles: true
   sound-seed-enabled: true
+
+resource-pack:
+  enabled: true
+  url: ""
+  sha256: ""
+  required: false
+  prompt-message: "§b§lAspect SMP §7requires a resource pack for custom items and effects."
+  auto-download: true
+
+music:
+  enabled: true
+  volume: 0.5
+  fade-duration: 3
+  crossfade-enabled: true
+  default-playlist: "ambient"
+  playlists:
+    ambient:
+      - "aspect_smp_theme"
+    combat:
+      - "aspect_smp_theme"
+    event:
+      - "aspect_smp_theme"
