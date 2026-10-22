@@ -492,30 +492,29 @@ public class ListenerManager implements Listener {
         ItemStack mainHandItem = player.getInventory().getItemInMainHand();
         ItemStack offHandItem = player.getInventory().getItemInOffHand();
 
-        boolean hasHeart = (mainHandItem != null && HeartOfTheSea.isHeartOfTheSea(mainHandItem)) ||
-                           (offHandItem != null && HeartOfTheSea.isHeartOfTheSea(offHandItem));
+        boolean hasHeart = HeartOfTheSea.isHeartOfTheSea(mainHandItem) || HeartOfTheSea.isHeartOfTheSea(offHandItem);
 
-        if ((mainHandItem != null && mainHandItem.getType().isBlock()) ||
-            (offHandItem != null && offHandItem.getType().isBlock())) {
+        if (mainHandItem != null && mainHandItem.getType().isBlock()) {
             return;
         }
 
-        ItemStack usedItem = event.getItem();
-        EquipmentSlot usedHand = event.getHand();
-
+        // Main hand priority for custom items
         ItemStack customItem = null;
         EquipmentSlot customHand = null;
 
-        if (usedItem != null && (
-            CustomItem.isCustomItem(usedItem, "heart_catalyst") || 
-            CustomItem.isCustomItem(usedItem, "heart_resonator") ||
-            CustomItem.isCustomItem(usedItem, "heart_restoration_kit") ||
-            CustomItem.isCustomItem(usedItem, "reforging_core") ||
-            CustomItem.isCustomItem(usedItem, "stability_bottle")
+        // Check main hand first
+        if (mainHandItem != null && (
+            CustomItem.isCustomItem(mainHandItem, "heart_catalyst") || 
+            CustomItem.isCustomItem(mainHandItem, "heart_resonator") ||
+            CustomItem.isCustomItem(mainHandItem, "heart_restoration_kit") ||
+            CustomItem.isCustomItem(mainHandItem, "reforging_core") ||
+            CustomItem.isCustomItem(mainHandItem, "stability_bottle")
         )) {
-            customItem = usedItem;
-            customHand = usedHand;
-        } else if (offHandItem != null && (
+            customItem = mainHandItem;
+            customHand = EquipmentSlot.HAND;
+        } 
+        // Then offhand
+        else if (offHandItem != null && (
             CustomItem.isCustomItem(offHandItem, "heart_catalyst") || 
             CustomItem.isCustomItem(offHandItem, "heart_resonator") ||
             CustomItem.isCustomItem(offHandItem, "heart_restoration_kit") ||
