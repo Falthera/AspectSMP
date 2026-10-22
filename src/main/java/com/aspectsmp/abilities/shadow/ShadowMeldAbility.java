@@ -1,5 +1,4 @@
-package com.aspectsmp.abilities.shadow;
-
+import com.aspectsmp.AspectSMP;
 import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
 import org.bukkit.Particle;
@@ -44,7 +43,7 @@ public class ShadowMeldAbility extends BaseAbility {
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(
             org.bukkit.potion.PotionEffectType.INVISIBILITY, 160, 0, true, false), true);
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.DAMAGE_RESISTANCE, 160, 4, true, false), true);
+            org.bukkit.potion.PotionEffectType.RESISTANCE, 160, 4, true, false), true);
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(
             org.bukkit.potion.PotionEffectType.SPEED, 160, 1, true, false), true);
 

@@ -675,10 +675,9 @@ public class FrozenEclipseEvent {
             Bukkit.broadcastMessage("§7They are now the §bSOLE HOLDER §7of the Winter Aspect and carry the §bFrostheart§7.");
             Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             
-            // Play visual effects for winner
-            Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
-            int tier = heart != null ? heart.getTier() : 2;
-            plugin.getVisualEffectsManager().playHeartUpgradeVisuals(player, tier);
+// Play visual effects for winner
+        int tier = heart != null ? heart.getTier() : 2;
+        plugin.getVisualEffectsManager().playHeartUpgradeVisuals(player, tier);
             plugin.getVisualEffectsManager().playGlobalEventAnnouncement(
                 "MASTER OF WINTER",
                 player.getName() + " has conquered the Frozen Eclipse!",

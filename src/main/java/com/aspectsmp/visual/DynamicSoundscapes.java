@@ -58,6 +58,15 @@ public class DynamicSoundscapes {
         player.playSound(player.getLocation(), sound, SoundCategory.MASTER, volume, pitch, seed);
     }
 
+    private void playSound(Player player, Location location, Sound sound, float volume, float pitch) {
+        if (!plugin.getConfig().getBoolean("visual-effects.sound-seed-enabled", true)) {
+            location.getWorld().playSound(location, sound, volume, pitch);
+        } else {
+            long seed = location.getWorld().getSeed() ^ System.currentTimeMillis();
+            location.getWorld().playSound(location, sound, SoundCategory.MASTER, volume, pitch, seed);
+        }
+    }
+
     // ════════════════════════════════════════════════════════════════════
     // AMBIENT SOUNDSCAPES - Persistent per aspect
     // ════════════════════════════════════════════════════════════════════
@@ -87,7 +96,7 @@ public class DynamicSoundscapes {
 
                 if (stability < 20 && tick % 20 == 0) { // Every second
                     // Critical heartbeat
-                    playSound(player, Sound.ENTITY_PLAYER_HEARTBEAT, 0.3f, 0.5f + (20 - stability) / 40.0f);
+                    playSound(player, Sound.ENTITY_WARDEN_HEARTBEAT, 0.3f, 0.5f + (20 - stability) / 40.0f);
                 }
 
                 if (stability >= 100 && tick % 60 == 0) { // Every 3 seconds
@@ -392,7 +401,7 @@ public class DynamicSoundscapes {
                 if (tick % interval == 0) {
                     float volume = 0.3f + (100 - stability) / 200.0f;
                     float pitch = 0.8f + (100 - stability) / 150.0f;
-                    playSound(player, Sound.ENTITY_PLAYER_HEARTBEAT, volume, pitch);
+                    playSound(player, Sound.ENTITY_WARDEN_HEARTBEAT, volume, pitch);
                 }
                 tick++;
             }
@@ -414,6 +423,25 @@ public class DynamicSoundscapes {
                     playSound(player, Sound.BLOCK_NOTE_BLOCK_BASS, 0.3f, 0.3f + pulse * 0.1f);
                 }
             }.runTaskLater(plugin, pulse * 40L);
+        }
+    }
+
+    public void playCriticalWarningSound(Player player, Theme theme) {
+        playStabilityWarning(player, theme);
+    }
+
+    public void playEssenceGainSound(Player player, Theme theme, long amount) {
+        if (!player.isOnline()) return;
+        int count = (int)(amount / 10);
+        for (int i = 0; i < Math.min(count, 5); i++) {
+            final int c = i;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (!player.isOnline()) return;
+                    playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.3f, 1.5f + c * 0.1f);
+                }
+            }.runTaskLater(plugin, c * 2L);
         }
     }
 

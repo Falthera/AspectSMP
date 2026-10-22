@@ -1,12 +1,13 @@
 package com.aspectsmp.visual;
 
 import com.aspectsmp.AspectSMP;
+import com.aspectsmp.core.Heart;
 import com.aspectsmp.event.EventPhase;
 import com.aspectsmp.visual.AspectVisualThemes.Theme;
 import org.bukkit.*;
 import org.bukkit.entity.*;
-import org.bukkit.DustOptions;
-import org.bukkit.DustTransition;
+import org.bukkit.particle.DustOptions;
+import org.bukkit.particle.DustTransition;
 import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;

@@ -288,7 +288,8 @@ public class TempestsFuryEvent {
     }
 
     private void spawnFragmentGuards() {
-        List<Player> overworldPlayers = Bukkit.getOnlinePlayers().stream()
+        @SuppressWarnings("unchecked")
+        List<Player> overworldPlayers = (List<Player>) Bukkit.getOnlinePlayers().stream()
             .filter(p -> p.getWorld().getEnvironment() == World.Environment.NORMAL)
             .filter(p -> participants.contains(p.getUniqueId()))
             .toList();
@@ -571,7 +572,6 @@ public class TempestsFuryEvent {
         }
         
         // Play visual effects for winner
-        Heart heart = plugin.getHeartManager().getHeart(winner.getUniqueId()).orElse(null);
         int tier = heart != null ? heart.getTier() : 2;
         plugin.getVisualEffectsManager().playHeartUpgradeVisuals(winner, tier);
         plugin.getVisualEffectsManager().playGlobalEventAnnouncement(

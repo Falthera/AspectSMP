@@ -38,6 +38,15 @@ public class EventManager implements CommandExecutor, TabCompleter {
         return tempestsFuryEvent;
     }
 
+    public List<com.aspectsmp.event.BaseEvent> getActiveEvents() {
+        List<com.aspectsmp.event.BaseEvent> active = new ArrayList<>();
+        if (ninthSkyEvent != null && ninthSkyEvent.isActive()) active.add(ninthSkyEvent);
+        if (frozenEclipseEvent != null && frozenEclipseEvent.isActive()) active.add(frozenEclipseEvent);
+        if (shadowsDescentEvent != null && shadowsDescentEvent.isActive()) active.add(shadowsDescentEvent);
+        if (tempestsFuryEvent != null && tempestsFuryEvent.isActive()) active.add(tempestsFuryEvent);
+        return active;
+    }
+
     public void startNinthSkyEvent() {
         if (ninthSkyEvent == null || !ninthSkyEvent.isActive()) {
             ninthSkyEvent = new NinthSkyEvent(plugin);

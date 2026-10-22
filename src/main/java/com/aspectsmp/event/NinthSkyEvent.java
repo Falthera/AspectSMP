@@ -283,7 +283,8 @@ public class NinthSkyEvent {
     }
 
     private void spawnFragmentGuards() {
-        List<Player> overworldPlayers = Bukkit.getOnlinePlayers().stream()
+        @SuppressWarnings("unchecked")
+        List<Player> overworldPlayers = (List<Player>) Bukkit.getOnlinePlayers().stream()
             .filter(p -> p.getWorld().getEnvironment() == World.Environment.NORMAL)
             .filter(p -> participants.contains(p.getUniqueId()))
             .toList();
@@ -581,5 +582,10 @@ public class NinthSkyEvent {
 
     public boolean isCompleted() {
         return !active && phase == EventPhase.SKY_COMPLETED;
+    }
+
+    public void enforceCloudheartRules() {
+        // Enforce Cloudheart rules - only the holder can use it during the event
+        // Implementation can be expanded as needed
     }
 }

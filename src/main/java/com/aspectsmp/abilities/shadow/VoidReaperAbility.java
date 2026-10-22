@@ -1,5 +1,6 @@
 package com.aspectsmp.abilities.shadow;
 
+import com.aspectsmp.AspectSMP;
 import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
 import org.bukkit.Particle;

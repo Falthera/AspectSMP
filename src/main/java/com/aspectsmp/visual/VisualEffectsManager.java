@@ -519,4 +519,10 @@ public class VisualEffectsManager {
     public void setParticleQuality(int quality) { this.particleQuality = Math.max(1, Math.min(4, quality)); }
     public boolean isScreenShakeEnabled() { return screenShakeEnabled; }
     public void setScreenShakeEnabled(boolean enabled) { this.screenShakeEnabled = enabled; }
+    public boolean isVignetteEnabled() { return vignetteEnabled; }
+    public void setVignetteEnabled(boolean enabled) { this.vignetteEnabled = enabled; }
+    public boolean isChromaticAberrationEnabled() { return chromaticAberrationEnabled; }
+    public void setChromaticAberrationEnabled(boolean enabled) { this.chromaticAberrationEnabled = enabled; }
+    public boolean isAffectPvP() { return affectPvP; }
+    public void setAffectPvP(boolean affectPvP) { this.affectPvP = affectPvP; }
 }

@@ -286,7 +286,8 @@ public class ShadowsDescentEvent {
     }
 
     private void spawnFragmentGuards() {
-        List<Player> overworldPlayers = Bukkit.getOnlinePlayers().stream()
+        @SuppressWarnings("unchecked")
+        List<Player> overworldPlayers = (List<Player>) Bukkit.getOnlinePlayers().stream()
             .filter(p -> p.getWorld().getEnvironment() == World.Environment.NORMAL)
             .filter(p -> participants.contains(p.getUniqueId()))
             .toList();
@@ -420,7 +421,7 @@ public class ShadowsDescentEvent {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getWorld().getEnvironment() == World.Environment.NORMAL) {
                 player.sendTitle("§8§lSHADOW LORD", "§7Rises from the abyss...", 20, 100, 20);
-                player.playSound(player.getLocation(), Sound.ENTITY_WARDEN_SPAWN, 2.0f, 0.3f);
+                player.playSound(player.getLocation(), Sound.ENTITY_WARDEN_HEARTBEAT, 2.0f, 0.3f);
             }
         }
 
@@ -572,7 +573,6 @@ public class ShadowsDescentEvent {
         }
         
         // Play visual effects for winner
-        Heart heart = plugin.getHeartManager().getHeart(winner.getUniqueId()).orElse(null);
         int tier = heart != null ? heart.getTier() : 2;
         plugin.getVisualEffectsManager().playHeartUpgradeVisuals(winner, tier);
         plugin.getVisualEffectsManager().playGlobalEventAnnouncement(

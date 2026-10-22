@@ -5,6 +5,7 @@ import com.aspectsmp.event.EventPhase;
 import com.aspectsmp.visual.AspectVisualThemes.Theme;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.bossbar.BossBar;
@@ -544,7 +545,7 @@ public class ScreenEffectsAPI {
                         
                         player.showTitle(Title.title(
                             Component.text("ASPECT SHIFT").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD),
-                            Component.text("Now bound to " + newTheme.getAspect().getDisplayName()).color(newTheme.getPrimaryColor()),
+                            Component.text("Now bound to " + newTheme.getAspect().getDisplayName()).color(toTextColor(newTheme.getPrimaryColor())),
                             Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(3), Duration.ofSeconds(1))
                         ));
                         
@@ -564,6 +565,7 @@ public class ScreenEffectsAPI {
         
         String phaseName = formatPhaseName(phase);
         Color color = theme.getPrimaryColor();
+        TextColor textColor = toTextColor(color);
         
         // Phase transition cinematic
         if (canVignette()) vignette(player, color, 0.7f, 40);
@@ -572,7 +574,7 @@ public class ScreenEffectsAPI {
         
         player.showTitle(Title.title(
             Component.text(phaseName).color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD),
-            Component.text("The " + theme.getAspect().getDisplayName() + " event evolves...").color(color),
+            Component.text("The " + theme.getAspect().getDisplayName() + " event evolves...").color(textColor),
             Title.Times.times(Duration.ofSeconds(2), Duration.ofSeconds(4), Duration.ofSeconds(2))
         ));
         
@@ -582,8 +584,10 @@ public class ScreenEffectsAPI {
     public void globalAnnouncement(Player player, String title, String subtitle, Color color) {
         if (!player.isOnline()) return;
         
+        TextColor textColor = toTextColor(color);
+        
         player.showTitle(Title.title(
-            Component.text(title).color(color).decorate(TextDecoration.BOLD),
+            Component.text(title).color(textColor).decorate(TextDecoration.BOLD),
             Component.text(subtitle).color(NamedTextColor.WHITE),
             Title.Times.times(Duration.ofSeconds(2), Duration.ofSeconds(5), Duration.ofSeconds(2))
         ));
@@ -600,11 +604,12 @@ public class ScreenEffectsAPI {
     public void showBossBar(Player player, String id, String name, float progress, Color color, BossBar.Overlay... overlays) {
         if (!player.isOnline()) return;
         
+        BossBar.Overlay overlay = overlays.length > 0 ? overlays[0] : BossBar.Overlay.PROGRESS;
         BossBar bar = BossBar.bossBar(
             Component.text(name).color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD),
             progress,
             mapColor(color),
-            overlays
+            overlay
         );
         player.showBossBar(bar);
         activeBossBars.put(UUID.fromString(id), bar);
@@ -656,6 +661,14 @@ public class ScreenEffectsAPI {
         return Arrays.stream(name.toLowerCase().split(" "))
             .map(w -> Character.toUpperCase(w.charAt(0)) + w.substring(1))
             .reduce("", (a, b) -> a + " " + b).trim();
+    }
+
+    private TextColor toTextColor(Color color) {
+        int rgb = color.asRGB();
+        int r = (rgb >> 16) & 0xFF;
+        int g = (rgb >> 8) & 0xFF;
+        int b = rgb & 0xFF;
+        return TextColor.color(r, g, b);
     }
 
     private BossBar.Color mapColor(Color color) {
