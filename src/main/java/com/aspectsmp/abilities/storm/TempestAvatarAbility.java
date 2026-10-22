@@ -62,7 +62,7 @@ public class TempestAvatarAbility extends BaseAbility {
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(
             org.bukkit.potion.PotionEffectType.RESISTANCE, 300, 1), true);
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.DAMAGE_RESISTANCE, 300, 2), true);
+            org.bukkit.potion.PotionEffectType.RESISTANCE, 300, 2), true);
 
         // Persistent storm around player
         new BukkitRunnable() {
@@ -102,7 +102,7 @@ public class TempestAvatarAbility extends BaseAbility {
                     }
                 }
             }
-        }.runTaskTimer(plugin, 0L, 5L);
+        }.runTaskTimer(AspectSMP.getInstance(), 0L, 5L);
 
         // Passenger flight - player can fly
         player.setAllowFlight(true);
@@ -116,7 +116,7 @@ public class TempestAvatarAbility extends BaseAbility {
                     player.setFlying(false);
                 }
             }
-        }.runTaskLater(plugin, 300L);
+        }.runTaskLater(AspectSMP.getInstance(), 300L);
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;

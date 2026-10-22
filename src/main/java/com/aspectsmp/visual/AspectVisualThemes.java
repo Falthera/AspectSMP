@@ -189,7 +189,7 @@ public class AspectVisualThemes {
             Sound.ENTITY_PLAYER_LEVELUP,  // Cast
             Sound.ENTITY_PLAYER_LEVELUP,  // Impact
             Sound.ITEM_TOTEM_USE,         // Ultimate
-            Sound.BLOCK_GRASS_AMBIENT,    // Ambient (use GRASS_RUSTLE)
+            Sound.BLOCK_DRY_GRASS_AMBIENT,    // Ambient
             0.04, 0.02, 0.01,
             8, 5
         ));
@@ -273,7 +273,7 @@ public class AspectVisualThemes {
             Sound.ENTITY_BREEZE_WIND_BURST,    // Cast
             Sound.ENTITY_BREEZE_INHALE,        // Impact
             Sound.ENTITY_ENDER_DRAGON_FLAP,    // Ultimate
-            Sound.ENTITY_BREEZE_IDLE,          // Ambient
+            Sound.ENTITY_BREEZE_IDLE_AIR,          // Ambient
             0.02, 0.01, 0.005,
             8, 6
         ));
@@ -315,7 +315,7 @@ public class AspectVisualThemes {
             Sound.ENTITY_WARDEN_HEARTBEAT, // Cast
             Sound.ENTITY_WARDEN_SONIC_BOOM, // Impact
             Sound.ENTITY_WARDEN_DEATH,    // Ultimate
-            Sound.BLOCK_SCULK_BLOCK_BREAK, // Ambient
+            Sound.BLOCK_SCULK_BREAK, // Ambient
             0.02, 0.01, 0.01,
             6, 4
         ));
@@ -336,7 +336,7 @@ public class AspectVisualThemes {
             Sound.ENTITY_BREEZE_WIND_BURST,    // Cast
             Sound.ENTITY_LIGHTNING_BOLT_IMPACT, // Impact
             Sound.ENTITY_ENDER_DRAGON_DEATH,    // Ultimate
-            Sound.ENTITY_BREEZE_IDLE,          // Ambient
+            Sound.ENTITY_BREEZE_IDLE_AIR,          // Ambient
             0.05, 0.03, 0.02,
             8, 6
         ));

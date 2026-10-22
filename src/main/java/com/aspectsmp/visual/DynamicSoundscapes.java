@@ -127,11 +127,11 @@ public class DynamicSoundscapes {
                 if (stability < 30 && tick % 30 == 0) playSound(loc, Sound.ENTITY_ENDERMAN_TELEPORT, 0.15f, 0.3f + random.nextFloat() * 0.5f);
             }
             case VITALITY -> {
-                if (tick % 80 == 0) playSound(loc, Sound.BLOCK_GRASS_AMBIENT, 0.1f, 1.0f + random.nextFloat() * 0.5f);
+                if (tick % 80 == 0) playSound(loc, Sound.BLOCK_DRY_GRASS_AMBIENT, 0.1f, 1.0f + random.nextFloat() * 0.5f);
                 if (stability >= 100 && tick % 60 == 0) playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 0.15f, 1.5f);
             }
             case WAR -> {
-                if (tick % 100 == 0) playSound(loc, Sound.ENTITY_IRON_GOLEM_AMBIENT, 0.08f, 0.5f + random.nextFloat() * 0.5f);
+                if (tick % 100 == 0) playSound(loc, Sound.ENTITY_IRON_GOLEM_STEP, 0.08f, 0.5f + random.nextFloat() * 0.5f);
                 if (stability < 30 && tick % 20 == 0) playSound(loc, Sound.ENTITY_RAVAGER_ROAR, 0.1f, 0.3f + random.nextFloat() * 0.4f);
             }
             case COSMOS -> {
@@ -143,7 +143,7 @@ public class DynamicSoundscapes {
                 if (stability >= 100 && tick % 60 == 0) playSound(loc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.15f, 2.0f);
             }
             case CLOUD -> {
-                if (tick % 80 == 0) playSound(loc, Sound.ENTITY_BREEZE_IDLE, 0.1f, 0.5f + random.nextFloat() * 0.5f);
+                if (tick % 80 == 0) playSound(loc, Sound.ENTITY_BREEZE_IDLE_GROUND, 0.1f, 0.5f + random.nextFloat() * 0.5f);
                 if (stability < 30 && tick % 30 == 0) playSound(loc, Sound.ENTITY_BREEZE_INHALE, 0.15f, 0.5f);
             }
             case WINTER -> {
@@ -151,7 +151,7 @@ public class DynamicSoundscapes {
                 if (stability < 30 && tick % 25 == 0) playSound(loc, Sound.BLOCK_GLASS_BREAK, 0.1f, 0.5f + random.nextFloat() * 0.5f);
             }
             case SHADOW -> {
-                if (tick % 120 == 0) playSound(loc, Sound.BLOCK_SCULK_BLOCK_BREAK, 0.08f, 0.3f + random.nextFloat() * 0.4f);
+                if (tick % 120 == 0) playSound(loc, Sound.BLOCK_SCULK_BREAK, 0.08f, 0.3f + random.nextFloat() * 0.4f);
                 if (stability < 30 && tick % 20 == 0) playSound(loc, Sound.ENTITY_WARDEN_HEARTBEAT, 0.15f, 0.5f);
             }
             case STORM -> {

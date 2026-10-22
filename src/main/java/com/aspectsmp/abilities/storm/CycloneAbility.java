@@ -68,7 +68,7 @@ public class CycloneAbility extends BaseAbility {
                     }
                 }
             }
-        }.runTaskTimer(plugin, 0L, 10L);
+        }.runTaskTimer(AspectSMP.getInstance(), 0L, 10L);
 
         // Player immunity to own cyclone
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(

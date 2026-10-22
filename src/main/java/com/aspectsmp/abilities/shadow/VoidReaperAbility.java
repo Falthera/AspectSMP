@@ -74,7 +74,7 @@ public class VoidReaperAbility extends BaseAbility {
                     }
                 }
             }
-        }.runTaskTimer(plugin, 0L, 20L);
+        }.runTaskTimer(AspectSMP.getInstance(), 0L, 20L);
 
         // Player buff
         player.addPotionEffect(new org.bukkit.potion.PotionEffect(

@@ -100,7 +100,7 @@ public class EventEffects {
     }
 
     public void nauseaFlash(Player player, int durationTicks) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, durationTicks, 1, true, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, durationTicks, 1, true, false));
         player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, durationTicks, 2, true, false));
     }
 

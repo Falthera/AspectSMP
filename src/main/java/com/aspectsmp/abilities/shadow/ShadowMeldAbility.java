@@ -60,7 +60,7 @@ public class ShadowMeldAbility extends BaseAbility {
                     }
                 }
             }
-        }.runTaskLater(plugin, 160L);
+        }.runTaskLater(AspectSMP.getInstance(), 160L);
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;

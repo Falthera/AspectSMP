@@ -65,6 +65,10 @@ public class Team {
         return invites.contains(playerId);
     }
 
+    public Set<UUID> getInvites() {
+        return new HashSet<>(invites);
+    }
+
     public long getCreatedAt() {
         return createdAt;
     }

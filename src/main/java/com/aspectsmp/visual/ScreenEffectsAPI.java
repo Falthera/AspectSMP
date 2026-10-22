@@ -257,7 +257,7 @@ public class ScreenEffectsAPI {
                     if (canVignette()) vignette(player, Color.RED, pulseIntensity, beatInterval);
                     
                     // Sound
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HEARTBEAT, 
+                    player.playSound(player.getLocation(), Sound.ENTITY_WARDEN_HEARTBEAT, 
                         pulseIntensity, 1.0f + (100 - stability) / 100.0f);
                     
                     // Subtle screen shake
@@ -285,7 +285,7 @@ public class ScreenEffectsAPI {
                     if (canVignette()) vignette(player, theme.getPrimaryColor(), 0.8f, 20);
                     if (canChromaticAberration() && canAffectPvP()) chromaticAberration(player, 0.5, 20);
                     if (canScreenShake()) screenShake(player, 0.5, 10);
-                    player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 0.5f);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 0.5f);
                 }
             }.runTaskLater(plugin, i * 40L);
         }
@@ -337,7 +337,7 @@ public class ScreenEffectsAPI {
             Title.Times.times(Duration.ofSeconds(2), Duration.ofSeconds(4), Duration.ofSeconds(2))
         ));
         
-        player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 1.0f, 0.5f);
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0f, 0.5f);
     }
 
     // ════════════════════════════════════════════════════════════════════

@@ -266,4 +266,40 @@ public class AspectSMP extends JavaPlugin {
     public boolean hasEventJoinLocation(UUID player) {
         return eventJoinLocations.containsKey(player);
     }
+
+    private void registerCommands() {
+        // Command registration is handled by plugin.yml and command classes
+    }
+
+    private void registerTrustCommand() {
+        // Trust command registration handled by plugin.yml
+    }
+
+    private void registerTeamCommand() {
+        // Team command registration handled by plugin.yml
+    }
+
+    private void registerWithdrawCommand() {
+        // Withdraw command registration handled by plugin.yml
+    }
+
+    private void updateAllActionBars() {
+        // Update action bars for all online players
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (scoreboardManager != null) {
+                scoreboardManager.updatePlayer(player);
+            }
+        }
+    }
+
+    private void enforceCloudheartRules() {
+        // Enforce Cloudheart event rules
+        if (eventManager != null) {
+            eventManager.getActiveEvents().forEach(event -> {
+                if (event instanceof com.aspectsmp.event.NinthSkyEvent ninthSky) {
+                    ninthSky.enforceCloudheartRules();
+                }
+            });
+        }
+    }
 }
