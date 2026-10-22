@@ -117,8 +117,7 @@ public class ResourcePackManager {
                 playersWithPack.remove(player.getUniqueId());
                 plugin.getLogger().info(player.getName() + " declined resource pack");
                 if (required) {
-                    player.kickPlayer(net.kyori.adventure.text.Component.text(
-                        "§cThis server requires the Aspect SMP resource pack to play."));
+                    player.kickPlayer("§cThis server requires the Aspect SMP resource pack to play.");
                 }
             }
             case "failed_download" -> {

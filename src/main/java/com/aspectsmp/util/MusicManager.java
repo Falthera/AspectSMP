@@ -247,7 +247,7 @@ public class MusicManager {
         return globalVolume;
     }
     
-    private static class MusicSession {
+    private class MusicSession {
         private final Player player;
         private final Queue<String> playlist = new LinkedList<>();
         private File currentTrack = null;
@@ -301,12 +301,9 @@ public class MusicManager {
                 if (!player.isOnline() || !playing) return;
                 
                 try {
-                    String url = "http://" + Bukkit.getServer().getIp() + ":" + Bukkit.getServer().getPort() 
-                        + "/music/" + file.getName();
-                    
-                    player.stopSound(org.bukkit.Sound.MUSIC_AMBIENT, org.bukkit.SoundCategory.RECORDS);
-                    
-                    org.bukkit.sound.Sound sound = org.bukkit.sound.Sound.valueOf("ITEM_MUSIC_DISC_13");
+                    // Use a music disc sound for custom music
+                    org.bukkit.Sound sound = org.bukkit.Sound.valueOf("ITEM_MUSIC_DISC_13");
+                    player.stopSound(sound, org.bukkit.SoundCategory.RECORDS);
                     player.playSound(player.getLocation(), sound, volume, 1.0f);
                     
                 } catch (Exception e) {
@@ -320,7 +317,10 @@ public class MusicManager {
             playing = false;
             plugin.getServer().getScheduler().runTask(plugin, () -> {
                 if (player.isOnline()) {
-                    player.stopSound(org.bukkit.Sound.MUSIC_AMBIENT, org.bukkit.SoundCategory.RECORDS);
+                    try {
+                        org.bukkit.Sound sound = org.bukkit.Sound.valueOf("ITEM_MUSIC_DISC_13");
+                        player.stopSound(sound, org.bukkit.SoundCategory.RECORDS);
+                    } catch (Exception ignored) {}
                 }
             });
         }
@@ -329,7 +329,10 @@ public class MusicManager {
             paused = true;
             plugin.getServer().getScheduler().runTask(plugin, () -> {
                 if (player.isOnline()) {
-                    player.stopSound(org.bukkit.Sound.MUSIC_AMBIENT, org.bukkit.SoundCategory.RECORDS);
+                    try {
+                        org.bukkit.Sound sound = org.bukkit.Sound.valueOf("ITEM_MUSIC_DISC_13");
+                        player.stopSound(sound, org.bukkit.SoundCategory.RECORDS);
+                    } catch (Exception ignored) {}
                 }
             });
         }
