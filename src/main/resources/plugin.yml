@@ -67,6 +67,9 @@ commands:
   team:
     description: Manage teams
     usage: /<command> <create|invite|join|leave|kick|disband|info|list> [args]
+  particles:
+    description: Configure particle quality settings
+    usage: /<command> [quality|toggle|reset|help]
 permissions:
   aspect.use:
     description: Access to basic aspect commands

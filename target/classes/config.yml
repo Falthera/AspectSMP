@@ -9,6 +9,72 @@ storage:
 
 cooldowns:
   base: 5000
+  tier1: 5000
+  tier2: 8000
+  tier3: 12000
+  ultimate: 30000
+  # Per-ability overrides (milliseconds)
+  abilities:
+    inferno:
+      flame_step: 4000
+      lava_burst: 6000
+      infernal_chains: 10000
+      sun_core_collapse: 25000
+    tide:
+      hydro_push: 4000
+      tidal_prison: 8000
+      ocean_surge: 10000
+      maelstrom: 25000
+    tempest:
+      dash_chain: 3000
+      static_bolt: 5000
+      storm_rush: 8000
+      thunder_execution: 25000
+    rift:
+      blink: 3000
+      void_swap: 8000
+      dimensional_tear: 12000
+      reality_collapse: 30000
+    vitality:
+      heal_pulse: 6000
+      life_link: 10000
+      revival_shield: 20000
+      genesis_field: 30000
+    war:
+      berserk_slash: 4000
+      rage_mode: 15000
+      execution_chain: 12000
+      war_god_state: 30000
+    cosmos:
+      gravity_pull: 8000
+      orbital_shield: 15000
+      meteor_call: 20000
+      black_star_collapse: 30000
+    fortune:
+      lucky_strike: 5000
+      ore_sense: 10000
+      mining_rush: 15000
+      kings_jackpot: 30000
+    cloud:
+      air_walker: 5000
+      inhale: 10000
+      tempest_cage: 15000
+      cloudburst: 25000
+    winter:
+      icicles: 4000
+      cold_snap: 8000
+      shatter: 12000
+      absolute_zero: 25000
+    shadow:
+      shadow_step: 3000
+      umbral_blades: 8000
+      shadow_meld: 15000
+      void_reaper: 25000
+    storm:
+      wind_step: 3000
+      gale_force: 8000
+      cyclone: 15000
+      tempest_avatar: 25000
 
 stability:
   kill_bonus: 5
@@ -25,7 +91,53 @@ features:
 
 visual-effects:
   enabled: true
-  particle-quality: 3
+  particle-quality: 3  # 1=minimal, 2=low, 3=medium, 4=high, 5=ultra
+  particle-quality-levels:
+    1:
+      name: "Minimal"
+      max-particles: 10
+      trails: false
+      orbit: false
+      ambient: false
+      impacts: true
+      ultimates: true
+    2:
+      name: "Low"
+      max-particles: 25
+      trails: true
+      orbit: false
+      ambient: false
+      impacts: true
+      ultimates: true
+    3:
+      name: "Medium"
+      max-particles: 50
+      trails: true
+      orbit: true
+      ambient: true
+      impacts: true
+      ultimates: true
+    4:
+      name: "High"
+      max-particles: 100
+      trails: true
+      orbit: true
+      ambient: true
+      impacts: true
+      ultimates: true
+      chromatic: true
+      vignette: true
+    5:
+      name: "Ultra"
+      max-particles: 200
+      trails: true
+      orbit: true
+      ambient: true
+      impacts: true
+      ultimates: true
+      chromatic: true
+      vignette: true
+      screen-shake: true
   # Performance settings
   max-particles-per-tick: 150
   max-particles-per-effect: 40

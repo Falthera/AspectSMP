@@ -317,6 +317,7 @@ public VisualEffectsManager getVisualEffectsManager() {
         getCommand("shadow").setExecutor(new ShadowCommand(this));
         getCommand("tempest").setExecutor(new TempestCommand(this));
         getCommand("team").setExecutor(new TeamCommand(this, teamManager));
+        getCommand("particles").setExecutor(new ParticlesCommand(this));
     }
 
     private void registerTrustCommand() {
