@@ -7,8 +7,10 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.title.Title;
+import net.kyori.adventure.audience.Audience;
 import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.Sound; // Bukkit Sound enum
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -50,12 +52,12 @@ public class EventEffects {
         }
     }
 
-    public void sendBossBar(Player player, String id, String name, float progress, BossBar.Color color, BossBar.Overlay... overlays) {
+    public void sendBossBar(Player player, String id, String name, float progress, BossBar.Color color, BossBar.Overlay overlay) {
         BossBar bar = BossBar.bossBar(
             Component.text(name).color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD),
             progress,
             color,
-            overlays
+            overlay
         );
         player.showBossBar(bar);
         playerBossBars.put(UUID.fromString(id), bar);
@@ -118,8 +120,9 @@ public class EventEffects {
                 double dist = p.getLocation().distance(center);
                 float vol = volume * (1.0f - (float)(dist / radius) * 0.5f);
                 
+                Location loc = p.getLocation();
                 // Base sound
-                p.playSound(p.getLocation(), baseSound, vol, pitch);
+                p.playSound(loc, baseSound, vol, pitch);
                 
                 // Layered echoes
                 for (int i = 1; i <= layers; i++) {
@@ -332,7 +335,7 @@ public class EventEffects {
                 );
                 strike.setY(strike.getWorld().getHighestBlockYAt(strike) + 5);
                 strike.getWorld().strikeLightningEffect(strike);
-                strike.getWorld().playSound(strike, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0f, 0.5f);
+                strike.getWorld().playSound(strike, org.bukkit.Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0f, 0.5f);
                 count++;
             }
         }.runTaskTimer(plugin, 0L, 10L);
@@ -394,7 +397,7 @@ public class EventEffects {
 
     public void phaseTransitionCinematic(Player player, String phaseName, String description, Color themeColor) {
         // Pre-flash
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 0.3f);
+        player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 0.3f);
         visionDistortion(player, PotionEffectType.BLINDNESS, 10, 40);
         
         new BukkitRunnable() {
@@ -402,7 +405,7 @@ public class EventEffects {
             public void run() {
                 if (!player.isOnline()) return;
                 sendCinematicTitle(player, phaseName, description, 20, 100, 20);
-                player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.2f);
+                player.playSound(player.getLocation(), org.bukkit.Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.2f);
                 screenShake(player, 1.5, 20);
                 
                 // Color flash

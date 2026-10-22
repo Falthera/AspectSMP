@@ -23,7 +23,6 @@ import java.util.*;
 
 public class NinthSkyEvent extends BaseEvent {
 
-    private final AspectSMP plugin;
     private EventPhase phase = EventPhase.SKY_AWAKENS;
     private boolean active = false;
     private final Set<UUID> participants = new HashSet<>();
@@ -43,7 +42,7 @@ public class NinthSkyEvent extends BaseEvent {
     private static final long EVENT_DURATION_MS = 7L * 24 * 60 * 60 * 1000; // 7 days
 
     public NinthSkyEvent(AspectSMP plugin) {
-        this.plugin = plugin;
+        super(plugin);
     }
 
     public boolean isActive() {

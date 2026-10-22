@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ShadowsDescentEvent extends BaseEvent {
 
-    private final AspectSMP plugin;
     private EventPhase phase = EventPhase.SHADOW_AWAKENS;
     private boolean active = false;
     private final Set<UUID> participants = new HashSet<>();
@@ -44,7 +43,7 @@ public class ShadowsDescentEvent extends BaseEvent {
     private final Map<UUID, Integer> playerShadowStacks = new ConcurrentHashMap<>();
 
     public ShadowsDescentEvent(AspectSMP plugin) {
-        this.plugin = plugin;
+        super(plugin);
     }
 
     public boolean isActive() {

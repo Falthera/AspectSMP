@@ -6,9 +6,8 @@ import com.aspectsmp.event.EventPhase;
 import com.aspectsmp.visual.AspectVisualThemes.Theme;
 import org.bukkit.*;
 import org.bukkit.entity.*;
-import org.bukkit.particle.DustOptions;
-import org.bukkit.particle.DustTransition;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -33,17 +32,17 @@ public class ParticleEffects {
     // CORE PARTICLE HELPERS - 1.21.11 Particle.Builder API
     // ════════════════════════════════════════════════════════════════════
 
-    private DustOptions dust(Color color, float size) {
-        return new DustOptions(color, size);
+    private Particle.DustOptions dust(Color color, float size) {
+        return new Particle.DustOptions(color, size);
     }
 
-    private DustOptions dust(Color color) {
+    private Particle.DustOptions dust(Color color) {
         return dust(color, 1.0f);
     }
 
     private void spawnParticle(World world, Particle particle, Location location, int count) {
         if (useParticleBuilder) {
-            world.spawnParticle(particle).location(location).count(count).spawn();
+            particle.builder().location(location).count(count).spawn();
         } else {
             world.spawnParticle(particle, location, count);
         }
@@ -51,7 +50,7 @@ public class ParticleEffects {
 
     private void spawnParticle(World world, Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra) {
         if (useParticleBuilder) {
-            world.spawnParticle(particle)
+            particle.builder()
                 .location(location)
                 .count(count)
                 .offset(offsetX, offsetY, offsetZ)
@@ -62,14 +61,14 @@ public class ParticleEffects {
         }
     }
 
-    private void spawnParticle(World world, Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra, DustOptions dust) {
+    private void spawnParticle(World world, Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra, Particle.DustOptions dust) {
         if (useParticleBuilder) {
-            world.spawnParticle(particle)
+            particle.builder()
                 .location(location)
                 .count(count)
                 .offset(offsetX, offsetY, offsetZ)
                 .extra(extra)
-                .dust(dust)
+                .data(dust)
                 .spawn();
         } else {
             world.spawnParticle(particle, location, count, offsetX, offsetY, offsetZ, extra, dust);
@@ -649,105 +648,6 @@ public class ParticleEffects {
                 spawnParticle(loc.getWorld(), Particle.END_ROD, loc, 1);
                 loc.subtract(v);
             }
-        }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // CLEAR ALL
-    // ══════════════════════════════════════════════════════════════════
-
-    public void clearPlayer(Player player) {
-        List<BukkitTask> tasks = activeAnimations.remove(player.getUniqueId());
-        if (tasks != null) tasks.forEach(BukkitTask::cancel);
-    }
-
-    public void clearAll() {
-        activeAnimations.values().forEach(list -> list.forEach(BukkitTask::cancel));
-        activeAnimations.clear();
-    }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // MISSING METHODS CALLED BY VISUALEFFECTSMANAGER
-    // ═══════════════════════════════════════════════════════════════════
-
-    public void spawnEssenceGainParticles(Location location, Theme theme, int count, int quality) {
-        for (int i = 0; i < count * quality / 3; i++) {
-            double a = Math.random() * Math.PI * 2;
-            double r = 1 + Math.random() * 2;
-            Location p = location.clone().add(Math.cos(a) * r, Math.random() * 2, Math.sin(a) * r);
-            spawnParticle(p.getWorld(), theme.getCastParticle(), p, 1, 0, 0.1, 0, 0.02);
-        }
-    }
-
-    public void spawnKillEffect(Location location, Theme theme, int quality) {
-        // Golden explosion for kills
-        for (int i = 0; i < 30 * quality / 3; i++) {
-            double a = Math.random() * Math.PI * 2;
-            double r = Math.random() * 3;
-            Location p = location.clone().add(Math.cos(a) * r, Math.random() * 2, Math.sin(a) * r);
-            spawnParticle(p.getWorld(), Particle.HAPPY_VILLAGER, p, 1, 0, 0.2, 0, 0.05);
-        }
-    }
-
-    public void spawnDeathEffect(Location location, Theme theme, int quality) {
-        // Dark death particles
-        for (int i = 0; i < 20 * quality / 3; i++) {
-            double a = Math.random() * Math.PI * 2;
-            double r = Math.random() * 2;
-            Location p = location.clone().add(Math.cos(a) * r, Math.random() * 1.5, Math.sin(a) * r);
-            spawnParticle(p.getWorld(), Particle.SOUL, p, 1, 0, 0.1, 0, 0.02);
-        }
-    }
-
-    public void spawnEventPhaseEffect(Location location, Theme theme, EventPhase phase, int quality) {
-        // Phase transition particles
-        for (int i = 0; i < 40 * quality / 3; i++) {
-            double a = Math.random() * Math.PI * 2;
-            double r = 3 + Math.random() * 3;
-            Location p = location.clone().add(Math.cos(a) * r, Math.random() * 3, Math.sin(a) * r);
-            spawnParticle(p.getWorld(), theme.getUltimateParticle(), p, 1, 0, 0.2, 0, 0.05);
-        }
-    }
-
-    public void spawnGlobalAnnouncementEffect(Theme theme, int quality) {
-        // Global effect at spawn
-        World world = plugin.getServer().getWorlds().get(0);
-        Location loc = world.getSpawnLocation();
-        for (int i = 0; i < 50 * quality / 3; i++) {
-            double a = Math.random() * Math.PI * 2;
-            double r = 5 + Math.random() * 10;
-            Location p = loc.clone().add(Math.cos(a) * r, 5 + Math.random() * 10, Math.sin(a) * r);
-            spawnParticle(p.getWorld(), theme.getUltimateParticle(), p, 1, 0, 0.3, 0, 0.1);
-        }
-    }
-
-    public void spawnHeartDeathEffect(Location location, Theme theme, int quality) {
-        // Heart death - dramatic implosion then explosion
-        new BukkitRunnable() {
-            double radius = 5;
-            @Override
-            public void run() {
-                if (radius < 0.5) { cancel(); return; }
-                for (int i = 0; i < 20 * quality / 3; i++) {
-                    double a = Math.random() * Math.PI * 2;
-                    double y = (Math.random() - 0.5) * 2;
-                    Vector v = new Vector(Math.cos(a) * radius, y, Math.sin(a) * radius);
-                    Location p = location.clone().add(v);
-                    Vector toCenter = location.toVector().subtract(p.toVector()).normalize().multiply(0.2);
-                    spawnParticle(p.getWorld(), theme.getImpactParticle(), p, 1, toCenter.getX(), toCenter.getY(), toCenter.getZ(), 0.05);
-                }
-                radius -= 0.3;
-            }
-        }.runTaskTimer(plugin, 0L, 1L);
-    }
-
-    public void spawnAwakenedAura(Location location, Theme theme, int quality) {
-        // Golden awakened particles rising
-        for (int i = 0; i < 15 * quality / 3; i++) {
-            double a = Math.random() * Math.PI * 2;
-            double r = 1.5;
-            Location p = location.clone().add(Math.cos(a) * r, Math.random() * 3, Math.sin(a) * r);
-            spawnParticle(p.getWorld(), Particle.END_ROD, p, 1, 0, 0.1, 0, 0.01);
         }
     }
 

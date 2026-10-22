@@ -32,7 +32,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FrozenEclipseEvent extends BaseEvent {
 
-    private final AspectSMP plugin;
     private EventPhase phase = EventPhase.FIRST_FROST;
     private boolean active = false;
     private final Set<UUID> participants = new HashSet<>();
@@ -66,7 +65,7 @@ public class FrozenEclipseEvent extends BaseEvent {
     private BukkitTask crucibleBorderTask;
 
     public FrozenEclipseEvent(AspectSMP plugin) {
-        this.plugin = plugin;
+        super(plugin);
         this.overworld = Bukkit.getWorlds().get(0);
     }
 
