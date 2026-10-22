@@ -58,6 +58,15 @@ commands:
   eclipse:
     description: Join the Frozen Eclipse event
     usage: /<command>
+  shadow:
+    description: Join the Shadow's Descent event
+    usage: /<command>
+  tempest:
+    description: Join the Tempest's Fury event
+    usage: /<command>
+  team:
+    description: Manage teams
+    usage: /<command> <create|invite|join|leave|kick|disband|info|list> [args]
 permissions:
   aspect.use:
     description: Access to basic aspect commands
