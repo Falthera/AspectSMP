@@ -273,7 +273,7 @@ public class VisualEffectsManager {
     // ABILITY VISUALS - INSANE EDITION
     // ════════════════════════════════════════════════════════════════════
 
-    public void playAbilityCastVisuals(Player player, String abilityId, AspectType aspect, int tier) {
+    public void playAbilityCastVisuals(Player player, String abilityId, AspectType aspect, int tier, boolean isUltimate) {
         if (!enabled) return;
         
         AspectVisualThemes.Theme theme = themes.getTheme(aspect);
@@ -296,8 +296,8 @@ public class VisualEffectsManager {
             }
         }
         
-        // Ultimate effects
-        if (tier == 3) {
+        // Ultimate effects - only for actual ultimates
+        if (isUltimate) {
             screenEffects.ultimateScreenFlash(player, theme);
             if (screenShakeEnabled) {
                 screenEffects.screenShake(player, 1.5, 30);

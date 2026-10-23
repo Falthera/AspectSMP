@@ -550,6 +550,13 @@ public class ListenerManager implements Listener {
             } else if (sneaking && heart.getTier() >= 2) {
                 plugin.getAbilityManager().handleTier2Ability(player, heart);
             }
+        } else if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
+            event.setCancelled(true);
+            if (!sneaking && heart.getTier() >= 3) {
+                plugin.getAbilityManager().handleTier3Ability(player);
+            } else if (sneaking && heart.getTier() >= 3) {
+                plugin.getAbilityManager().handleUltimate(player);
+            }
         }
     }
 
