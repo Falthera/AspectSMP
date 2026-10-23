@@ -25,10 +25,9 @@ public abstract class BaseAbility implements Ability {
     protected void damageIgnoreArmor(LivingEntity target, double amount, Entity source) {
         // True damage that bypasses armor - use lightning damage type from registry
         try {
-            org.bukkit.Registry<org.bukkit.damage.DamageType> registry = target.getServer().getRegistry(org.bukkit.Registry.DAMAGE_TYPE);
-            var lightningType = registry.get(org.bukkit.NamespacedKey.minecraft("lightning"));
-            if (lightningType.isPresent()) {
-                org.bukkit.damage.DamageSource ds = org.bukkit.damage.DamageSource.builder(lightningType.get()).build();
+            var lightningType = org.bukkit.Registry.DAMAGE_TYPE.get(org.bukkit.NamespacedKey.minecraft("lightning"));
+            if (lightningType != null) {
+                org.bukkit.damage.DamageSource ds = org.bukkit.damage.DamageSource.builder(lightningType).build();
                 target.damage(amount, ds);
                 return;
             }
@@ -38,10 +37,9 @@ public abstract class BaseAbility implements Ability {
         
         // Fallback: magic damage type
         try {
-            org.bukkit.Registry<org.bukkit.damage.DamageType> registry = target.getServer().getRegistry(org.bukkit.Registry.DAMAGE_TYPE);
-            var magicType = registry.get(org.bukkit.NamespacedKey.minecraft("magic"));
-            if (magicType.isPresent()) {
-                org.bukkit.damage.DamageSource ds = org.bukkit.damage.DamageSource.builder(magicType.get()).build();
+            var magicType = org.bukkit.Registry.DAMAGE_TYPE.get(org.bukkit.NamespacedKey.minecraft("magic"));
+            if (magicType != null) {
+                org.bukkit.damage.DamageSource ds = org.bukkit.damage.DamageSource.builder(magicType).build();
                 target.damage(amount, ds);
                 return;
             }
