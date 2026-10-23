@@ -1,0 +1,11 @@
+{
+  "criteria": {
+    "unlock_cloud": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 3000,
+    "loot": ["aspectsmp:aspect/cloud_reward"]
+  }
+}
