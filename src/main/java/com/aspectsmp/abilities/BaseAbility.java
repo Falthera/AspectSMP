@@ -23,8 +23,22 @@ import java.util.UUID;
 public abstract class BaseAbility implements Ability {
 
     protected void damageIgnoreArmor(LivingEntity target, double amount, Entity source) {
-        // True damage that bypasses armor - use Lightning damage type (bypasses armor in 1.21+)
-        target.damage(amount, source, org.bukkit.damage.DamageType.LIGHTNING);
+        // True damage that bypasses armor - use lightning damage type from registry
+        org.bukkit.NamespacedKey key = org.bukkit.NamespacedKey.minecraft("lightning");
+        org.bukkit.damage.DamageType lightning = org.bukkit.damage.DamageType.getByKey(key);
+        if (lightning != null) {
+            target.damage(amount, source, lightning);
+        } else {
+            // Fallback: use magic damage type
+            key = org.bukkit.NamespacedKey.minecraft("magic");
+            org.bukkit.damage.DamageType magic = org.bukkit.damage.DamageType.getByKey(key);
+            if (magic != null) {
+                target.damage(amount, source, magic);
+            } else {
+                // Last resort: direct damage (may respect armor)
+                target.damage(amount, source);
+            }
+        }
     }
 
     protected void applyCooldown(Player player, String abilityId, long durationMillis) {
