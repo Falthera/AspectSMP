@@ -745,16 +745,21 @@ public class ListenerManager implements Listener {
         AspectType current = heart.getAspect();
         java.util.List<AspectType> choices = new java.util.ArrayList<>(java.util.List.of(AspectType.values()));
         choices.remove(current);
-        choices.remove(com.aspectsmp.core.AspectType.CLOUD);
-        choices.remove(com.aspectsmp.core.AspectType.WINTER);
+        // Remove all event aspects
+        choices.removeIf(AspectType::isEventAspect);
         AspectType newAspect = choices.get(new java.util.Random().nextInt(choices.size()));
         
+        AspectType oldAspect = heart.getAspect();
         heart.setAspect(newAspect);
         heart.getCooldowns().clear();
         clearAspectEffects(player);
         
+        // Update visual effects
+        plugin.getVisualEffectsManager().stopPassiveEffects(player);
+        plugin.getVisualEffectsManager().startPassiveEffects(player);
+        
         player.sendMessage("§b§lYour Heart has been reforged!");
-        player.sendMessage("§7Old Aspect: §f" + current.getDisplayName());
+        player.sendMessage("§7Old Aspect: §f" + oldAspect.getDisplayName());
         player.sendMessage("§7New Aspect: §f" + newAspect.getDisplayName());
         
         consumeOneItem(player, hand, item);
