@@ -9,31 +9,10 @@
     },
     "entries": [
       {
-        "threshold": 1005,
+        "threshold": 1,
         "model": {
           "type": "minecraft:model",
-          "model": "aspectsmp:item/stormheart"
-        }
-      },
-      {
-        "threshold": 1004,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/shadowheart"
-        }
-      },
-      {
-        "threshold": 1002,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/frostheart"
-        }
-      },
-      {
-        "threshold": 4,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/reforging"
+          "model": "aspectsmp:item/catalyst"
         }
       },
       {
@@ -44,10 +23,38 @@
         }
       },
       {
-        "threshold": 1,
+        "threshold": 3,
         "model": {
           "type": "minecraft:model",
-          "model": "aspectsmp:item/catalyst"
+          "model": "aspectsmp:item/restoration"
+        }
+      },
+      {
+        "threshold": 4,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/reforging"
+        }
+      },
+      {
+        "threshold": 1002,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/frostheart"
+        }
+      },
+      {
+        "threshold": 1004,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/shadowheart"
+        }
+      },
+      {
+        "threshold": 1005,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/stormheart"
         }
       }
     ]
