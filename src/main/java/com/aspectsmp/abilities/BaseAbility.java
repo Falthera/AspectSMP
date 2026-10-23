@@ -24,21 +24,33 @@ public abstract class BaseAbility implements Ability {
 
     protected void damageIgnoreArmor(LivingEntity target, double amount, Entity source) {
         // True damage that bypasses armor - use lightning damage type from registry
-        org.bukkit.NamespacedKey key = org.bukkit.NamespacedKey.minecraft("lightning");
-        org.bukkit.damage.DamageType lightning = org.bukkit.damage.DamageType.getByKey(key);
-        if (lightning != null) {
-            target.damage(amount, source, lightning);
-        } else {
-            // Fallback: use magic damage type
-            key = org.bukkit.NamespacedKey.minecraft("magic");
-            org.bukkit.damage.DamageType magic = org.bukkit.damage.DamageType.getByKey(key);
-            if (magic != null) {
-                target.damage(amount, source, magic);
-            } else {
-                // Last resort: direct damage (may respect armor)
-                target.damage(amount, source);
+        try {
+            org.bukkit.Registry<org.bukkit.damage.DamageType> registry = target.getServer().getRegistry(org.bukkit.Registry.DAMAGE_TYPE);
+            var lightningType = registry.get(org.bukkit.NamespacedKey.minecraft("lightning"));
+            if (lightningType.isPresent()) {
+                org.bukkit.damage.DamageSource ds = org.bukkit.damage.DamageSource.builder(lightningType.get()).build();
+                target.damage(amount, ds);
+                return;
             }
+        } catch (Exception e) {
+            // Ignore and fallback
         }
+        
+        // Fallback: magic damage type
+        try {
+            org.bukkit.Registry<org.bukkit.damage.DamageType> registry = target.getServer().getRegistry(org.bukkit.Registry.DAMAGE_TYPE);
+            var magicType = registry.get(org.bukkit.NamespacedKey.minecraft("magic"));
+            if (magicType.isPresent()) {
+                org.bukkit.damage.DamageSource ds = org.bukkit.damage.DamageSource.builder(magicType.get()).build();
+                target.damage(amount, ds);
+                return;
+            }
+        } catch (Exception e) {
+            // Ignore and fallback
+        }
+        
+        // Last resort: regular damage
+        target.damage(amount, source);
     }
 
     protected void applyCooldown(Player player, String abilityId, long durationMillis) {
