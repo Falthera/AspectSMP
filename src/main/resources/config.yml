@@ -165,7 +165,7 @@ visual-effects:
 resource-pack:
   enabled: true
   url: "https://github.com/Falthera/AspectSMP/releases/download/Resource-Pack/AspectSMP-Pack.1.zip"
-  sha256: "1067185a7b5ea158781fcf81b73059bc135d1a53f62e6bcc89c0ddd9d75f471d"
+  sha256: "6b6c0a983c7301e6f2a57c6bcf5346691ba2a39e38d823f7bd08c5c6a5e04f1f"
   required: false
   prompt-message: "§b§lAspect SMP §7requires a resource pack for custom items and effects."
   auto-download: true
