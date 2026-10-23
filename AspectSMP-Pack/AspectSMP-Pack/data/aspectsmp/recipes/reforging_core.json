@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DND",
+    "NSN",
+    "DND"
+  ],
+  "key": {
+    "D": "minecraft:diamond",
+    "N": "minecraft:nether_star",
+    "S": "minecraft:amethyst_shard"
+  },
+  "result": {
+    "id": "minecraft:nether_star",
+    "count": 1,
+    "components": {
+      "minecraft:custom_model_data": {"floats": [4.0]},
+      "minecraft:custom_name": "§e§lReforging Core",
+      "minecraft:lore": [
+        "§7Reroll your Aspect to a new class",
+        "§7Recipe: Nether Star + 4 Diamonds + 4 Amethyst Shards"
+      ]
+    }
+  }
+}

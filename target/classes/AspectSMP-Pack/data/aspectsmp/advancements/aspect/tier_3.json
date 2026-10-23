@@ -1,0 +1,11 @@
+{
+  "criteria": {
+    "reach_tier_3": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 2000,
+    "loot": ["aspectsmp:aspect/tier_3_reward"]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "claim_aspect": {
+      "trigger": "minecraft:item_used_on_block",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:heart_of_the_sea"],
+          "nbt": "{custom_model_data:{floats:[100.0]}}"
+        }
+      }
+    }
+  },
+  "rewards": {
+    "experience": 500,
+    "function": "aspectsmp:aspect/claim_reward"
+  }
+}

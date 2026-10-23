@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GBG",
+    "GGG"
+  ],
+  "key": {
+    "G": "minecraft:gold_block",
+    "B": "minecraft:beacon"
+  },
+  "result": {
+    "id": "minecraft:beacon",
+    "count": 1,
+    "components": {
+      "minecraft:custom_model_data": {"floats": [3.0]},
+      "minecraft:custom_name": "§b§lHeart Restoration Kit",
+      "minecraft:lore": [
+        "§7Restore a Dormant Heart to Stable",
+        "§7Right-click to repair your Heart"
+      ]
+    }
+  }
+}

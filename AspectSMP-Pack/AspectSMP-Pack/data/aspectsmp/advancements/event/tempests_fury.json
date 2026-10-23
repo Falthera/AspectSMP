@@ -1,0 +1,11 @@
+{
+  "criteria": {
+    "win_tempests_fury": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 5000,
+    "loot": ["aspectsmp:event/tempests_fury_winner"]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:phantom_membrane",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {"translate": "item.aspectsmp.shadowheart", "color": "dark_gray", "italic": false}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

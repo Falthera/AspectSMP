@@ -1,0 +1,11 @@
+{
+  "criteria": {
+    "win_ninth_sky": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 5000,
+    "loot": ["aspectsmp:event/ninth_sky_winner"]
+  }
+}

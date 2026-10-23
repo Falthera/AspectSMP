@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:heart_of_the_sea",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_model_data",
+              "floats": [106.0]
+            },
+            {
+              "function": "minecraft:set_name",
+              "name": {"translate": "item.aspectsmp.heart_cosmos", "color": "light_purple", "italic": false}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

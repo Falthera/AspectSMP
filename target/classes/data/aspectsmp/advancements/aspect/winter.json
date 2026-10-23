@@ -1,0 +1,11 @@
+{
+  "criteria": {
+    "unlock_winter": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 3000,
+    "loot": ["aspectsmp:aspect/winter_reward"]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "criteria": {
+    "win_frozen_eclipse": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 5000,
+    "loot": ["aspectsmp:event/frozen_eclipse_winner"]
+  }
+}
