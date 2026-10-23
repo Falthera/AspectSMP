@@ -4,9 +4,13 @@ import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
+
+import java.util.Collection;
 
 public class StormRushAbility extends BaseAbility {
 
@@ -47,6 +51,14 @@ public class StormRushAbility extends BaseAbility {
             public void run() {
                 if (player.isOnline()) {
                     player.setInvulnerable(false);
+                    // Deal damage to nearby enemies at end of rush
+                    Collection<Entity> nearby = player.getWorld().getNearbyEntities(player.getLocation(), 3, 2, 3);
+                    for (Entity entity : nearby) {
+                        if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
+                            damageIgnoreArmor(target, 6.0 * getPowerMultiplier(player, heart), player);
+                            target.getWorld().spawnParticle(org.bukkit.Particle.ELECTRIC_SPARK, target.getLocation(), 20, 0.5, 1, 0.5, 0.1);
+                        }
+                    }
                 }
             }
         };

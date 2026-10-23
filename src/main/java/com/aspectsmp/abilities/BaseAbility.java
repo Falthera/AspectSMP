@@ -23,7 +23,12 @@ import java.util.UUID;
 public abstract class BaseAbility implements Ability {
 
     protected void damageIgnoreArmor(LivingEntity target, double amount, Entity source) {
-        target.damage(amount, source);
+        // True damage that bypasses armor - use DamageSource that bypasses armor
+        // In 1.21+, use DamageSource that bypasses armor
+        target.damage(amount, new org.bukkit.damage.DamageSource(
+            org.bukkit.damage.DamageType.LIGHTNING, // Bypasses armor in 1.21+
+            source.getLocation().toVector()
+        ));
     }
 
     protected void applyCooldown(Player player, String abilityId, long durationMillis) {
