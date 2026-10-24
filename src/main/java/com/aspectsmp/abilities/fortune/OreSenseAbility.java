@@ -114,7 +114,7 @@ public class OreSenseAbility extends BaseAbility {
                                 display.setGlowing(true);
                                 display.setInvulnerable(true);
                                 display.setVisibleByDefault(false);
-                                display.setGravity(0.0);
+                                display.setGravity(false);
                                 display.setPersistent(true);
 
                                 player.showEntity(com.aspectsmp.AspectSMP.getInstance(), display);
