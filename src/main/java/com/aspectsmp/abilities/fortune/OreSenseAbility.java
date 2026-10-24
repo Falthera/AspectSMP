@@ -2,8 +2,11 @@ package com.aspectsmp.abilities.fortune;
 
 import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -48,13 +51,15 @@ public class OreSenseAbility extends BaseAbility {
             @Override
             public void run() {
                 ticks++;
-                org.bukkit.Location center = player.getLocation();
+                Location center = player.getLocation();
                 for (int x = -radius; x <= radius; x++) {
                     for (int y = -heightRange; y <= heightRange; y++) {
                         for (int z = -radius; z <= radius; z++) {
-                            org.bukkit.block.Block block = center.clone().add(x, y, z).getBlock();
-                            if (block.getType().toString().contains("ORE")) {
-                                player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, block.getLocation().add(0.5, 0.5, 0.5), 3, 0.3, 0.3, 0.3);
+                            Block block = center.clone().add(x, y, z).getBlock();
+                            Material type = block.getType();
+                            Particle.DustOptions dustOptions = getOreParticleOptions(type);
+                            if (dustOptions != null) {
+                                player.getWorld().spawnParticle(Particle.REDSTONE, block.getLocation().add(0.5, 0.5, 0.5), 2, 0.1, 0.1, 0.1, dustOptions);
                             }
                         }
                     }
@@ -70,5 +75,19 @@ public class OreSenseAbility extends BaseAbility {
     @Override
     protected long getCooldownBase() {
         return 30000L;
+    }
+
+    private Particle.DustOptions getOreParticleOptions(Material type) {
+        return switch (type) {
+            case COAL_ORE, DEEPSLATE_COAL_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x333333), 1.0f);
+            case IRON_ORE, DEEPSLATE_IRON_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0xC0C0C0), 1.0f);
+            case GOLD_ORE, DEEPSLATE_GOLD_ORE, NETHER_GOLD_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0xFFD700), 1.0f);
+            case REDSTONE_ORE, DEEPSLATE_REDSTONE_ORE, NETHER_REDSTONE_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0xFF0000), 1.0f);
+            case LAPIS_ORE, DEEPSLATE_LAPIS_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x0000FF), 1.0f);
+            case EMERALD_ORE, DEEPSLATE_EMERALD_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x00FF00), 1.0f);
+            case DIAMOND_ORE, DEEPSLATE_DIAMOND_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x00FFFF), 1.0f);
+            case NETHER_QUARTZ_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0xFFFFFF), 1.0f);
+            default -> null;
+        };
     }
 }
