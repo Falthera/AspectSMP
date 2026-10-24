@@ -3,21 +3,26 @@ package com.aspectsmp.abilities.fortune;
 import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.Location;
+import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
+import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class OreSenseAbility extends BaseAbility {
 
     private static final Set<Material> ORE_TYPES = new HashSet<>();
+    private static final Map<UUID, Set<BlockDisplay>> activeDisplays = new WeakHashMap<>();
 
     static {
         ORE_TYPES.add(Material.COAL_ORE);
@@ -65,28 +70,38 @@ public class OreSenseAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, player.getLocation().add(0, 1, 0), 30, 0.5, 0.5, 0.5);
-        playSound(player, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.0f);
+        playSound(player, org.bukkit.Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.0f);
         player.sendMessage("§7Prospecting for ores... §f(15 seconds)");
 
         int radius = 15;
         int heightRange = 8;
-        int duration = 150;
+        int duration = 300;
         int interval = 10;
+
+        UUID playerUUID = player.getUniqueId();
+
+        player.spawnParticle(org.bukkit.Particle.ENCHANTED_HIT, player.getLocation().add(0, 1, 0), 30, 0.5, 0.5, 0.5);
 
         new BukkitRunnable() {
             int ticks = 0;
             Location center = player.getLocation();
+            Set<BlockDisplay> displays = new HashSet<>();
 
             @Override
             public void run() {
                 if (!player.isOnline()) {
+                    cleanupDisplays(displays);
+                    activeDisplays.remove(playerUUID);
                     cancel();
                     return;
                 }
-                ticks++;
 
+                cleanupDisplays(displays);
+                displays.clear();
+
+                ticks++;
                 Location currentCenter = center.clone();
+
                 for (int x = -radius; x <= radius; x += 2) {
                     for (int y = -heightRange; y <= heightRange; y += 2) {
                         for (int z = -radius; z <= radius; z += 2) {
@@ -94,44 +109,52 @@ public class OreSenseAbility extends BaseAbility {
                             Material type = block.getType();
                             if (ORE_TYPES.contains(type)) {
                                 BlockData blockData = block.getBlockData();
-                                Location particleLoc = block.getLocation().add(0.5, 0.5, 0.5);
+                                Location displayLoc = block.getLocation().add(0.5, 0.5, 0.5);
 
-                                player.spawnParticle(Particle.BLOCK_DUST, particleLoc, 3, 0.1, 0.1, 0.1, 0, blockData, true);
+                                BlockDisplay display = player.getWorld().spawn(displayLoc, BlockDisplay.class);
+                                display.setBlock(blockData);
+                                display.setGlowing(true);
+                                display.setInvulnerable(true);
+                                display.setInvisible(true);
+                                display.setAI(false);
+                                display.setGravity(0.0f);
+                                display.setPersistent(true);
+                                display.setRemoveWhenDespawned(false);
 
-                                Particle.DustOptions dustOptions = getOreParticleOptions(type);
-                                if (dustOptions != null) {
-                                    player.spawnParticle(Particle.REDSTONE, particleLoc, 1, 0, 0, 0, 0, dustOptions, true);
-                                }
+                                player.showEntity(player, display);
+
+                                displays.add(display);
                             }
                         }
                     }
                 }
 
-                if (ticks >= duration / interval) cancel();
+                if (ticks >= duration / interval) {
+                    cleanupDisplays(displays);
+                    activeDisplays.remove(playerUUID);
+                    cancel();
+                }
             }
         }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, interval);
+
+        activeDisplays.put(playerUUID, new HashSet<>());
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
     }
 
+    private void cleanupDisplays(Set<BlockDisplay> displays) {
+        if (displays == null) return;
+        for (BlockDisplay display : displays) {
+            if (display != null && display.isValid()) {
+                display.remove();
+            }
+        }
+        displays.clear();
+    }
+
     @Override
     protected long getCooldownBase() {
         return 30000L;
-    }
-
-    private Particle.DustOptions getOreParticleOptions(Material type) {
-        return switch (type) {
-            case COAL_ORE, DEEPSLATE_COAL_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x333333), 1.0f);
-            case IRON_ORE, DEEPSLATE_IRON_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0xC0C0C0), 1.0f);
-            case GOLD_ORE, DEEPSLATE_GOLD_ORE, NETHER_GOLD_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0xFFD700), 1.0f);
-            case REDSTONE_ORE, DEEPSLATE_REDSTONE_ORE, NETHER_REDSTONE_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0xFF0000), 1.0f);
-            case LAPIS_ORE, DEEPSLATE_LAPIS_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x0000FF), 1.0f);
-            case EMERALD_ORE, DEEPSLATE_EMERALD_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x00FF00), 1.0f);
-            case DIAMOND_ORE, DEEPSLATE_DIAMOND_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x00FFFF), 1.0f);
-            case ANCIENT_DEBRIS -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x800080), 1.0f);
-            case NETHER_QUARTZ_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0xFFFFFF), 1.0f);
-            default -> null;
-        };
     }
 }
