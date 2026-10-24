@@ -9,9 +9,13 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Fox;
+import org.bukkit.entity.Panda;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,6 +27,13 @@ import java.util.UUID;
 public abstract class BaseAbility implements Ability {
 
     protected void damageIgnoreArmor(LivingEntity target, double amount, Entity source) {
+    if (target instanceof Animals) {
+        if (target instanceof Wolf || target instanceof Fox || target instanceof Panda) {
+            // Neutral mobs that can be hit
+        } else {
+            return;
+        }
+    }
         // True damage that bypasses armor - use lightning damage type from registry
         try {
             var lightningType = org.bukkit.Registry.DAMAGE_TYPE.get(org.bukkit.NamespacedKey.minecraft("lightning"));
