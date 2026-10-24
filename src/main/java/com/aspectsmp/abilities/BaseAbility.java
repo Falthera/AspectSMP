@@ -242,7 +242,7 @@ public abstract class BaseAbility implements Ability {
 
     protected void applyTemporaryEffects(Player player, List<PotionEffect> effects, long restoreDelay) {
         Map<PotionEffectType, PotionEffect> originalEffects = new HashMap<>();
-        for (PotionEffect existing : player.getPotionEffects()) {
+        for (PotionEffect existing : player.getActivePotionEffects()) {
             originalEffects.put(existing.getType(), existing);
         }
 
