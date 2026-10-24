@@ -86,6 +86,7 @@ public class OreSenseAbility extends BaseAbility {
             case LAPIS_ORE, DEEPSLATE_LAPIS_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x0000FF), 1.0f);
             case EMERALD_ORE, DEEPSLATE_EMERALD_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x00FF00), 1.0f);
             case DIAMOND_ORE, DEEPSLATE_DIAMOND_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x00FFFF), 1.0f);
+            case ANCIENT_DEBRIS -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0x800080), 1.0f);
             case NETHER_QUARTZ_ORE -> new Particle.DustOptions(org.bukkit.Color.fromRGB(0xFFFFFF), 1.0f);
             default -> null;
         };
