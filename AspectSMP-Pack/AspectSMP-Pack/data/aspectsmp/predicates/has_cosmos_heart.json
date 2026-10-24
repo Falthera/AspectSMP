@@ -1,11 +1,11 @@
-﻿{
+{
   "condition": "minecraft:entity_properties",
   "entity": "this",
   "predicate": {
     "equipment": {
       "mainhand": {
         "items": "minecraft:heart_of_the_sea",
-        "components": { "minecraft:custom_model_data": { "floats": [106.0] } }
+        "components": { "minecraft:custom_model_data": { "floats": [106], "flags": [], "strings": [], "colors": [] } }
       }
     }
   }

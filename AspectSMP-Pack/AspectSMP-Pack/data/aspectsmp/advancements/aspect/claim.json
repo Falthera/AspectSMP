@@ -5,7 +5,14 @@
       "conditions": {
         "item": {
           "items": ["minecraft:heart_of_the_sea"],
-          "nbt": "{custom_model_data:{floats:[100.0]}}"
+          "components": {
+            "minecraft:custom_model_data": {
+              "floats": [100.0],
+              "flags": [],
+              "strings": [],
+              "colors": []
+            }
+          }
         }
       }
     }
