@@ -42,7 +42,6 @@ public class OreSenseAbility extends BaseAbility {
         ORE_TYPES.add(Material.ANCIENT_DEBRIS);
         ORE_TYPES.add(Material.NETHER_GOLD_ORE);
         ORE_TYPES.add(Material.NETHER_QUARTZ_ORE);
-        ORE_TYPES.add(Material.NETHER_REDSTONE_ORE);
     }
 
     @Override
@@ -116,9 +115,8 @@ public class OreSenseAbility extends BaseAbility {
                                 display.setGlowing(true);
                                 display.setInvulnerable(true);
                                 display.setVisibleByDefault(false);
-                                display.setGravity(0.0f);
+                                display.setGravity(0.0);
                                 display.setPersistent(true);
-                                display.setRemoveWhenFarAway(false);
 
                                 player.showEntity(com.aspectsmp.AspectSMP.getInstance(), display);
 
