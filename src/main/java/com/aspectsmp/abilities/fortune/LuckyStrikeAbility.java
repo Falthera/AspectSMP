@@ -6,6 +6,10 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import java.util.List;
+import java.util.Arrays;
 
 public class LuckyStrikeAbility extends BaseAbility {
 
@@ -41,8 +45,11 @@ public class LuckyStrikeAbility extends BaseAbility {
         long essenceGain = (long) (5 * getPowerMultiplier(player, heart));
         heart.addEssence(essenceGain);
         
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.LUCK, 200, 0));
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE, 200, 0));
+        List<PotionEffect> effects = Arrays.asList(
+            new PotionEffect(PotionEffectType.LUCK, 200, 0),
+            new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, 200, 0)
+        );
+        applyTemporaryEffects(player, effects, 200L);
         
         player.sendMessage("§6§lLucky Strike! §fFortune favors you!");
         player.sendMessage("§7Gained §f" + essenceGain + " §7Essence.");

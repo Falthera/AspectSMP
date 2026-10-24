@@ -13,6 +13,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.Arrays;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class VoidReaperAbility extends BaseAbility {
 
@@ -78,12 +81,12 @@ public class VoidReaperAbility extends BaseAbility {
         }.runTaskTimer(AspectSMP.getInstance(), 0L, 20L);
 
         // Player buff
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.STRENGTH, 200, 1), true);
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.SPEED, 200, 1), true);
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.NIGHT_VISION, 200, 0), true);
+        List<PotionEffect> effects = Arrays.asList(
+            new PotionEffect(PotionEffectType.STRENGTH, 200, 1),
+            new PotionEffect(PotionEffectType.SPEED, 200, 1),
+            new PotionEffect(PotionEffectType.NIGHT_VISION, 200, 0)
+        );
+        applyTemporaryEffects(player, effects, 200L);
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;

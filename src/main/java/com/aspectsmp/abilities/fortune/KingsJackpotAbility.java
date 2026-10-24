@@ -6,6 +6,10 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import java.util.List;
+import java.util.Arrays;
 
 public class KingsJackpotAbility extends BaseAbility {
 
@@ -45,8 +49,11 @@ public class KingsJackpotAbility extends BaseAbility {
         long essence = (long) (50 * getPowerMultiplier(player, heart));
         heart.addEssence(essence);
         
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.LUCK, 600, 1));
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.HERO_OF_THE_VILLAGE, 600, 0));
+        List<PotionEffect> effects = Arrays.asList(
+            new PotionEffect(PotionEffectType.LUCK, 600, 1),
+            new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, 600, 0)
+        );
+        applyTemporaryEffects(player, effects, 600L);
         
         player.sendMessage("§6+§e" + essence + "§6 Essence!");
         player.sendMessage("§7Fortune smiles upon you!");

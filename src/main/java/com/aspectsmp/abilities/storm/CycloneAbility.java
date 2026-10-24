@@ -11,6 +11,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import java.util.List;
+import java.util.Arrays;
 
 public class CycloneAbility extends BaseAbility {
 
@@ -71,11 +75,11 @@ public class CycloneAbility extends BaseAbility {
             }
         }.runTaskTimer(AspectSMP.getInstance(), 0L, 10L);
 
-        // Player immunity to own cyclone
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.LEVITATION, 120, 0, true, false), true);
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.SLOW_FALLING, 120, 0), true);
+        List<PotionEffect> effects = Arrays.asList(
+            new PotionEffect(PotionEffectType.LEVITATION, 120, 0, true, false),
+            new PotionEffect(PotionEffectType.SLOW_FALLING, 120, 0)
+        );
+        applyTemporaryEffects(player, effects, 120L);
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;

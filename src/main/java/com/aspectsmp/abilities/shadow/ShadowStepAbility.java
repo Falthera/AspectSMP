@@ -8,6 +8,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import java.util.List;
+import java.util.Arrays;
 
 public class ShadowStepAbility extends BaseAbility {
 
@@ -45,9 +49,10 @@ public class ShadowStepAbility extends BaseAbility {
         
         player.teleport(loc);
         
-        // Invisibility for 3 seconds
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.INVISIBILITY, 60, 0, true, false), true);
+        List<PotionEffect> effects = Arrays.asList(
+            new PotionEffect(PotionEffectType.INVISIBILITY, 60, 0, true, false)
+        );
+        applyTemporaryEffects(player, effects, 60L);
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;

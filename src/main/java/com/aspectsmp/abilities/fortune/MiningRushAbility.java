@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import java.util.List;
+import java.util.Arrays;
 
 public class MiningRushAbility extends BaseAbility {
 
@@ -39,8 +41,11 @@ public class MiningRushAbility extends BaseAbility {
         player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, player.getLocation().add(0, 1, 0), 25);
         playSound(player, Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f);
         
-        player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 200, 2));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 200, 0));
+        List<PotionEffect> effects = Arrays.asList(
+            new PotionEffect(PotionEffectType.HASTE, 200, 2),
+            new PotionEffect(PotionEffectType.LUCK, 200, 0)
+        );
+        applyTemporaryEffects(player, effects, 200L);
         heart.addEssence((long) (15 * getPowerMultiplier(player, heart)));
 
         applyCooldown(player, getId(), getCooldownDuration(heart));

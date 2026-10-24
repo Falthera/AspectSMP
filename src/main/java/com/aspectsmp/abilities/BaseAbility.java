@@ -21,8 +21,13 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public abstract class BaseAbility implements Ability {
 
@@ -233,5 +238,31 @@ public abstract class BaseAbility implements Ability {
         if (heart != null) {
             heart.addEssence(amount);
         }
+    }
+
+    protected void applyTemporaryEffects(Player player, List<PotionEffect> effects, long restoreDelay) {
+        Map<PotionEffectType, PotionEffect> originalEffects = new HashMap<>();
+        for (PotionEffect existing : player.getPotionEffects()) {
+            originalEffects.put(existing.getType(), existing);
+        }
+
+        for (PotionEffect effect : effects) {
+            player.addPotionEffect(effect, true);
+        }
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!player.isOnline()) return;
+
+                for (PotionEffect abilityEffect : effects) {
+                    PotionEffectType type = abilityEffect.getType();
+                    PotionEffect original = originalEffects.get(type);
+                    if (original != null) {
+                        player.addPotionEffect(original, true);
+                    }
+                }
+            }
+        }.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), restoreDelay);
     }
 }

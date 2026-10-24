@@ -7,6 +7,10 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import java.util.List;
+import java.util.Arrays;
 
 public class RageModeAbility extends BaseAbility {
 
@@ -38,9 +42,12 @@ public class RageModeAbility extends BaseAbility {
         player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().add(0, 1, 0), 35, 1, 1, 1);
         playSound(player, Sound.ENTITY_WARDEN_ROAR, 1.0f, 0.5f);
 
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.STRENGTH, 80, 0));
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 80, 0));
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.RESISTANCE, 80, 0));
+        List<PotionEffect> effects = Arrays.asList(
+            new PotionEffect(PotionEffectType.STRENGTH, 80, 0),
+            new PotionEffect(PotionEffectType.SPEED, 80, 0),
+            new PotionEffect(PotionEffectType.RESISTANCE, 80, 0)
+        );
+        applyTemporaryEffects(player, effects, 80L);
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;

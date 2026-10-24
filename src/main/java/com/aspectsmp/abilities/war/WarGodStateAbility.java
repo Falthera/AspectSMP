@@ -10,9 +10,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
+import java.util.List;
+import java.util.Arrays;
 
 public class WarGodStateAbility extends BaseAbility {
 
@@ -53,10 +55,13 @@ public class WarGodStateAbility extends BaseAbility {
         world.spawnParticle(Particle.EXPLOSION_EMITTER, center, 3);
         playSound(player, Sound.ENTITY_ENDER_DRAGON_GROWL, 2.0f, 0.5f);
 
-        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 300, 1));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 0));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 300, 0));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 300, 0));
+        List<PotionEffect> effects = Arrays.asList(
+            new PotionEffect(PotionEffectType.STRENGTH, 300, 1),
+            new PotionEffect(PotionEffectType.SPEED, 300, 0),
+            new PotionEffect(PotionEffectType.RESISTANCE, 300, 0),
+            new PotionEffect(PotionEffectType.REGENERATION, 300, 0)
+        );
+        applyTemporaryEffects(player, effects, 300L);
 
         for (Entity entity : center.getWorld().getNearbyEntities(center, 10.0, 5.0, 10.0)) {
             if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {

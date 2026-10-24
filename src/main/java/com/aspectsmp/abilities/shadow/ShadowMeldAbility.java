@@ -9,6 +9,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import java.util.List;
+import java.util.Arrays;
 
 public class ShadowMeldAbility extends BaseAbility {
 
@@ -41,13 +45,12 @@ public class ShadowMeldAbility extends BaseAbility {
         player.getWorld().spawnParticle(Particle.SOUL, player.getLocation().add(0, 1, 0), 50, 1.5, 1.5, 1.5, 0.03);
         playSound(player, Sound.ENTITY_ENDERMAN_TELEPORT, 0.8f, 0.5f);
 
-        // True invisibility + intangibility for 8 seconds
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.INVISIBILITY, 160, 0, true, false), true);
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.RESISTANCE, 160, 4, true, false), true);
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.SPEED, 160, 1, true, false), true);
+        List<PotionEffect> effects = Arrays.asList(
+            new PotionEffect(PotionEffectType.INVISIBILITY, 160, 0, true, false),
+            new PotionEffect(PotionEffectType.RESISTANCE, 160, 4, true, false),
+            new PotionEffect(PotionEffectType.SPEED, 160, 1, true, false)
+        );
+        applyTemporaryEffects(player, effects, 160L);
 
         // Damage nearby enemies when emerging
         new org.bukkit.scheduler.BukkitRunnable() {

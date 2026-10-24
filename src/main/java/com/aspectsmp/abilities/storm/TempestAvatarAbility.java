@@ -13,6 +13,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.Arrays;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class TempestAvatarAbility extends BaseAbility {
 
@@ -53,17 +56,14 @@ public class TempestAvatarAbility extends BaseAbility {
         player.getWorld().playSound(center, Sound.ENTITY_BREEZE_WIND_BURST, 3.0f, 0.4f);
         player.getWorld().playSound(center, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0f, 0.5f);
 
-        // Transform player into Tempest Avatar
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.LEVITATION, 300, 0, true, false), true);
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.SPEED, 300, 2), true);
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.STRENGTH, 300, 1), true);
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.RESISTANCE, 300, 1), true);
-        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-            org.bukkit.potion.PotionEffectType.RESISTANCE, 300, 2), true);
+        List<PotionEffect> effects = Arrays.asList(
+            new PotionEffect(PotionEffectType.LEVITATION, 300, 0, true, false),
+            new PotionEffect(PotionEffectType.SPEED, 300, 2),
+            new PotionEffect(PotionEffectType.STRENGTH, 300, 1),
+            new PotionEffect(PotionEffectType.RESISTANCE, 300, 1),
+            new PotionEffect(PotionEffectType.RESISTANCE, 300, 2)
+        );
+        applyTemporaryEffects(player, effects, 300L);
 
         // Persistent storm around player
         new BukkitRunnable() {
