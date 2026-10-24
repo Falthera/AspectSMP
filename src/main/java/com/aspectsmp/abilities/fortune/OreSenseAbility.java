@@ -111,17 +111,16 @@ public class OreSenseAbility extends BaseAbility {
                                 BlockData blockData = block.getBlockData();
                                 Location displayLoc = block.getLocation().add(0.5, 0.5, 0.5);
 
-                                BlockDisplay display = player.getWorld().spawn(displayLoc, BlockDisplay.class);
+                                                BlockDisplay display = player.getWorld().spawn(displayLoc, BlockDisplay.class);
                                 display.setBlock(blockData);
                                 display.setGlowing(true);
                                 display.setInvulnerable(true);
-                                display.setInvisible(true);
-                                display.setAI(false);
+                                display.setVisibleByDefault(false);
                                 display.setGravity(0.0f);
                                 display.setPersistent(true);
-                                display.setRemoveWhenDespawned(false);
+                                display.setRemoveWhenFarAway(false);
 
-                                player.showEntity(player, display);
+                                player.showEntity(com.aspectsmp.AspectSMP.getInstance(), display);
 
                                 displays.add(display);
                             }
