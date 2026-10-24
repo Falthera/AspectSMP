@@ -41,6 +41,9 @@ public class MaelstromAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
+        com.aspectsmp.AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+            player, com.aspectsmp.core.AspectType.TIDE, getId());
+
         Location center = player.getLocation();
         playSound(player, Sound.ENTITY_DOLPHIN_PLAY, 1.0f, 0.5f);
 

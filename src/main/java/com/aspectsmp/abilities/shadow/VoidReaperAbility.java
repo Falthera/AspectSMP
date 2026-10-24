@@ -49,6 +49,9 @@ public class VoidReaperAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
+        com.aspectsmp.AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+            player, com.aspectsmp.core.AspectType.SHADOW, getId());
+
         org.bukkit.Location center = player.getLocation();
         player.getWorld().spawnParticle(Particle.PORTAL, center, 100, 5, 3, 5, 0.2);
         player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, center, 50, 4, 2, 4, 0.1);

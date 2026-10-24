@@ -42,6 +42,9 @@ public class BlackStarCollapseAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
+        com.aspectsmp.AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+            player, com.aspectsmp.core.AspectType.COSMOS, getId());
+
         org.bukkit.Location loc = player.getLocation();
         
         for (int i = 0; i < 10; i++) {

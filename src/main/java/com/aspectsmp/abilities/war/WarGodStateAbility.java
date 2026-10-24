@@ -48,6 +48,9 @@ public class WarGodStateAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
+        com.aspectsmp.AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+            player, com.aspectsmp.core.AspectType.WAR, getId());
+
         Location center = player.getLocation();
         World world = player.getWorld();
 

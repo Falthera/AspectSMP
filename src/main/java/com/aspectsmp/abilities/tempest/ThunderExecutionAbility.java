@@ -43,6 +43,9 @@ public class ThunderExecutionAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
+        com.aspectsmp.AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+            player, com.aspectsmp.core.AspectType.TEMPEST, getId());
+
         List<Player> nearby = player.getWorld().getPlayers().stream()
             .filter(e -> e != player && e.getLocation().distanceSquared(player.getLocation()) <= 100)
             .filter(e -> e.getHealth() <= 10)

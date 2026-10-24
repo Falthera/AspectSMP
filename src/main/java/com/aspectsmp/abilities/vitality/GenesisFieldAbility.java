@@ -42,6 +42,9 @@ public class GenesisFieldAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
+        com.aspectsmp.AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+            player, com.aspectsmp.core.AspectType.VITALITY, getId());
+
         org.bukkit.Location loc = player.getLocation();
         player.getWorld().spawnParticle(Particle.HEART, loc.add(0, 1, 0), 30, 2, 2, 2);
         playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);

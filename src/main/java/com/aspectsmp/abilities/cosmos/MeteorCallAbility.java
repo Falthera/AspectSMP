@@ -48,6 +48,9 @@ public class MeteorCallAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
+        com.aspectsmp.AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+            player, com.aspectsmp.core.AspectType.COSMOS, getId());
+
         Player target = findTarget(player);
         if (target == null) {
             player.sendMessage("§cNo target found within range!");

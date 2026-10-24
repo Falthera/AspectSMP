@@ -47,6 +47,9 @@ public class CloudburstAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
+        com.aspectsmp.AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+            player, com.aspectsmp.core.AspectType.CLOUD, getId());
+
         Vector center = player.getLocation().toVector();
         for (Entity entity : player.getNearbyEntities(DAMAGE_RADIUS, 5.0, DAMAGE_RADIUS)) {
             if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {

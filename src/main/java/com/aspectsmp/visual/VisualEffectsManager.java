@@ -275,7 +275,7 @@ public class VisualEffectsManager {
 
     public void playAbilityCastVisuals(Player player, String abilityId, AspectType aspect, int tier, boolean isUltimate) {
         if (!enabled) return;
-        
+
         AspectVisualThemes.Theme theme = themes.getTheme(aspect);
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         double power = heart != null ? Math.max(0.5, heart.getStability() / 100.0) : 1.0;
@@ -284,10 +284,10 @@ public class VisualEffectsManager {
         screenEffects.chargeUp(player, theme, tier);
         particles.castCharge(player, theme, tier, tier * 10);
         soundscapes.playCastSound(player, theme, tier, null);
-        
+
         // Cast particles
         particles.castRelease(player, theme, tier);
-        
+
         // Screen effects
         if (tier >= 2) {
             screenEffects.impactFlash(player, theme, tier);
@@ -295,7 +295,7 @@ public class VisualEffectsManager {
                 screenEffects.screenShake(player, 0.3 * tier, 10 * tier);
             }
         }
-        
+
         // Ultimate effects - only for actual ultimates
         if (isUltimate) {
             screenEffects.ultimateScreenFlash(player, theme);
@@ -304,6 +304,138 @@ public class VisualEffectsManager {
             }
             soundscapes.playUltimateSound(player, theme);
             particles.ultimate(player, theme);
+        }
+    }
+
+    public void playUltimateActivationVisuals(Player player, AspectType aspect, String abilityId) {
+        if (!enabled) return;
+
+        AspectVisualThemes.Theme theme = themes.getTheme(aspect);
+        Location center = player.getLocation().add(0, 1, 0);
+        World world = center.getWorld();
+
+        switch (abilityId) {
+            case "winter:absolute_zero":
+                spawnUltimateRing(world, center, theme, 0.0, Particle.SNOWFLAKE, 3.0, 50);
+                spawnUltimateRing(world, center, theme, 1.0, Particle.END_ROD, 2.0, 30);
+                spawnUltimateColumn(world, center, theme, Particle.SNOWFLAKE, 4.0, 60, 0.02);
+                spawnUltimateColumn(world, center, theme, Particle.END_ROD, 3.0, 20, 0.05);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            case "shadow:void_reaper":
+                spawnUltimateSpiral(world, center, Particle.SOUL_FIRE_FLAME, 5.0, 30, 0.15);
+                spawnUltimateSpiral(world, center, Particle.PORTAL, 4.0, 20, 0.1);
+                spawnUltimateColumn(world, center, theme, Particle.SMOKE, 6.0, 40, 0.1);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            case "cloud:cloudburst":
+                spawnUltimateRing(world, center, theme, 0.0, Particle.CLOUD, 6.0, 60);
+                spawnUltimateColumn(world, center, theme, Particle.EXPLOSION_EMITTER, 0, 15, 0.1);
+                spawnUltimateRing(world, center, theme, 0.0, Particle.END_ROD, 5.0, 40);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            case "cosmos:black_star_collapse":
+                spawnUltimateSpiral(world, center, Particle.PORTAL, 5.0, 40, 0.12);
+                spawnUltimateSpiral(world, center, Particle.END_ROD, 4.0, 25, 0.1);
+                spawnUltimateColumn(world, center, theme, Particle.END_ROD, 5.0, 30, 0.08);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            case "cosmos:meteor_call":
+                spawnUltimateRing(world, center, theme, 0.0, Particle.FLAME, 6.0, 50);
+                spawnUltimateSpiral(world, center, Particle.LAVA, 5.0, 30, 0.1);
+                spawnUltimateColumn(world, center, theme, Particle.SMOKE, 4.0, 35, 0.08);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            case "inferno:sun_core_collapse":
+                spawnUltimateColumn(world, center, theme, Particle.FLAME, 7.0, 60, 0.05);
+                spawnUltimateRing(world, center, theme, 0.0, Particle.FLAME, 5.0, 40);
+                spawnUltimateSpiral(world, center, Particle.LAVA, 4.0, 25, 0.12);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            case "tempest:thunder_execution":
+                spawnUltimateSpiral(world, center, Particle.ELECTRIC_SPARK, 4.0, 50, 0.1);
+                spawnUltimateColumn(world, center, theme, Particle.ELECTRIC_SPARK, 6.0, 40, 0.05);
+                spawnUltimateRing(world, center, theme, 0.0, Particle.END_ROD, 5.0, 30);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            case "war:war_god_state":
+                spawnUltimateColumn(world, center, theme, Particle.FLAME, 8.0, 50, 0.05);
+                spawnUltimateRing(world, center, theme, 0.0, Particle.FLAME, 6.0, 40);
+                spawnUltimateSpiral(world, center, Particle.EXPLOSION_EMITTER, 5.0, 10, 0.15);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            case "rift:reality_collapse":
+                spawnUltimateSpiral(world, center, Particle.PORTAL, 5.0, 40, 0.12);
+                spawnUltimateColumn(world, center, theme, Particle.END_ROD, 4.0, 30, 0.08);
+                spawnUltimateRing(world, center, theme, 0.0, Particle.SMOKE, 6.0, 30);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            case "vitality:genesis_field":
+                spawnUltimateSpiral(world, center, Particle.HEART, 5.0, 35, 0.1);
+                spawnUltimateRing(world, center, theme, 0.0, Particle.HEART, 4.0, 40);
+                spawnUltimateColumn(world, center, theme, Particle.HAPPY_VILLAGER, 3.0, 45, 0.08);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            case "tide:maelstrom":
+                spawnUltimateColumn(world, center, theme, Particle.BUBBLE_COLUMN_UP, 6.0, 50, 0.05);
+                spawnUltimateRing(world, center, theme, 0.0, Particle.SPLASH, 5.0, 35);
+                spawnUltimateSpiral(world, center, Particle.SPLASH, 4.0, 25, 0.12);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
+            default:
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                particles.ultimate(player, theme);
+                break;
+        }
+    }
+
+    private void spawnUltimateRing(World world, Location center, AspectVisualThemes.Theme theme, double yOffset, Particle particle, double radius, int count) {
+        for (int i = 0; i < count; i++) {
+            double angle = Math.PI * 2 * i / count;
+            Location loc = center.clone().add(Math.cos(angle) * radius, yOffset + Math.sin(angle * 2) * 0.3, Math.sin(angle) * radius);
+            world.spawnParticle(particle, loc, 1, 0, 0, 0, 0);
+        }
+    }
+
+    private void spawnUltimateColumn(World world, Location center, AspectVisualThemes.Theme theme, Particle particle, double radius, int height, double speed) {
+        for (int y = 0; y <= height; y++) {
+            for (int i = 0; i < 8; i++) {
+                double angle = Math.PI * 2 * i / 8;
+                Location loc = center.clone().add(Math.cos(angle) * radius, y * 0.25, Math.sin(angle) * radius);
+                world.spawnParticle(particle, loc, 1, 0, 0, 0, speed);
+            }
+        }
+    }
+
+    private void spawnUltimateSpiral(World world, Location center, Particle particle, double maxRadius, int turns, double verticalSpeed) {
+        for (int i = 0; i < turns; i++) {
+            double angle = Math.PI * 2 * i / turns;
+            double radius = maxRadius * (i / (double) turns);
+            Location loc = center.clone().add(Math.cos(angle) * radius, i * 0.3, Math.sin(angle) * radius);
+            world.spawnParticle(particle, loc, 2, 0, 0, 0, verticalSpeed);
         }
     }
 
