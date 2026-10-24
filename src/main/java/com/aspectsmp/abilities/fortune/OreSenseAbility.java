@@ -9,8 +9,35 @@ import org.bukkit.block.Block;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class OreSenseAbility extends BaseAbility {
+
+    private static final Set<Material> ORE_TYPES = new HashSet<>();
+
+    static {
+        ORE_TYPES.add(Material.COAL_ORE);
+        ORE_TYPES.add(Material.DEEPSLATE_COAL_ORE);
+        ORE_TYPES.add(Material.IRON_ORE);
+        ORE_TYPES.add(Material.DEEPSLATE_IRON_ORE);
+        ORE_TYPES.add(Material.GOLD_ORE);
+        ORE_TYPES.add(Material.DEEPSLATE_GOLD_ORE);
+        ORE_TYPES.add(Material.REDSTONE_ORE);
+        ORE_TYPES.add(Material.DEEPSLATE_REDSTONE_ORE);
+        ORE_TYPES.add(Material.LAPIS_ORE);
+        ORE_TYPES.add(Material.DEEPSLATE_LAPIS_ORE);
+        ORE_TYPES.add(Material.EMERALD_ORE);
+        ORE_TYPES.add(Material.DEEPSLATE_EMERALD_ORE);
+        ORE_TYPES.add(Material.DIAMOND_ORE);
+        ORE_TYPES.add(Material.DEEPSLATE_DIAMOND_ORE);
+        ORE_TYPES.add(Material.ANCIENT_DEBRIS);
+        ORE_TYPES.add(Material.NETHER_GOLD_ORE);
+        ORE_TYPES.add(Material.NETHER_QUARTZ_ORE);
+        ORE_TYPES.add(Material.NETHER_REDSTONE_ORE);
+    }
 
     @Override
     public String getId() {
@@ -44,27 +71,37 @@ public class OreSenseAbility extends BaseAbility {
         int radius = 15;
         int heightRange = 8;
         int duration = 150;
-        int interval = 5;
+        int interval = 10;
 
-        new org.bukkit.scheduler.BukkitRunnable() {
+        new BukkitRunnable() {
             int ticks = 0;
+            Location center = player.getLocation();
+
             @Override
             public void run() {
+                if (!player.isOnline()) {
+                    cancel();
+                    return;
+                }
                 ticks++;
-                Location center = player.getLocation();
-                for (int x = -radius; x <= radius; x++) {
-                    for (int y = -heightRange; y <= heightRange; y++) {
-                        for (int z = -radius; z <= radius; z++) {
-                            Block block = center.clone().add(x, y, z).getBlock();
+
+                Location currentCenter = center.clone();
+                for (int x = -radius; x <= radius; x += 2) {
+                    for (int y = -heightRange; y <= heightRange; y += 2) {
+                        for (int z = -radius; z <= radius; z += 2) {
+                            Block block = currentCenter.clone().add(x, y, z).getBlock();
                             Material type = block.getType();
-                            Particle.DustOptions dustOptions = getOreParticleOptions(type);
-                            if (dustOptions != null) {
-                                player.getWorld().spawnParticle(Particle.REDSTONE, block.getLocation().add(0.5, 0.5, 0.5), 2, 0.1, 0.1, 0.1, dustOptions);
+                            if (ORE_TYPES.contains(type)) {
+                                Particle.DustOptions dustOptions = getOreParticleOptions(type);
+                                if (dustOptions != null) {
+                                    player.spawnParticle(Particle.REDSTONE, block.getLocation().add(0.5, 0.5, 0.5), 1, dustOptions);
+                                }
                             }
                         }
                     }
                 }
-                if (ticks >= duration) cancel();
+
+                if (ticks >= duration / interval) cancel();
             }
         }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, interval);
 
