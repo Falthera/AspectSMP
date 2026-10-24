@@ -8,7 +8,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Entity;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -110,7 +109,7 @@ public class OreSenseAbility extends BaseAbility {
                                 BlockData blockData = block.getBlockData();
                                 Location displayLoc = block.getLocation().add(0.5, 0.5, 0.5);
 
-                                                BlockDisplay display = player.getWorld().spawn(displayLoc, BlockDisplay.class);
+                                BlockDisplay display = player.getWorld().spawn(displayLoc, BlockDisplay.class);
                                 display.setBlock(blockData);
                                 display.setGlowing(true);
                                 display.setInvulnerable(true);
