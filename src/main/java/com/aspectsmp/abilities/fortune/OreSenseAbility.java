@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -92,9 +93,14 @@ public class OreSenseAbility extends BaseAbility {
                             Block block = currentCenter.clone().add(x, y, z).getBlock();
                             Material type = block.getType();
                             if (ORE_TYPES.contains(type)) {
+                                BlockData blockData = block.getBlockData();
+                                Location particleLoc = block.getLocation().add(0.5, 0.5, 0.5);
+
+                                player.spawnParticle(Particle.BLOCK_DUST, particleLoc, 3, 0.1, 0.1, 0.1, 0, blockData, true);
+
                                 Particle.DustOptions dustOptions = getOreParticleOptions(type);
                                 if (dustOptions != null) {
-                                    player.spawnParticle(Particle.REDSTONE, block.getLocation().add(0.5, 0.5, 0.5), 1, dustOptions);
+                                    player.spawnParticle(Particle.REDSTONE, particleLoc, 1, 0, 0, 0, 0, dustOptions, true);
                                 }
                             }
                         }
