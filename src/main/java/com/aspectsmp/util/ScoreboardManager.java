@@ -13,13 +13,16 @@ import org.bukkit.scoreboard.*;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ScoreboardManager {
 
     private final AspectSMP plugin;
-    private final java.util.Map<Player, org.bukkit.scoreboard.Scoreboard> playerScoreboards;
-    private final java.util.Map<Player, Set<String>> playerEntries;
+    private final Map<UUID, org.bukkit.scoreboard.Scoreboard> playerScoreboards = new ConcurrentHashMap<>();
+    private final Map<UUID, Set<String>> playerEntries = new ConcurrentHashMap<>();
 
     // Small caps character mapping
     private static final String SMALL_CAPS = "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀꜱᴛᴜᴠᴡxʏᴢ";
@@ -27,8 +30,6 @@ public class ScoreboardManager {
 
     public ScoreboardManager(AspectSMP plugin) {
         this.plugin = plugin;
-        this.playerScoreboards = new java.util.HashMap<>();
-        this.playerEntries = new java.util.HashMap<>();
     }
 
     public void onPlayerJoin(Player player) {
@@ -40,10 +41,11 @@ public class ScoreboardManager {
     }
 
     public void updateAll() {
-        playerScoreboards.keySet().removeIf(player -> {
-            if (!player.isOnline()) {
-                playerScoreboards.remove(player);
-                playerEntries.remove(player);
+        playerScoreboards.keySet().removeIf(uuid -> {
+            Player player = plugin.getServer().getPlayer(uuid);
+            if (player == null || !player.isOnline()) {
+                playerScoreboards.remove(uuid);
+                playerEntries.remove(uuid);
                 return true;
             }
             updatePlayer(player);
@@ -81,20 +83,22 @@ public class ScoreboardManager {
     }
 
     private void createScoreboard(Player player) {
-        if (playerScoreboards.containsKey(player)) return;
+        UUID uuid = player.getUniqueId();
+        if (playerScoreboards.containsKey(uuid)) return;
 
         org.bukkit.scoreboard.ScoreboardManager manager = player.getServer().getScoreboardManager();
         if (manager == null) return;
 
         org.bukkit.scoreboard.Scoreboard scoreboard = manager.getNewScoreboard();
         player.setScoreboard(scoreboard);
-        playerScoreboards.put(player, scoreboard);
-        playerEntries.put(player, new java.util.HashSet<>());
+        playerScoreboards.put(uuid, scoreboard);
+        playerEntries.put(uuid, ConcurrentHashMap.newKeySet());
     }
 
     private void removeScoreboard(Player player) {
-        playerScoreboards.remove(player);
-        playerEntries.remove(player);
+        UUID uuid = player.getUniqueId();
+        playerScoreboards.remove(uuid);
+        playerEntries.remove(uuid);
         if (player.isOnline()) {
             org.bukkit.scoreboard.ScoreboardManager manager = player.getServer().getScoreboardManager();
             if (manager != null) {
@@ -104,10 +108,11 @@ public class ScoreboardManager {
     }
 
     public void updatePlayer(Player player) {
-        org.bukkit.scoreboard.Scoreboard scoreboard = playerScoreboards.get(player);
+        UUID uuid = player.getUniqueId();
+        org.bukkit.scoreboard.Scoreboard scoreboard = playerScoreboards.get(uuid);
         if (scoreboard == null) return;
 
-        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        Heart heart = plugin.getHeartManager().getHeart(uuid).orElse(null);
         if (heart == null || heart.isDormant()) {
             Objective obj = scoreboard.getObjective("aspectsmp");
             if (obj != null) obj.unregister();
@@ -123,10 +128,10 @@ public class ScoreboardManager {
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         }
 
-        Set<String> oldEntries = playerEntries.get(player);
+        Set<String> oldEntries = playerEntries.get(uuid);
         if (oldEntries == null) {
-            oldEntries = new HashSet<>();
-            playerEntries.put(player, oldEntries);
+            oldEntries = ConcurrentHashMap.newKeySet();
+            playerEntries.put(uuid, oldEntries);
         }
         for (String entry : oldEntries) {
             Score score = obj.getScore(entry);

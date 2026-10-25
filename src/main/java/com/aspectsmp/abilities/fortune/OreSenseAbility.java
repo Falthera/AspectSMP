@@ -16,12 +16,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class OreSenseAbility extends BaseAbility {
 
     private static final Set<Material> ORE_TYPES = new HashSet<>();
-    private static final Map<UUID, Set<BlockDisplay>> activeDisplays = new WeakHashMap<>();
+    private static final Map<UUID, Set<BlockDisplay>> activeDisplays = new ConcurrentHashMap<>();
 
     static {
         ORE_TYPES.add(Material.COAL_ORE);
@@ -80,10 +80,12 @@ public class OreSenseAbility extends BaseAbility {
 
         player.spawnParticle(org.bukkit.Particle.ENCHANTED_HIT, player.getLocation().add(0, 1, 0), 30, 0.5, 0.5, 0.5);
 
+        Set<BlockDisplay> displays = new HashSet<>();
+        activeDisplays.put(playerUUID, displays);
+
         new BukkitRunnable() {
             int ticks = 0;
             Location center = player.getLocation();
-            Set<BlockDisplay> displays = new HashSet<>();
 
             @Override
             public void run() {
@@ -132,8 +134,6 @@ public class OreSenseAbility extends BaseAbility {
                 }
             }
         }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, interval);
-
-        activeDisplays.put(playerUUID, new HashSet<>());
 
         applyCooldown(player, getId(), getCooldownDuration(heart));
         return true;
