@@ -1,99 +1,99 @@
 {
   "model": {
-    "type": "minecraft:select",
+    "type": "minecraft:range_dispatch",
     "property": "minecraft:custom_model_data",
-    
+    "index": 0,
     "fallback": {
       "type": "minecraft:model",
       "model": "minecraft:item/heart_of_the_sea"
     },
-    "cases": [
+    "entries": [
       {
-        "when": "heart_inferno",
+        "threshold": 100,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_inferno"
         }
       },
       {
-        "when": "heart_tide",
+        "threshold": 101,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_tide"
         }
       },
       {
-        "when": "heart_tempest",
+        "threshold": 102,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_tempest"
         }
       },
       {
-        "when": "heart_rift",
+        "threshold": 103,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_rift"
         }
       },
       {
-        "when": "heart_vitality",
+        "threshold": 104,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_vitality"
         }
       },
       {
-        "when": "heart_war",
+        "threshold": 105,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_war"
         }
       },
       {
-        "when": "heart_cosmos",
+        "threshold": 106,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_cosmos"
         }
       },
       {
-        "when": "heart_fortune",
+        "threshold": 107,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_fortune"
         }
       },
       {
-        "when": "heart_cloud",
+        "threshold": 108,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_cloud"
         }
       },
       {
-        "when": "heart_winter",
+        "threshold": 109,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_winter"
         }
       },
       {
-        "when": "heart_shadow",
+        "threshold": 110,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_shadow"
         }
       },
       {
-        "when": "heart_storm",
+        "threshold": 111,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_storm"
         }
       },
       {
-        "when": "heart_base",
+        "threshold": 112,
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/heart_sea_base"
