@@ -22,20 +22,20 @@ public class ResourcePackManager {
     private final AspectSMP plugin;
     private final boolean enabled;
     private final String url;
-    private final String expectedSha256;
+    private final String expectedSha1;
     private final boolean required;
     private final String promptMessage;
     private final boolean autoDownload;
     
     private final Set<UUID> playersWithPack = ConcurrentHashMap.newKeySet();
-    private String cachedSha256 = null;
+    private String cachedSha1 = null;
     private File packFile = null;
 
     public ResourcePackManager(AspectSMP plugin) {
         this.plugin = plugin;
         this.enabled = plugin.getConfig().getBoolean("resource-pack.enabled", true);
         this.url = plugin.getConfig().getString("resource-pack.url", "");
-        this.expectedSha256 = plugin.getConfig().getString("resource-pack.sha256", "");
+        this.expectedSha1 = plugin.getConfig().getString("resource-pack.sha1", "");
         this.required = plugin.getConfig().getBoolean("resource-pack.required", false);
         this.promptMessage = plugin.getConfig().getString("resource-pack.prompt-message", 
             "§b§lAspect SMP §7requires a resource pack for custom items and effects.");
@@ -62,11 +62,11 @@ public class ResourcePackManager {
             }
             
             if (packFile.exists()) {
-                cachedSha256 = calculateSha256(packFile);
-                plugin.getLogger().info("Resource pack SHA-256: " + cachedSha256);
+                cachedSha1 = calculateSha1(packFile);
+                plugin.getLogger().info("Resource pack SHA-1: " + cachedSha1);
                 
-                if (!expectedSha256.isEmpty() && !expectedSha256.equals(cachedSha256)) {
-                    plugin.getLogger().warning("Resource pack SHA-256 mismatch! Expected: " + expectedSha256 + ", Got: " + cachedSha256);
+                if (!expectedSha1.isEmpty() && !expectedSha1.equalsIgnoreCase(cachedSha1)) {
+                    plugin.getLogger().warning("Resource pack SHA-1 mismatch! Expected: " + expectedSha1 + ", Got: " + cachedSha1);
                 }
             }
         } catch (IOException | NoSuchAlgorithmException e) {
@@ -87,7 +87,7 @@ public class ResourcePackManager {
         }
         
         String finalUrl = url.isEmpty() ? getPackDownloadUrl() : url;
-        String finalSha256 = expectedSha256.isEmpty() ? cachedSha256 : expectedSha256;
+        String finalSha1 = expectedSha1.isEmpty() ? cachedSha1 : expectedSha1;
         
         if (finalUrl == null || finalUrl.isEmpty()) {
             plugin.getLogger().warning("Cannot send resource pack - no URL available");
@@ -95,7 +95,7 @@ public class ResourcePackManager {
         }
         
         try {
-            player.setResourcePack(finalUrl, finalSha256, required, net.kyori.adventure.text.Component.text(promptMessage));
+            player.setResourcePack(finalUrl, finalSha1, required, net.kyori.adventure.text.Component.text(promptMessage));
             playersWithPack.add(player.getUniqueId());
             plugin.getLogger().info("Sent resource pack to " + player.getName());
         } catch (Exception e) {
@@ -124,9 +124,9 @@ public class ResourcePackManager {
                 playersWithPack.remove(player.getUniqueId());
                 plugin.getLogger().warning(player.getName() + " failed to download resource pack");
             }
-            case "invalid_sha256" -> {
+            case "invalid_sha1" -> {
                 playersWithPack.remove(player.getUniqueId());
-                plugin.getLogger().warning(player.getName() + " got invalid SHA-256 for resource pack");
+                plugin.getLogger().warning(player.getName() + " got invalid SHA-1 for resource pack");
             }
         }
     }
@@ -140,7 +140,7 @@ public class ResourcePackManager {
     
     public void reload() {
         playersWithPack.clear();
-        cachedSha256 = null;
+        cachedSha1 = null;
         packFile = null;
         
         if (enabled && (url.isEmpty() || autoDownload)) {
@@ -158,16 +158,16 @@ public class ResourcePackManager {
         return url.isEmpty() ? getPackDownloadUrl() : url;
     }
     
-    public String getPackSha256() {
-        return expectedSha256.isEmpty() ? cachedSha256 : expectedSha256;
+    public String getPackSha1() {
+        return expectedSha1.isEmpty() ? cachedSha1 : expectedSha1;
     }
     
     public boolean isRequired() {
         return required;
     }
     
-    private String calculateSha256(File file) throws IOException, NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+    private String calculateSha1(File file) throws IOException, NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-1");
         try (InputStream is = Files.newInputStream(file.toPath())) {
             byte[] buffer = new byte[8192];
             int bytesRead;
