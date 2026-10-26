@@ -1,5 +1,24 @@
+# ╔═════════════════════════════════════════════════════════════════════════════════╗
+# ║                                                                              ║
+# ║    █████╗ ██████╗  ██████╗ ███████╗███████╗    ███████╗██╗  ██╗███████╗    ║
+# ║   ██╔══██╗██╔══██╗██╔═══██╗██╔════╝██╔════╝    ██╔════╝██║  ██║██╔════╝    ║
+# ║   ███████║██████╔╝██║   ██║███████╗█████╗      ███████╗███████║███████╗    ║
+# ║   ██╔══██║██╔═══╝ ██║   ██║╚════██║██╔══╝      ╚════██║██╔══██║╚════██║    ║
+# ║   ██║  ██║██║     ╚██████╔╝███████║███████╗    ███████║██║  ██║███████║    ║
+# ║   ╚═╝  ╚═╝╚═╝      ╚═════╝ ╚══════╝╚══════╝    ╚══════╝╚═╝  ╚═╝╚══════╝    ║
+# ║                                                                              ║
+# ║                    SMP  •  PLUGIN  •  CONFIGURATION                         ║
+# ║                                                                              ║
+# ║                         Created by Falthera                                  ║
+# ║                   https://github.com/Falthera/AspectSMP                      ║
+# ║                                                                              ║
+# ╚════════════════════════════════════════════════════════════════════════════════╝
+
+# ================================================================================
+# STORAGE CONFIGURATION
+# ================================================================================
 storage:
-  type: sqlite
+  type: sqlite                          # Options: sqlite, mysql
   mysql:
     host: localhost
     port: 3306
@@ -7,13 +26,17 @@ storage:
     username: root
     password: ""
 
+# ================================================================================
+# COOLDOWN CONFIGURATION (milliseconds)
+# ================================================================================
 cooldowns:
   base: 5000
   tier1: 5000
   tier2: 8000
   tier3: 12000
   ultimate: 30000
-  # Per-ability overrides (milliseconds)
+
+  # Per-ability overrides
   abilities:
     inferno:
       flame_step: 4000
@@ -76,6 +99,9 @@ cooldowns:
       cyclone: 15000
       tempest_avatar: 25000
 
+# ================================================================================
+# STABILITY & ESSENCE CONFIGURATION
+# ================================================================================
 stability:
   kill_bonus: 5
   death_penalty: 10
@@ -84,14 +110,22 @@ essence:
   pvp_kill: 10
   combat_damage: 2
 
+# ================================================================================
+# FEATURE TOGGLES
+# ================================================================================
 features:
   obfuscated-death-messages: true
   unlimited-villager-trading: true
   explosion-proof-items: true
 
+# ================================================================================
+# VISUAL EFFECTS CONFIGURATION
+# ================================================================================
 visual-effects:
   enabled: true
-  particle-quality: 3  # 1=minimal, 2=low, 3=medium, 4=high, 5=ultra
+  particle-quality: 3  # 1=Minimal, 2=Low, 3=Medium, 4=High, 5=Ultra
+
+  # Quality level presets
   particle-quality-levels:
     1:
       name: "Minimal"
@@ -138,10 +172,13 @@ visual-effects:
       chromatic: true
       vignette: true
       screen-shake: true
+
   # Performance settings
   max-particles-per-tick: 150
   max-particles-per-effect: 40
   max-view-distance: 40.0
+
+  # Effect toggles
   screen-shake: true
   vignette: true
   chromatic-aberration: true
@@ -162,6 +199,9 @@ visual-effects:
   use-trail-particles: true
   sound-seed-enabled: true
 
+# ================================================================================
+# RESOURCE PACK CONFIGURATION
+# ================================================================================
 resource-pack:
   enabled: true
   url: "https://github.com/Falthera/AspectSMP/releases/download/Resource-Pack/AspectSMP-Pack.zip"
@@ -170,6 +210,9 @@ resource-pack:
   prompt-message: "§b§lAspect SMP §7This resource pack is essential for the plugin to work correctly. It provides custom item textures, GUI elements, and visual effects."
   auto-download: true
 
+# ================================================================================
+# MUSIC CONFIGURATION
+# ================================================================================
 music:
   enabled: true
   volume: 0.5
@@ -183,3 +226,7 @@ music:
       - "aspect_smp_theme"
     event:
       - "aspect_smp_theme"
+
+# ══════════════════════════════════════════════════════════════════════════════════
+# END OF CONFIGURATION
+# ══════════════════════════════════════════════════════════════════════════════════
