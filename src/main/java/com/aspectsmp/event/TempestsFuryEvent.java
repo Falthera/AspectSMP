@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
-import org.bukkit.inventory.meta.DataComponentTypes;
+import org.bukkit.inventory.DataComponentTypes;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -73,8 +73,8 @@ public class TempestsFuryEvent extends BaseEvent {
             UUID holder = plugin.getAspectHolder(AspectType.STORM);
             Player holderPlayer = Bukkit.getPlayer(holder);
             String holderName = holderPlayer != null ? holderPlayer.getName() : "Unknown";
-            Bukkit.broadcastMessage("§c§lThe Storm Aspect has already been claimed by §f" + holderName + "§c!");
-            Bukkit.broadcastMessage("§cThe Tempest's Fury cannot begin.");
+            Bukkit.broadcastMessage("\u00a7c\u00a7lThe Storm Aspect has already been claimed by \u00a7f" + holderName + "\u00a7c!");
+            Bukkit.broadcastMessage("\u00a7cThe Tempest's Fury cannot begin.");
             return;
         }
         
@@ -96,14 +96,14 @@ public class TempestsFuryEvent extends BaseEvent {
             }
         }
 
-        Bukkit.broadcastMessage("§b§l═══════════════════════════════════════════════");
-        Bukkit.broadcastMessage("§b§l      THE TEMPEST'S FURY HAS BEGUN");
-        Bukkit.broadcastMessage("§b§l═══════════════════════════════════════════════");
-        Bukkit.broadcastMessage("§7The sky darkens... winds howl across the world.");
-        Bukkit.broadcastMessage("§7An ancient storm awakens, tearing the heavens asunder.");
-        Bukkit.broadcastMessage("§e§lCollect Storm Fragments §7scattered across the overworld.");
-        Bukkit.broadcastMessage("§7Defeat §bWind Walkers§7, survive the cyclones, and claim the §bStorm Aspect§7!");
-        Bukkit.broadcastMessage("§b§l═══════════════════════════════════════════════");
+        Bukkit.broadcastMessage("\u00a7b\u00a7l═══════════════════════════════════════════════");
+        Bukkit.broadcastMessage("\u00a7b\u00a7l      THE TEMPEST'S FURY HAS BEGUN");
+        Bukkit.broadcastMessage("\u00a7b\u00a7l═══════════════════════════════════════════════");
+        Bukkit.broadcastMessage("\u00a77The sky darkens... winds howl across the world.");
+        Bukkit.broadcastMessage("\u00a77An ancient storm awakens, tearing the heavens asunder.");
+        Bukkit.broadcastMessage("\u00a7e\u00a7lCollect Storm Fragments \u00a77scattered across the overworld.");
+        Bukkit.broadcastMessage("\u00a77Defeat \u00a7bWind Walkers\u00a77, survive the cyclones, and claim the \u00a7bStorm Aspect\u00a77!");
+        Bukkit.broadcastMessage("\u00a7b\u00a7l═══════════════════════════════════════════════");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getWorld().getEnvironment() == World.Environment.NORMAL) {
@@ -131,7 +131,7 @@ public class TempestsFuryEvent extends BaseEvent {
         riftLocations.clear();
         cycloneLocations.clear();
         playerWindStacks.clear();
-        Bukkit.broadcastMessage("§cThe Tempest's Fury has been stopped by an admin.");
+        Bukkit.broadcastMessage("\u00a7cThe Tempest's Fury has been stopped by an admin.");
     }
 
     private void cancelAllTasks() {
@@ -220,53 +220,53 @@ public class TempestsFuryEvent extends BaseEvent {
         
         switch (next) {
             case STORM_FRAGMENTS -> {
-                Bukkit.broadcastMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§b§l   STORM FRAGMENTS HAVE SCATTERED ACROSS THE WORLD");
-                Bukkit.broadcastMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7§l" + REQUIRED_FRAGMENTS + " Storm Fragments §7are scattered across the overworld.");
-                Bukkit.broadcastMessage("§7Defeat §bWind Walkers §7guarding them to collect fragments.");
-                Bukkit.broadcastMessage("§7Gust rifts will open periodically, spawning more Walkers.");
+                Bukkit.broadcastMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7b\u00a7l   STORM FRAGMENTS HAVE SCATTERED ACROSS THE WORLD");
+                Bukkit.broadcastMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77\u00a7l" + REQUIRED_FRAGMENTS + " Storm Fragments \u00a77are scattered across the overworld.");
+                Bukkit.broadcastMessage("\u00a77Defeat \u00a7bWind Walkers \u00a77guarding them to collect fragments.");
+                Bukkit.broadcastMessage("\u00a77Gust rifts will open periodically, spawning more Walkers.");
                 startFragmentPhase();
                 schedulePhaseTransition(20000L, EventPhase.STORM_GUSTS);
             }
             case STORM_GUSTS -> {
-                Bukkit.broadcastMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§b§l   GUST RIFTS TEAR OPEN - WINDS HOWL");
-                Bukkit.broadcastMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7Rifts open across the world! §bWind Walkers §7pour through.");
-                Bukkit.broadcastMessage("§7Collect remaining fragments before the cyclones form!");
+                Bukkit.broadcastMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7b\u00a7l   GUST RIFTS TEAR OPEN - WINDS HOWL");
+                Bukkit.broadcastMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77Rifts open across the world! \u00a7bWind Walkers \u00a77pour through.");
+                Bukkit.broadcastMessage("\u00a77Collect remaining fragments before the cyclones form!");
                 openGustRifts();
                 schedulePhaseTransition(30000L, EventPhase.STORM_CYCLONES);
             }
             case STORM_CYCLONES -> {
-                Bukkit.broadcastMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§b§l   MASSIVE CYCLONES FORM ACROSS THE LAND");
-                Bukkit.broadcastMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7Colossal cyclones ravage the overworld! §bLevitation§7 affects all!");
-                Bukkit.broadcastMessage("§7Speed stacks accumulate. Survive the winds and prepare for the Titan!");
+                Bukkit.broadcastMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7b\u00a7l   MASSIVE CYCLONES FORM ACROSS THE LAND");
+                Bukkit.broadcastMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77Colossal cyclones ravage the overworld! \u00a7bLevitation\u00a77 affects all!");
+                Bukkit.broadcastMessage("\u00a77Speed stacks accumulate. Survive the winds and prepare for the Titan!");
                 startCyclones();
                 schedulePhaseTransition(40000L, EventPhase.STORM_TITAN);
             }
             case STORM_TITAN -> {
-                Bukkit.broadcastMessage("§c§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§c§l   THE STORM TITAN DESCENDS FROM THE HEAVENS");
-                Bukkit.broadcastMessage("§c§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7A colossal entity of pure wind and lightning manifests!");
-                Bukkit.broadcastMessage("§7Rally together and defeat it to proceed!");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l   THE STORM TITAN DESCENDS FROM THE HEAVENS");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77A colossal entity of pure wind and lightning manifests!");
+                Bukkit.broadcastMessage("\u00a77Rally together and defeat it to proceed!");
                 spawnStormTitan();
             }
             case STORM_CONVERGENCE -> {
-                Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§a§l   THE TEMPEST CONVERGES - FINAL TRIAL");
-                Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7The Storm Titan falls... but the true trial begins.");
-                Bukkit.broadcastMessage("§7Stand at the convergence points and endure the final gale!");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l   THE TEMPEST CONVERGES - FINAL TRIAL");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77The Storm Titan falls... but the true trial begins.");
+                Bukkit.broadcastMessage("\u00a77Stand at the convergence points and endure the final gale!");
                 startConvergence();
             }
             case STORM_COMPLETED -> {
-                Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§a§l   THE TEMPEST'S FURY HAS BEEN CONQUERED!");
-                Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l   THE TEMPEST'S FURY HAS BEEN CONQUERED!");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 active = false;
             }
             default -> {}
@@ -335,7 +335,7 @@ public class TempestsFuryEvent extends BaseEvent {
             overworld.spawnParticle(Particle.SWEEP_ATTACK, rift, 50, 4, 6, 4, 0.05);
             overworld.playSound(rift, Sound.BLOCK_PORTAL_TRIGGER, 1.5f, 0.8f);
         }
-        Bukkit.broadcastMessage("§b§l" + riftLocations.size() + " GUST RIFTS HAVE OPENED! §7Find them and defeat the Walkers within!");
+        Bukkit.broadcastMessage("\u00a7b\u00a7l" + riftLocations.size() + " GUST RIFTS HAVE OPENED! \u00a77Find them and defeat the Walkers within!");
 
         new BukkitRunnable() {
             int ticks = 0;
@@ -420,7 +420,7 @@ public class TempestsFuryEvent extends BaseEvent {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getWorld().getEnvironment() == World.Environment.NORMAL) {
-                player.sendTitle("§b§lSTORM TITAN", "§7Descends from the tempest...", 20, 100, 20);
+                player.sendTitle("\u00a7b\u00a7lSTORM TITAN", "\u00a77Descends from the tempest...", 20, 100, 20);
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 2.0f, 0.3f);
                 player.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0f, 0.5f);
             }
@@ -429,7 +429,7 @@ public class TempestsFuryEvent extends BaseEvent {
         com.aspectsmp.mobs.SkyGuardian guardian = new com.aspectsmp.mobs.SkyGuardian(plugin, spawn);
         stormTitanEntity = guardian.getEntity();
         
-        stormTitanEntity.setCustomName("§b§lThe Storm Titan");
+        stormTitanEntity.setCustomName("\u00a7b\u00a7lThe Storm Titan");
         stormTitanEntity.setCustomNameVisible(true);
 
         new BukkitRunnable() {
@@ -470,13 +470,13 @@ public class TempestsFuryEvent extends BaseEvent {
                         .count();
 
                     if (livingParticipants == 0) {
-                        Bukkit.broadcastMessage("§cAll participants have fallen... The Tempest retreats.");
+                        Bukkit.broadcastMessage("\u00a7cAll participants have fallen... The Tempest retreats.");
                         stopEvent();
                         cancel();
                         return;
                     }
 
-                    Bukkit.broadcastMessage("§b§lConvergence active: §a" + livingParticipants + " §bsurvivors weather the storm.");
+                    Bukkit.broadcastMessage("\u00a7b\u00a7lConvergence active: \u00a7a" + livingParticipants + " \u00a7bsurvivors weather the storm.");
                 }
 
                 for (Location rift : riftLocations) {
@@ -501,8 +501,8 @@ public class TempestsFuryEvent extends BaseEvent {
                     }
                 }
                 if (atConvergence >= Math.max(1, participants.size() / 2)) {
-                    Bukkit.broadcastMessage("§a§lTHE TEMPEST CONVERGENCE IS COMPLETE!");
-                    Bukkit.broadcastMessage("§7The storm calms... The worthy shall claim their reward.");
+                    Bukkit.broadcastMessage("\u00a7a\u00a7lTHE TEMPEST CONVERGENCE IS COMPLETE!");
+                    Bukkit.broadcastMessage("\u00a77The storm calms... The worthy shall claim their reward.");
                 }
             }
         }.runTaskTimer(plugin, 0L, 20L);
@@ -514,12 +514,12 @@ public class TempestsFuryEvent extends BaseEvent {
         if (!active || (phase != EventPhase.STORM_FRAGMENTS && phase != EventPhase.STORM_GUSTS)) return;
         if (!participants.contains(player.getUniqueId())) return;
         fragmentsCollected++;
-        player.sendMessage("§aStorm Fragment collected! §7(" + fragmentsCollected + "/" + REQUIRED_FRAGMENTS + ")");
+        player.sendMessage("\u00a7aStorm Fragment collected! \u00a77(" + fragmentsCollected + "/" + REQUIRED_FRAGMENTS + ")");
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
 
         if (fragmentsCollected >= REQUIRED_FRAGMENTS) {
-            Bukkit.broadcastMessage("§e§lALL STORM FRAGMENTS RECOVERED!");
-            Bukkit.broadcastMessage("§7The Gust Rifts begin to tear open...");
+            Bukkit.broadcastMessage("\u00a7e\u00a7lALL STORM FRAGMENTS RECOVERED!");
+            Bukkit.broadcastMessage("\u00a77The Gust Rifts begin to tear open...");
             if (mobSpamTask != null) { mobSpamTask.cancel(); mobSpamTask = null; }
             if (phase == EventPhase.STORM_FRAGMENTS) advancePhase(EventPhase.STORM_GUSTS);
         }
@@ -528,7 +528,7 @@ public class TempestsFuryEvent extends BaseEvent {
     public void addParticipant(Player player) {
         if (active && (phase == EventPhase.STORM_AWAKENS || phase == EventPhase.STORM_FRAGMENTS || phase == EventPhase.STORM_GUSTS)) {
             participants.add(player.getUniqueId());
-            player.sendMessage("§eYou have joined the Tempest's Fury!");
+            player.sendMessage("\u00a7eYou have joined the Tempest's Fury!");
         }
     }
 
@@ -555,16 +555,16 @@ public class TempestsFuryEvent extends BaseEvent {
             winner.getWorld().dropItemNaturally(winner.getLocation(), leftover.values().iterator().next());
         }
 
-        winner.sendMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        winner.sendMessage("§b§l   YOU HAVE WEATHERED THE TEMPEST'S FURY!");
-        winner.sendMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        winner.sendMessage("§a§lYou are the Master of the Storm!");
-        winner.sendMessage("§7You have unlocked the §bStorm Aspect §7and received a §bStormheart§7!");
+        winner.sendMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        winner.sendMessage("\u00a7b\u00a7l   YOU HAVE WEATHERED THE TEMPEST'S FURY!");
+        winner.sendMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        winner.sendMessage("\u00a7a\u00a7lYou are the Master of the Storm!");
+        winner.sendMessage("\u00a77You have unlocked the \u00a7bStorm Aspect \u00a77and received a \u00a7bStormheart\u00a77!");
 
-        Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        Bukkit.broadcastMessage("§a§l" + winner.getName() + " §ahas conquered the Tempest's Fury!");
-        Bukkit.broadcastMessage("§7They are now the §bSOLE HOLDER §7of the Storm Aspect and carry the §bStormheart§7.");
-        Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        Bukkit.broadcastMessage("\u00a7a\u00a7l" + winner.getName() + " \u00a7ahas conquered the Tempest's Fury!");
+        Bukkit.broadcastMessage("\u00a77They are now the \u00a7bSOLE HOLDER \u00a77of the Storm Aspect and carry the \u00a7bStormheart\u00a77.");
+        Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
         winner.getWorld().strikeLightningEffect(winner.getLocation());
         for (int i = 0; i < 5; i++) {
@@ -586,11 +586,11 @@ public class TempestsFuryEvent extends BaseEvent {
     private ItemStack createStormheart() {
         ItemStack item = new ItemStack(org.bukkit.Material.NETHER_STAR);
         org.bukkit.inventory.meta.ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§b§lStormheart");
+        meta.setDisplayName("\u00a7b\u00a7lStormheart");
         meta.setLore(Arrays.asList(
-            "§7A crystallized fragment of pure tempest.",
-            "§7Grants the §bStorm Aspect §7permanently.",
-            "§b§lRight-click to activate Tempest Avatar."
+            "\u00a77A crystallized fragment of pure tempest.",
+            "\u00a77Grants the \u00a7bStorm Aspect \u00a77permanently.",
+            "\u00a7b\u00a7lRight-click to activate Tempest Avatar."
         ));
         setCustomModelDataString(item, "stormheart");
         meta.setEnchantmentGlintOverride(true);

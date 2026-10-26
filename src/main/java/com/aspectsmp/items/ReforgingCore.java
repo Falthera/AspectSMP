@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
-import org.bukkit.inventory.meta.DataComponentTypes;
+import org.bukkit.inventory.DataComponentTypes;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -22,9 +22,9 @@ public class ReforgingCore extends CustomItem {
     public ItemStack createItemStack() {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§e§lReforging Core");
+        meta.setDisplayName("\u00a7e\u00a7lReforging Core");
         setCustomModelDataString(item, "reforging");
-        meta.lore(List.of(Component.text("§7Reroll your Aspect to a new class"), Component.text("§7Recipe: Nether Star + 4 Diamonds + 4 Amethyst Shards")));
+        meta.lore(List.of(Component.text("\u00a77Reroll your Aspect to a new class"), Component.text("\u00a77Recipe: Nether Star + 4 Diamonds + 4 Amethyst Shards")));
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "reforging_core");
         item.setItemMeta(meta);

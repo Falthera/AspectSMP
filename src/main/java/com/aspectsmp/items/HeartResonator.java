@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
-import org.bukkit.inventory.meta.DataComponentTypes;
+import org.bukkit.inventory.DataComponentTypes;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -22,9 +22,9 @@ public class HeartResonator extends CustomItem {
     public ItemStack createItemStack() {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§d§lHeart Resonator");
+        meta.setDisplayName("\u00a7d\u00a7lHeart Resonator");
         setCustomModelDataString(item, "resonator");
-        meta.lore(List.of(Component.text("§7Unlock Tier 3 abilities and Ultimate"), Component.text("§7Right-click to upgrade your Heart")));
+        meta.lore(List.of(Component.text("\u00a77Unlock Tier 3 abilities and Ultimate"), Component.text("\u00a77Right-click to upgrade your Heart")));
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "heart_resonator");
         item.setItemMeta(meta);

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
-import org.bukkit.inventory.meta.DataComponentTypes;
+import org.bukkit.inventory.DataComponentTypes;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -52,14 +52,14 @@ public class HeartOfTheSea {
         ItemStack item = new ItemStack(org.bukkit.Material.HEART_OF_THE_SEA);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName("§dHeart of the Sea §7(" + aspect.getDisplayName() + " Heart)");
+            meta.setDisplayName("\u00a7dHeart of the Sea \u00a77(" + aspect.getDisplayName() + " Heart)");
             setCustomModelDataString(item, getCustomModelDataString(aspect));
             Heart heart = AspectSMP.getInstance().getHeartManager().getHeart(player.getUniqueId()).orElse(null);
             int stability = heart != null ? heart.getStability() : 100;
             meta.lore(java.util.List.of(
-                Component.text("§7This heart pulses with the power of the §b" + aspect.getDisplayName() + " Aspect§7."),
-                Component.text("§8Bound to " + player.getName()),
-                Component.text("§cStability: " + stability)
+                Component.text("\u00a77This heart pulses with the power of the \u00a7b" + aspect.getDisplayName() + " Aspect\u00a77."),
+                Component.text("\u00a78Bound to " + player.getName()),
+                Component.text("\u00a7cStability: " + stability)
             ));
             PersistentDataContainer pdc = meta.getPersistentDataContainer();
             pdc.set(HEART_OF_THE_SEA_KEY, PersistentDataType.STRING, "heart_of_the_sea");
@@ -75,7 +75,7 @@ public class HeartOfTheSea {
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         if (!pdc.has(HEART_OF_THE_SEA_KEY, PersistentDataType.STRING)) return;
         
-        meta.setDisplayName("§dHeart of the Sea §7(" + aspect.getDisplayName() + " Heart)");
+        meta.setDisplayName("\u00a7dHeart of the Sea \u00a77(" + aspect.getDisplayName() + " Heart)");
         setCustomModelDataString(item, getCustomModelDataString(aspect));
         String ownerName = pdc.get(BOUND_PLAYER_KEY, PersistentDataType.STRING);
         Heart heart = null;
@@ -86,9 +86,9 @@ public class HeartOfTheSea {
         }
         int stability = heart != null ? heart.getStability() : 100;
         meta.lore(java.util.List.of(
-            Component.text("§7This heart pulses with the power of the §b" + aspect.getDisplayName() + " Aspect§7."),
-            Component.text("§8Bound to your soul"),
-            Component.text("§cStability: " + stability)
+            Component.text("\u00a77This heart pulses with the power of the \u00a7b" + aspect.getDisplayName() + " Aspect\u00a77."),
+            Component.text("\u00a78Bound to your soul"),
+            Component.text("\u00a7cStability: " + stability)
         ));
         item.setItemMeta(meta);
     }

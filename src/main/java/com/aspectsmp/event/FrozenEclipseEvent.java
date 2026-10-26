@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
-import org.bukkit.inventory.meta.DataComponentTypes;
+import org.bukkit.inventory.DataComponentTypes;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -99,7 +99,7 @@ public class FrozenEclipseEvent extends BaseEvent {
         if (!active || phase != EventPhase.FIRST_FROST && phase != EventPhase.DEEP_FREEZE) return;
         if (!participants.contains(player.getUniqueId())) {
             participants.add(player.getUniqueId());
-            player.sendMessage("§b§lYou have joined the Frozen Eclipse ritual!");
+            player.sendMessage("\u00a7b\u00a7lYou have joined the Frozen Eclipse ritual!");
             player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
         }
     }
@@ -112,8 +112,8 @@ public class FrozenEclipseEvent extends BaseEvent {
             UUID holder = plugin.getAspectHolder(AspectType.WINTER);
             Player holderPlayer = Bukkit.getPlayer(holder);
             String holderName = holderPlayer != null ? holderPlayer.getName() : "Unknown";
-            Bukkit.broadcastMessage("§c§lThe Winter Aspect has already been claimed by §f" + holderName + "§c!");
-            Bukkit.broadcastMessage("§cThe Frozen Eclipse cannot begin.");
+            Bukkit.broadcastMessage("\u00a7c\u00a7lThe Winter Aspect has already been claimed by \u00a7f" + holderName + "\u00a7c!");
+            Bukkit.broadcastMessage("\u00a7cThe Frozen Eclipse cannot begin.");
             return;
         }
         
@@ -136,14 +136,14 @@ public class FrozenEclipseEvent extends BaseEvent {
         monolithsActivated = 0;
         eventStartTime = System.currentTimeMillis();
 
-        Bukkit.broadcastMessage("§b§l═══════════════════════════════════════════════");
-        Bukkit.broadcastMessage("§b§l      THE FROZEN ECLIPSE HAS BEGUN");
-        Bukkit.broadcastMessage("§b§l═══════════════════════════════════════════════");
-        Bukkit.broadcastMessage("§7An unnatural winter descends upon the overworld...");
-        Bukkit.broadcastMessage("§7The sun dims. Frost creeps across the land.");
-        Bukkit.broadcastMessage("§e§lFind the Frozen Monoliths §7and activate them to survive the Deep Freeze.");
-        Bukkit.broadcastMessage("§7Defeat the Ice Titans, brave the trials, and claim the §bWinter Aspect§7!");
-        Bukkit.broadcastMessage("§b§l═══════════════════════════════════════════════");
+        Bukkit.broadcastMessage("\u00a7b\u00a7l═══════════════════════════════════════════════");
+        Bukkit.broadcastMessage("\u00a7b\u00a7l      THE FROZEN ECLIPSE HAS BEGUN");
+        Bukkit.broadcastMessage("\u00a7b\u00a7l═══════════════════════════════════════════════");
+        Bukkit.broadcastMessage("\u00a77An unnatural winter descends upon the overworld...");
+        Bukkit.broadcastMessage("\u00a77The sun dims. Frost creeps across the land.");
+        Bukkit.broadcastMessage("\u00a7e\u00a7lFind the Frozen Monoliths \u00a77and activate them to survive the Deep Freeze.");
+        Bukkit.broadcastMessage("\u00a77Defeat the Ice Titans, brave the trials, and claim the \u00a7bWinter Aspect\u00a77!");
+        Bukkit.broadcastMessage("\u00a7b\u00a7l═══════════════════════════════════════════════");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getWorld().getEnvironment() == World.Environment.NORMAL) {
@@ -303,40 +303,40 @@ public class FrozenEclipseEvent extends BaseEvent {
         
         switch (next) {
             case DEEP_FREEZE -> {
-                Bukkit.broadcastMessage("§e§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§e§l   THE DEEP FREEZE GRIPS THE WORLD");
-                Bukkit.broadcastMessage("§e§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7Temperature plummets. §b" + REQUIRED_MONOLITHS + " Frozen Monoliths §7have awakened.");
-                Bukkit.broadcastMessage("§7Find and activate them with fire to stave off the cold!");
+                Bukkit.broadcastMessage("\u00a7e\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7e\u00a7l   THE DEEP FREEZE GRIPS THE WORLD");
+                Bukkit.broadcastMessage("\u00a7e\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77Temperature plummets. \u00a7b" + REQUIRED_MONOLITHS + " Frozen Monoliths \u00a77have awakened.");
+                Bukkit.broadcastMessage("\u00a77Find and activate them with fire to stave off the cold!");
                 guardiansRequired = 5 + (participants.size() * 3);
                 startDeepFreeze();
             }
             case FROZEN_TITANS -> {
-                Bukkit.broadcastMessage("§d§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§d§l   THE FROZEN TITANS AWAKEN FROM THEIR SLUMBER");
-                Bukkit.broadcastMessage("§d§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7Colossal ice beings tear through the frozen wastes!");
-                Bukkit.broadcastMessage("§7Defeat them all to reach the Frost Monarch!");
+                Bukkit.broadcastMessage("\u00a7d\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7d\u00a7l   THE FROZEN TITANS AWAKEN FROM THEIR SLUMBER");
+                Bukkit.broadcastMessage("\u00a7d\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77Colossal ice beings tear through the frozen wastes!");
+                Bukkit.broadcastMessage("\u00a77Defeat them all to reach the Frost Monarch!");
                 startFrozenTitans();
             }
             case FROST_MONARCH -> {
-                Bukkit.broadcastMessage("§c§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§c§l   THE FROST MONARCH RISES FROM THE PERMAFROST");
-                Bukkit.broadcastMessage("§c§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7The ancient ruler of winter awakens!");
-                Bukkit.broadcastMessage("§7Defeat it to enter the Frozen Crucible!");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l   THE FROST MONARCH RISES FROM THE PERMAFROST");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77The ancient ruler of winter awakens!");
+                Bukkit.broadcastMessage("\u00a77Defeat it to enter the Frozen Crucible!");
                 spawnFrostMonarch();
             }
             case FROZEN_CRUCIBLE -> {
-                Bukkit.broadcastMessage("§c§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§c§l   THE MONARCH IS DEAD. ONLY ONE MAY CLAIM THE WINTER.");
-                Bukkit.broadcastMessage("§c§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l   THE MONARCH IS DEAD. ONLY ONE MAY CLAIM THE WINTER.");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 startFrozenCrucible();
             }
             case WINTER_COMPLETED -> {
-                Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§a§l   THE FROZEN ECLIPSE HAS BEEN CONQUERED!");
-                Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l   THE FROZEN ECLIPSE HAS BEEN CONQUERED!");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 grantWinterAspect();
                 stopEvent();
             }
@@ -365,8 +365,8 @@ public class FrozenEclipseEvent extends BaseEvent {
             overworld.playSound(monolith, Sound.BLOCK_BEACON_ACTIVATE, 1.5f, 0.5f);
         }
 
-        Bukkit.broadcastMessage("§b§l" + REQUIRED_MONOLITHS + " FROZEN MONOLITHS §7have appeared across the world!");
-        Bukkit.broadcastMessage("§7Right-click with Flint and Steel or Fire Charge to activate them.");
+        Bukkit.broadcastMessage("\u00a7b\u00a7l" + REQUIRED_MONOLITHS + " FROZEN MONOLITHS \u00a77have appeared across the world!");
+        Bukkit.broadcastMessage("\u00a77Right-click with Flint and Steel or Fire Charge to activate them.");
 
         // Spawn guardians at monoliths
         guardianSpawnTask = new BukkitRunnable() {
@@ -430,7 +430,7 @@ public class FrozenEclipseEvent extends BaseEvent {
                 }
             }
             if (hasFire) {
-                player.sendMessage("§cThis monolith is already burning!");
+                player.sendMessage("\u00a7cThis monolith is already burning!");
                 return;
             }
         }
@@ -438,7 +438,7 @@ public class FrozenEclipseEvent extends BaseEvent {
         // Activate it
         top.setType(org.bukkit.Material.FIRE);
         monolithsActivated++;
-        player.sendMessage("§aMonolith activated! (" + monolithsActivated + "/" + REQUIRED_MONOLITHS + ")");
+        player.sendMessage("\u00a7aMonolith activated! (" + monolithsActivated + "/" + REQUIRED_MONOLITHS + ")");
         player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.5f);
 
         // Particles
@@ -446,8 +446,8 @@ public class FrozenEclipseEvent extends BaseEvent {
         overworld.spawnParticle(org.bukkit.Particle.SOUL_FIRE_FLAME, monolithLoc.add(0, 5, 0), 30, 1, 2, 1, 0.05);
 
         if (monolithsActivated >= REQUIRED_MONOLITHS) {
-            Bukkit.broadcastMessage("§e§lALL MONOLITHS BURN! THE DEEP FREEZE BREAKS!");
-            Bukkit.broadcastMessage("§7But the Frozen Titans stir...");
+            Bukkit.broadcastMessage("\u00a7e\u00a7lALL MONOLITHS BURN! THE DEEP FREEZE BREAKS!");
+            Bukkit.broadcastMessage("\u00a77But the Frozen Titans stir...");
             if (guardianSpawnTask != null) guardianSpawnTask.cancel();
             advancePhase(EventPhase.FROZEN_TITANS);
         }
@@ -483,13 +483,13 @@ public class FrozenEclipseEvent extends BaseEvent {
     public void onGuardianDefeated() {
         if (phase != EventPhase.DEEP_FREEZE && phase != EventPhase.FROZEN_TITANS) return;
         guardiansDefeated++;
-        Bukkit.broadcastMessage("§aGuardian defeated! (" + guardiansDefeated + "/" + guardiansRequired + ")");
+        Bukkit.broadcastMessage("\u00a7aGuardian defeated! (" + guardiansDefeated + "/" + guardiansRequired + ")");
         if (guardiansDefeated >= guardiansRequired) {
-            Bukkit.broadcastMessage("§eAll guardians have been defeated!");
+            Bukkit.broadcastMessage("\u00a7eAll guardians have been defeated!");
             if (phase == EventPhase.DEEP_FREEZE) {
-                Bukkit.broadcastMessage("§7The Frozen Titans awaken...");
+                Bukkit.broadcastMessage("\u00a77The Frozen Titans awaken...");
             } else if (phase == EventPhase.FROZEN_TITANS) {
-                Bukkit.broadcastMessage("§7The Frost Monarch stirs...");
+                Bukkit.broadcastMessage("\u00a77The Frost Monarch stirs...");
                 advancePhase(EventPhase.FROST_MONARCH);
             }
         }
@@ -505,7 +505,7 @@ public class FrozenEclipseEvent extends BaseEvent {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getWorld().getEnvironment() == World.Environment.NORMAL) {
-                player.sendTitle("§c§lFROST MONARCH", "§7Awakens from the permafrost...", 20, 100, 20);
+                player.sendTitle("\u00a7c\u00a7lFROST MONARCH", "\u00a77Awakens from the permafrost...", 20, 100, 20);
                 player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 2.0f, 0.3f);
             }
         }
@@ -533,7 +533,7 @@ public class FrozenEclipseEvent extends BaseEvent {
 
     private void onMonarchStageChange(int stage) {
         if (frostMonarchEntity == null || frostMonarchEntity.isDead()) return;
-        Bukkit.broadcastMessage("§c§lFrost Monarch enters Stage " + stage + "!");
+        Bukkit.broadcastMessage("\u00a7c\u00a7lFrost Monarch enters Stage " + stage + "!");
         frostMonarchEntity.getWorld().playSound(frostMonarchEntity.getLocation(), Sound.ENTITY_WITHER_SPAWN, 2.0f, 0.5f);
 
         if (stage == 2) {
@@ -544,7 +544,7 @@ public class FrozenEclipseEvent extends BaseEvent {
             }
         } else if (stage == 3) {
             frostMonarchEntity.removePotionEffect(PotionEffectType.RESISTANCE);
-            Bukkit.broadcastMessage("§4§lTHE FROST MONARCH ENRAGES!");
+            Bukkit.broadcastMessage("\u00a74\u00a7lTHE FROST MONARCH ENRAGES!");
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.getWorld().equals(frostMonarchEntity.getWorld())) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 0, true, false));
@@ -585,7 +585,7 @@ public class FrozenEclipseEvent extends BaseEvent {
         // Ice Core in the center
         Location iceCoreLoc = crucibleCenter.clone().add(0, 2, 0);
         org.bukkit.entity.Item iceCore = overworld.dropItem(iceCoreLoc, new org.bukkit.inventory.ItemStack(org.bukkit.Material.ICE));
-        iceCore.setCustomName("§b§lIce Core");
+        iceCore.setCustomName("\u00a7b\u00a7lIce Core");
         iceCore.setCustomNameVisible(true);
         iceCore.setGlowing(true);
         iceCore.setPickupDelay(Integer.MAX_VALUE);
@@ -598,14 +598,14 @@ public class FrozenEclipseEvent extends BaseEvent {
                 if (!active || phase != EventPhase.FROZEN_CRUCIBLE) { cancel(); return; }
                 tick++;
                 if (tick % 600 == 0) { // Every 30 seconds
-                    Bukkit.broadcastMessage("§c§lThe arena is shrinking! The void consumes the edges!");
+                    Bukkit.broadcastMessage("\u00a7c\u00a7lThe arena is shrinking! The void consumes the edges!");
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (participants.contains(player.getUniqueId()) && player.getWorld().equals(overworld)) {
                             double dist = player.getLocation().distance(crucibleCenter);
                             double maxDist = 50.0 - (tick / 600) * 8.0;
                             if (dist > maxDist) {
                                 player.damage(6.0);
-                                player.sendMessage("§c§lThe void freezes your bones!");
+                                player.sendMessage("\u00a7c\u00a7lThe void freezes your bones!");
                             }
                         }
                     }
@@ -632,7 +632,7 @@ public class FrozenEclipseEvent extends BaseEvent {
                     winner = alive.get(0);
                     advancePhase(EventPhase.WINTER_COMPLETED);
                 } else if (alive.isEmpty()) {
-                    Bukkit.broadcastMessage("§c§lNo one survived the Frozen Eclipse...");
+                    Bukkit.broadcastMessage("\u00a7c\u00a7lNo one survived the Frozen Eclipse...");
                     stopEvent();
                 }
             }
@@ -665,16 +665,16 @@ public class FrozenEclipseEvent extends BaseEvent {
             player.teleport(overworld.getSpawnLocation());
             player.getWorld().strikeLightningEffect(player.getLocation());
             
-            player.sendMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            player.sendMessage("§b§l   YOU HAVE SURVIVED THE FROZEN ECLIPSE!");
-            player.sendMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            player.sendMessage("§a§lYou are the Master of Winter!");
-            player.sendMessage("§7You have unlocked the §bWinter Aspect §7and received a §bFrostheart§7!");
+            player.sendMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            player.sendMessage("\u00a7b\u00a7l   YOU HAVE SURVIVED THE FROZEN ECLIPSE!");
+            player.sendMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            player.sendMessage("\u00a7a\u00a7lYou are the Master of Winter!");
+            player.sendMessage("\u00a77You have unlocked the \u00a7bWinter Aspect \u00a77and received a \u00a7bFrostheart\u00a77!");
 
-            Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            Bukkit.broadcastMessage("§a§l" + player.getName() + " §ahas conquered the Frozen Eclipse!");
-            Bukkit.broadcastMessage("§7They are now the §bSOLE HOLDER §7of the Winter Aspect and carry the §bFrostheart§7.");
-            Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            Bukkit.broadcastMessage("\u00a7a\u00a7l" + player.getName() + " \u00a7ahas conquered the Frozen Eclipse!");
+            Bukkit.broadcastMessage("\u00a77They are now the \u00a7bSOLE HOLDER \u00a77of the Winter Aspect and carry the \u00a7bFrostheart\u00a77.");
+            Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             
 // Play visual effects for winner
         int tier = heart != null ? heart.getTier() : 2;
@@ -690,11 +690,11 @@ public class FrozenEclipseEvent extends BaseEvent {
     private ItemStack createFrostheart() {
         ItemStack item = new ItemStack(org.bukkit.Material.NETHER_STAR);
         org.bukkit.inventory.meta.ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§b§lFrostheart");
+        meta.setDisplayName("\u00a7b\u00a7lFrostheart");
         meta.setLore(java.util.Arrays.asList(
-            "§7A crystallized fragment of eternal winter.",
-            "§7Grants the §bWinter Aspect §7permanently.",
-            "§b§lRight-click to activate Absolute Zero."
+            "\u00a77A crystallized fragment of eternal winter.",
+            "\u00a77Grants the \u00a7bWinter Aspect \u00a77permanently.",
+            "\u00a7b\u00a7lRight-click to activate Absolute Zero."
         ));
         setCustomModelDataString(item, "frostheart");
         meta.setEnchantmentGlintOverride(true);
@@ -712,7 +712,7 @@ public class FrozenEclipseEvent extends BaseEvent {
         participants.clear();
         guardiansDefeated = 0;
         frostMonarchEntity = null;
-        Bukkit.broadcastMessage("�cThe Frozen Eclipse event has ended.");
+        Bukkit.broadcastMessage("\u00a7cThe Frozen Eclipse event has ended.");
     }
     private void setCustomModelDataString(ItemStack item, String modelDataString) {
         CustomModelDataComponent cmd = item.getData(DataComponentTypes.CUSTOM_MODEL_DATA);

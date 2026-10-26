@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
-import org.bukkit.inventory.meta.DataComponentTypes;
+import org.bukkit.inventory.DataComponentTypes;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -22,9 +22,9 @@ public class HeartCatalyst extends CustomItem {
     public ItemStack createItemStack() {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§6§lHeart Catalyst");
+        meta.setDisplayName("\u00a76\u00a7lHeart Catalyst");
         setCustomModelDataString(item, "catalyst");
-        meta.lore(List.of(Component.text("§7Unlock Tier 2 abilities"), Component.text("§7Right-click to upgrade your Heart")));
+        meta.lore(List.of(Component.text("\u00a77Unlock Tier 2 abilities"), Component.text("\u00a77Right-click to upgrade your Heart")));
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "heart_catalyst");
         item.setItemMeta(meta);

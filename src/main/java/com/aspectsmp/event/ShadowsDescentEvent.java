@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
-import org.bukkit.inventory.meta.DataComponentTypes;
+import org.bukkit.inventory.DataComponentTypes;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -73,8 +73,8 @@ public class ShadowsDescentEvent extends BaseEvent {
             UUID holder = plugin.getAspectHolder(AspectType.SHADOW);
             Player holderPlayer = Bukkit.getPlayer(holder);
             String holderName = holderPlayer != null ? holderPlayer.getName() : "Unknown";
-            Bukkit.broadcastMessage("§c§lThe Shadow Aspect has already been claimed by §f" + holderName + "§c!");
-            Bukkit.broadcastMessage("§cThe Shadow's Descent cannot begin.");
+            Bukkit.broadcastMessage("\u00a7c\u00a7lThe Shadow Aspect has already been claimed by \u00a7f" + holderName + "\u00a7c!");
+            Bukkit.broadcastMessage("\u00a7cThe Shadow's Descent cannot begin.");
             return;
         }
         
@@ -96,14 +96,14 @@ public class ShadowsDescentEvent extends BaseEvent {
             }
         }
 
-        Bukkit.broadcastMessage("§8§l═══════════════════════════════════════════════");
-        Bukkit.broadcastMessage("§8§l    THE SHADOW'S DESCENT HAS BEGUN");
-        Bukkit.broadcastMessage("§8§l═══════════════════════════════════════════════");
-        Bukkit.broadcastMessage("§7The sun dims unnaturally... shadows lengthen across the land.");
-        Bukkit.broadcastMessage("§7Ancient darkness stirs beneath the world.");
-        Bukkit.broadcastMessage("§e§lCollect Shadow Fragments §7scattered across the overworld.");
-        Bukkit.broadcastMessage("§7Defeat §8Shadow Stalkers§7, survive the darkness, and claim the §8Shadow Aspect§7!");
-        Bukkit.broadcastMessage("§8§l═══════════════════════════════════════════════");
+        Bukkit.broadcastMessage("\u00a78\u00a7l═══════════════════════════════════════════════");
+        Bukkit.broadcastMessage("\u00a78\u00a7l    THE SHADOW'S DESCENT HAS BEGUN");
+        Bukkit.broadcastMessage("\u00a78\u00a7l═══════════════════════════════════════════════");
+        Bukkit.broadcastMessage("\u00a77The sun dims unnaturally... shadows lengthen across the land.");
+        Bukkit.broadcastMessage("\u00a77Ancient darkness stirs beneath the world.");
+        Bukkit.broadcastMessage("\u00a7e\u00a7lCollect Shadow Fragments \u00a77scattered across the overworld.");
+        Bukkit.broadcastMessage("\u00a77Defeat \u00a78Shadow Stalkers\u00a77, survive the darkness, and claim the \u00a78Shadow Aspect\u00a77!");
+        Bukkit.broadcastMessage("\u00a78\u00a7l═══════════════════════════════════════════════");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getWorld().getEnvironment() == World.Environment.NORMAL) {
@@ -131,7 +131,7 @@ public class ShadowsDescentEvent extends BaseEvent {
         riftLocations.clear();
         stalkerLocations.clear();
         playerShadowStacks.clear();
-        Bukkit.broadcastMessage("§cThe Shadow's Descent has been stopped by an admin.");
+        Bukkit.broadcastMessage("\u00a7cThe Shadow's Descent has been stopped by an admin.");
     }
 
     private void cancelAllTasks() {
@@ -218,53 +218,53 @@ public class ShadowsDescentEvent extends BaseEvent {
         
         switch (next) {
             case SHADOW_FRAGMENTS -> {
-                Bukkit.broadcastMessage("§7§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7§l   SHADOW FRAGMENTS HAVE FALLEN ACROSS THE WORLD");
-                Bukkit.broadcastMessage("§7§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7§l" + REQUIRED_FRAGMENTS + " Shadow Fragments §7are scattered across the overworld.");
-                Bukkit.broadcastMessage("§7Defeat §8Shadow Stalkers §7guarding them to collect fragments.");
-                Bukkit.broadcastMessage("§7Rifts will open periodically, spawning more Stalkers.");
+                Bukkit.broadcastMessage("\u00a77\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77\u00a7l   SHADOW FRAGMENTS HAVE FALLEN ACROSS THE WORLD");
+                Bukkit.broadcastMessage("\u00a77\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77\u00a7l" + REQUIRED_FRAGMENTS + " Shadow Fragments \u00a77are scattered across the overworld.");
+                Bukkit.broadcastMessage("\u00a77Defeat \u00a78Shadow Stalkers \u00a77guarding them to collect fragments.");
+                Bukkit.broadcastMessage("\u00a77Rifts will open periodically, spawning more Stalkers.");
                 startFragmentPhase();
                 schedulePhaseTransition(20000L, EventPhase.SHADOW_RIFTS);
             }
             case SHADOW_RIFTS -> {
-                Bukkit.broadcastMessage("§8§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§8§l   SHADOW RIFTS TEAR OPEN - DARKNESS SPREADS");
-                Bukkit.broadcastMessage("§8§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7Rifts open across the world! §8Shadow Stalkers §7pour through.");
-                Bukkit.broadcastMessage("§7Collect remaining fragments before the darkness consumes all!");
+                Bukkit.broadcastMessage("\u00a78\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a78\u00a7l   SHADOW RIFTS TEAR OPEN - DARKNESS SPREADS");
+                Bukkit.broadcastMessage("\u00a78\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77Rifts open across the world! \u00a78Shadow Stalkers \u00a77pour through.");
+                Bukkit.broadcastMessage("\u00a77Collect remaining fragments before the darkness consumes all!");
                 openShadowRifts();
                 schedulePhaseTransition(30000L, EventPhase.SHADOW_STALKERS);
             }
             case SHADOW_STALKERS -> {
-                Bukkit.broadcastMessage("§8§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§8§l   THE SHADOW STALKERS HUNT THE LIVING");
-                Bukkit.broadcastMessage("§8§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7Elite shadow entities hunt players across the world.");
-                Bukkit.broadcastMessage("§7Blindness stacks accumulate in the dark. Stay in light!");
+                Bukkit.broadcastMessage("\u00a78\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a78\u00a7l   THE SHADOW STALKERS HUNT THE LIVING");
+                Bukkit.broadcastMessage("\u00a78\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77Elite shadow entities hunt players across the world.");
+                Bukkit.broadcastMessage("\u00a77Blindness stacks accumulate in the dark. Stay in light!");
                 startStalkers();
                 schedulePhaseTransition(40000L, EventPhase.SHADOW_LORD);
             }
             case SHADOW_LORD -> {
-                Bukkit.broadcastMessage("§c§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§c§l   THE SHADOW LORD EMERGES FROM THE VOID");
-                Bukkit.broadcastMessage("§c§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7A colossal entity of pure darkness manifests!");
-                Bukkit.broadcastMessage("§7Rally together and defeat it to proceed!");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l   THE SHADOW LORD EMERGES FROM THE VOID");
+                Bukkit.broadcastMessage("\u00a7c\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77A colossal entity of pure darkness manifests!");
+                Bukkit.broadcastMessage("\u00a77Rally together and defeat it to proceed!");
                 spawnShadowLord();
             }
             case SHADOW_CONVERGENCE -> {
-                Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§a§l   THE SHADOW CONVERGES - FINAL TRIAL");
-                Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§7The Shadow Lord falls... but the true trial begins.");
-                Bukkit.broadcastMessage("§7Stand at the convergence points and endure the final darkness!");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l   THE SHADOW CONVERGES - FINAL TRIAL");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a77The Shadow Lord falls... but the true trial begins.");
+                Bukkit.broadcastMessage("\u00a77Stand at the convergence points and endure the final darkness!");
                 startConvergence();
             }
             case SHADOW_COMPLETED -> {
-                Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§a§l   THE SHADOW'S DESCENT HAS BEEN CONQUERED!");
-                Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l   THE SHADOW'S DESCENT HAS BEEN CONQUERED!");
+                Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 active = false;
             }
             default -> {}
@@ -334,7 +334,7 @@ public class ShadowsDescentEvent extends BaseEvent {
             overworld.spawnParticle(Particle.SOUL, rift, 40, 3, 4, 3, 0.05);
             overworld.playSound(rift, Sound.BLOCK_PORTAL_TRIGGER, 1.5f, 0.3f);
         }
-        Bukkit.broadcastMessage("§8§l" + riftLocations.size() + " SHADOW RIFTS HAVE OPENED! §7Find them and defeat the Stalkers within!");
+        Bukkit.broadcastMessage("\u00a78\u00a7l" + riftLocations.size() + " SHADOW RIFTS HAVE OPENED! \u00a77Find them and defeat the Stalkers within!");
 
         new BukkitRunnable() {
             int ticks = 0;
@@ -422,7 +422,7 @@ public class ShadowsDescentEvent extends BaseEvent {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getWorld().getEnvironment() == World.Environment.NORMAL) {
-                player.sendTitle("§8§lSHADOW LORD", "§7Rises from the abyss...", 20, 100, 20);
+                player.sendTitle("\u00a78\u00a7lSHADOW LORD", "\u00a77Rises from the abyss...", 20, 100, 20);
                 player.playSound(player.getLocation(), Sound.ENTITY_WARDEN_HEARTBEAT, 2.0f, 0.3f);
             }
         }
@@ -432,7 +432,7 @@ public class ShadowsDescentEvent extends BaseEvent {
         shadowLordEntity = guardian.getEntity();
         
         // Customize for shadow theme
-        shadowLordEntity.setCustomName("§8§lThe Shadow Lord");
+        shadowLordEntity.setCustomName("\u00a78\u00a7lThe Shadow Lord");
         shadowLordEntity.setCustomNameVisible(true);
 
         new BukkitRunnable() {
@@ -472,13 +472,13 @@ public class ShadowsDescentEvent extends BaseEvent {
                         .count();
 
                     if (livingParticipants == 0) {
-                        Bukkit.broadcastMessage("§cAll participants have fallen... The Shadow retreats.");
+                        Bukkit.broadcastMessage("\u00a7cAll participants have fallen... The Shadow retreats.");
                         stopEvent();
                         cancel();
                         return;
                     }
 
-                    Bukkit.broadcastMessage("§7§lConvergence active: §a" + livingParticipants + " §7survivors remain in the light.");
+                    Bukkit.broadcastMessage("\u00a77\u00a7lConvergence active: \u00a7a" + livingParticipants + " \u00a77survivors remain in the light.");
                 }
 
                 for (Location rift : riftLocations) {
@@ -503,8 +503,8 @@ public class ShadowsDescentEvent extends BaseEvent {
                     }
                 }
                 if (atConvergence >= Math.max(1, participants.size() / 2)) {
-                    Bukkit.broadcastMessage("§a§lTHE SHADOW CONVERGENCE IS COMPLETE!");
-                    Bukkit.broadcastMessage("§7The darkness stabilizes... The worthy shall claim their reward.");
+                    Bukkit.broadcastMessage("\u00a7a\u00a7lTHE SHADOW CONVERGENCE IS COMPLETE!");
+                    Bukkit.broadcastMessage("\u00a77The darkness stabilizes... The worthy shall claim their reward.");
                 }
             }
         }.runTaskTimer(plugin, 0L, 20L);
@@ -516,12 +516,12 @@ public class ShadowsDescentEvent extends BaseEvent {
         if (!active || (phase != EventPhase.SHADOW_FRAGMENTS && phase != EventPhase.SHADOW_RIFTS)) return;
         if (!participants.contains(player.getUniqueId())) return;
         fragmentsCollected++;
-        player.sendMessage("§aShadow Fragment collected! §7(" + fragmentsCollected + "/" + REQUIRED_FRAGMENTS + ")");
+        player.sendMessage("\u00a7aShadow Fragment collected! \u00a77(" + fragmentsCollected + "/" + REQUIRED_FRAGMENTS + ")");
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.2f);
 
         if (fragmentsCollected >= REQUIRED_FRAGMENTS) {
-            Bukkit.broadcastMessage("§e§lALL SHADOW FRAGMENTS RECOVERED!");
-            Bukkit.broadcastMessage("§7The Shadow Rifts begin to tear open...");
+            Bukkit.broadcastMessage("\u00a7e\u00a7lALL SHADOW FRAGMENTS RECOVERED!");
+            Bukkit.broadcastMessage("\u00a77The Shadow Rifts begin to tear open...");
             if (mobSpamTask != null) { mobSpamTask.cancel(); mobSpamTask = null; }
             if (phase == EventPhase.SHADOW_FRAGMENTS) advancePhase(EventPhase.SHADOW_RIFTS);
         }
@@ -530,7 +530,7 @@ public class ShadowsDescentEvent extends BaseEvent {
     public void addParticipant(Player player) {
         if (active && (phase == EventPhase.SHADOW_AWAKENS || phase == EventPhase.SHADOW_FRAGMENTS || phase == EventPhase.SHADOW_RIFTS)) {
             participants.add(player.getUniqueId());
-            player.sendMessage("§eYou have joined the Shadow's Descent!");
+            player.sendMessage("\u00a7eYou have joined the Shadow's Descent!");
         }
     }
 
@@ -557,16 +557,16 @@ public class ShadowsDescentEvent extends BaseEvent {
             winner.getWorld().dropItemNaturally(winner.getLocation(), leftover.values().iterator().next());
         }
 
-        winner.sendMessage("§8§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        winner.sendMessage("§8§l   YOU HAVE SURVIVED THE SHADOW'S DESCENT!");
-        winner.sendMessage("§8§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        winner.sendMessage("§a§lYou are the Master of Shadows!");
-        winner.sendMessage("§7You have unlocked the §8Shadow Aspect §7and received a §8Shadowheart§7!");
+        winner.sendMessage("\u00a78\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        winner.sendMessage("\u00a78\u00a7l   YOU HAVE SURVIVED THE SHADOW'S DESCENT!");
+        winner.sendMessage("\u00a78\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        winner.sendMessage("\u00a7a\u00a7lYou are the Master of Shadows!");
+        winner.sendMessage("\u00a77You have unlocked the \u00a78Shadow Aspect \u00a77and received a \u00a78Shadowheart\u00a77!");
 
-        Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        Bukkit.broadcastMessage("§a§l" + winner.getName() + " §ahas conquered the Shadow's Descent!");
-        Bukkit.broadcastMessage("§7They are now the §bSOLE HOLDER §7of the Shadow Aspect and carry the §8Shadowheart§7.");
-        Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        Bukkit.broadcastMessage("\u00a7a\u00a7l" + winner.getName() + " \u00a7ahas conquered the Shadow's Descent!");
+        Bukkit.broadcastMessage("\u00a77They are now the \u00a7bSOLE HOLDER \u00a77of the Shadow Aspect and carry the \u00a78Shadowheart\u00a77.");
+        Bukkit.broadcastMessage("\u00a7a\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
         winner.getWorld().strikeLightningEffect(winner.getLocation());
         for (int i = 0; i < 5; i++) {
@@ -587,11 +587,11 @@ public class ShadowsDescentEvent extends BaseEvent {
     private ItemStack createShadowheart() {
         ItemStack item = new ItemStack(org.bukkit.Material.NETHER_STAR);
         org.bukkit.inventory.meta.ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§8§lShadowheart");
+        meta.setDisplayName("\u00a78\u00a7lShadowheart");
         meta.setLore(Arrays.asList(
-            "§7A crystallized fragment of pure darkness.",
-            "§7Grants the §8Shadow Aspect §7permanently.",
-            "§8§lRight-click to activate Shadow Meld."
+            "\u00a77A crystallized fragment of pure darkness.",
+            "\u00a77Grants the \u00a78Shadow Aspect \u00a77permanently.",
+            "\u00a78\u00a7lRight-click to activate Shadow Meld."
         ));
         setCustomModelDataString(item, "shadowheart");
         meta.setEnchantmentGlintOverride(true);
