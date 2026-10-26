@@ -6,11 +6,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:nether_star",
+          "name": "minecraft:heart_of_the_sea",
           "functions": [
             {
               "function": "minecraft:set_custom_model_data",
-              "floats": [2.0]
+              "floats": [2]
             },
             {
               "function": "minecraft:set_name",

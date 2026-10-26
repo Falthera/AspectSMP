@@ -10,7 +10,7 @@
           "functions": [
             {
               "function": "minecraft:set_custom_model_data",
-              "floats": [100.0]
+              "floats": [100]
             },
             {
               "function": "minecraft:set_name",
