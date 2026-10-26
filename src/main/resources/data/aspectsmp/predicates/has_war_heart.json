@@ -6,6 +6,10 @@
       "mainhand": {
         "items": "minecraft:heart_of_the_sea",
         "components": { "minecraft:custom_model_data": { "strings": ["heart_war"] } }
+      },
+      "offhand": {
+        "items": "minecraft:heart_of_the_sea",
+        "components": { "minecraft:custom_model_data": { "strings": ["heart_war"] } }
       }
     }
   }
