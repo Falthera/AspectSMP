@@ -233,4 +233,8 @@ public class TeamManager {
         }
         return online;
     }
+
+    public void shutdown() {
+        save();
+    }
 }

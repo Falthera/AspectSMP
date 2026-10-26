@@ -28,6 +28,7 @@ public class ParticleEffects {
     private final double maxViewDistance;
     private final AtomicInteger particlesThisTick = new AtomicInteger(0);
     private long lastTickReset = System.currentTimeMillis();
+    private int tickResetTaskId = -1;
 
     public ParticleEffects(AspectSMP plugin) {
         this.plugin = plugin;
@@ -39,13 +40,13 @@ public class ParticleEffects {
         this.maxViewDistance = plugin.getConfig().getDouble("visual-effects.max-view-distance", 48.0);
         
         // Start tick reset task
-        plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+        tickResetTaskId = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             long now = System.currentTimeMillis();
             if (now - lastTickReset >= 50) {
                 particlesThisTick.set(0);
                 lastTickReset = now;
             }
-        }, 1L, 1L);
+        }, 1L, 1L).getTaskId();
     }
 
     private boolean canSpawnParticles(int count) {
@@ -789,5 +790,13 @@ public class ParticleEffects {
     public void clearAll() {
         activeAnimations.values().forEach(list -> list.forEach(BukkitTask::cancel));
         activeAnimations.clear();
+        if (tickResetTaskId != -1) {
+            plugin.getServer().getScheduler().cancelTask(tickResetTaskId);
+            tickResetTaskId = -1;
+        }
+    }
+
+    public void shutdown() {
+        clearAll();
     }
 }

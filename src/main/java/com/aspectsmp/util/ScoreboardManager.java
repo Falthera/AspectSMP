@@ -199,4 +199,12 @@ public class ScoreboardManager {
         }
         return result.toString();
     }
+
+    public void shutdown() {
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            removeScoreboard(player);
+        }
+        playerScoreboards.clear();
+        playerEntries.clear();
+    }
 }

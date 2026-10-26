@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -20,11 +21,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class GuiManager implements Listener {
 
     private final AspectSMP plugin;
-    private final Map<Player, InventoryPage> playerPages;
+    private final Map<UUID, InventoryPage> playerPages;
 
     public GuiManager(AspectSMP plugin) {
         this.plugin = plugin;
@@ -54,7 +56,7 @@ public class GuiManager implements Listener {
             inv.setItem(i, filler);
         }
         
-        playerPages.put(player, InventoryPage.HEART_OVERVIEW);
+        playerPages.put(player.getUniqueId(), InventoryPage.HEART_OVERVIEW);
         player.openInventory(inv);
     }
 
@@ -74,7 +76,7 @@ public class GuiManager implements Listener {
             if (slot > 44) break;
         }
         
-        playerPages.put(player, InventoryPage.ASPECT_LIST);
+        playerPages.put(player.getUniqueId(), InventoryPage.ASPECT_LIST);
         player.openInventory(inv);
     }
 
@@ -117,7 +119,7 @@ public class GuiManager implements Listener {
         ItemStack backButton = createBackButton();
         inv.setItem(49, backButton);
         
-        playerPages.put(player, InventoryPage.ASPECT_DETAIL);
+        playerPages.put(player.getUniqueId(), InventoryPage.ASPECT_DETAIL);
         player.openInventory(inv);
     }
 
@@ -357,24 +359,27 @@ public class GuiManager implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         
-        InventoryPage currentPage = playerPages.get(player);
+        InventoryPage currentPage = playerPages.get(player.getUniqueId());
         if (currentPage == null) return;
         
         event.setCancelled(true);
         
         ItemStack clicked = event.getCurrentItem();
-        if (clicked == null || clicked.getType() == Material.GRAY_STAINED_GLASS_PANE) return;
+        if (clicked == null || clicked.getType() == Material.GRAY_STAINED_GLASS_PANE || clicked.getItemMeta() == null) return;
         
+        String displayName = clicked.getItemMeta().getDisplayName();
+        if (displayName == null) return;
+
         if (currentPage == InventoryPage.HEART_OVERVIEW) {
             if (clicked.getType() == Material.ENCHANTED_BOOK && 
-                clicked.getItemMeta().getDisplayName().contains("Aspect")) {
+                displayName.contains("Aspect")) {
                 openAspectListGUI(player);
             }
         } else if (currentPage == InventoryPage.ASPECT_LIST) {
             if (clicked.getType() == Material.ENCHANTED_BOOK && 
-                clicked.getItemMeta().getDisplayName().contains("Aspect")) {
+                displayName.contains("Aspect")) {
                 for (AspectType aspect : AspectType.values()) {
-                    if (clicked.getItemMeta().getDisplayName().contains(aspect.getDisplayName())) {
+                    if (displayName.contains(aspect.getDisplayName())) {
                         openAspectDetailGUI(player, aspect);
                         return;
                     }
@@ -382,7 +387,7 @@ public class GuiManager implements Listener {
             }
         } else if (currentPage == InventoryPage.ASPECT_DETAIL) {
             if (clicked.getType() == Material.ARROW && 
-                clicked.getItemMeta().getDisplayName().equals("§cBack to Overview")) {
+                displayName.equals("§cBack to Overview")) {
                 openHeartGUI(player);
             }
         }
@@ -391,8 +396,13 @@ public class GuiManager implements Listener {
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        if (playerPages.get(player) == null) return;
+        if (playerPages.get(player.getUniqueId()) == null) return;
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        playerPages.remove(event.getPlayer().getUniqueId());
     }
 
     public enum InventoryPage {

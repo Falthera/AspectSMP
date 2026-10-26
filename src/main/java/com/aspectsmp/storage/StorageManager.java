@@ -33,6 +33,14 @@ public class StorageManager {
     public void shutdown() {
         if (asyncExecutor != null) {
             asyncExecutor.shutdown();
+            try {
+                if (!asyncExecutor.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS)) {
+                    asyncExecutor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                asyncExecutor.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
         }
         if (provider != null) {
             provider.shutdown();

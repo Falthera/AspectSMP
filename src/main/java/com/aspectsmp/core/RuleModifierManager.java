@@ -68,4 +68,8 @@ public class RuleModifierManager implements Listener {
     public RuleModifier getModifier(AspectType type) {
         return modifiers.get(type);
     }
+
+    public void shutdown() {
+        // No tasks to cancel, listeners auto-unregister on plugin disable
+    }
 }

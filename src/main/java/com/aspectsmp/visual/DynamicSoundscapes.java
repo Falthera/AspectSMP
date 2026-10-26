@@ -607,4 +607,8 @@ public class DynamicSoundscapes {
         activeSoundscapes.values().forEach(map -> map.values().forEach(BukkitTask::cancel));
         activeSoundscapes.clear();
     }
+
+    public void shutdown() {
+        clearAll();
+    }
 }

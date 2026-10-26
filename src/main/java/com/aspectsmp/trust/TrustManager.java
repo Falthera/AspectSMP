@@ -108,4 +108,8 @@ public class TrustManager {
         }
         return online;
     }
+
+    public void shutdown() {
+        save();
+    }
 }

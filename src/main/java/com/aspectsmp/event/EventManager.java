@@ -136,4 +136,8 @@ public class EventManager implements CommandExecutor, TabCompleter {
         }
         return completions;
     }
+
+    public void shutdown() {
+        stopActiveEvents();
+    }
 }

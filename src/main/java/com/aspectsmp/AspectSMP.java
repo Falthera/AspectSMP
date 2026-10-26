@@ -10,6 +10,7 @@ import com.aspectsmp.commands.InfoCommand;
 import com.aspectsmp.commands.EclipseCommand;
 import com.aspectsmp.commands.LeaveEventCommand;
 import com.aspectsmp.commands.ListCommand;
+import com.aspectsmp.commands.ParticlesCommand;
 import com.aspectsmp.commands.ReloadCommand;
 import com.aspectsmp.commands.RepairCommand;
 import com.aspectsmp.commands.RerollCommand;
@@ -133,11 +134,26 @@ public class AspectSMP extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        if (heartManager != null) {
-            heartManager.saveAll();
+        if (eventManager != null) {
+            eventManager.shutdown();
+        }
+        if (visualEffectsManager != null) {
+            visualEffectsManager.shutdown();
+        }
+        if (scoreboardManager != null) {
+            scoreboardManager.shutdown();
+        }
+        if (ruleModifierManager != null) {
+            ruleModifierManager.shutdown();
         }
         if (trustManager != null) {
-            trustManager.save();
+            trustManager.shutdown();
+        }
+        if (teamManager != null) {
+            teamManager.shutdown();
+        }
+        if (heartManager != null) {
+            heartManager.saveAll();
         }
         if (combatManager != null) {
             combatManager.cleanup();
@@ -148,6 +164,8 @@ public class AspectSMP extends JavaPlugin implements Listener {
         if (musicManager != null) {
             musicManager.shutdown();
         }
+        // Cancel all remaining scheduler tasks
+        getServer().getScheduler().cancelTasks(this);
         saveClaimedAspects();
         
         getLogger().info("Aspect SMP disabled!");
@@ -298,25 +316,64 @@ public VisualEffectsManager getVisualEffectsManager() {
     }
 
     private void registerCommands() {
+        // Ability commands
         getCommand("ability1").setExecutor(new Ability1Command(this));
         getCommand("ability2").setExecutor(new Ability2Command(this));
         getCommand("ability3").setExecutor(new Ability3Command(this));
         getCommand("ultimate").setExecutor(new UltimateCommand(this));
-        getCommand("info").setExecutor(new InfoCommand(this));
+        
+        // Info commands
+        InfoCommand infoCmd = new InfoCommand(this);
+        getCommand("info").setExecutor(infoCmd);
+        getCommand("info").setTabCompleter(infoCmd);
+        
         getCommand("list").setExecutor(new ListCommand(this));
-        getCommand("reroll").setExecutor(new RerollCommand(this));
-        getCommand("repair").setExecutor(new RepairCommand(this));
+        
+        RerollCommand rerollCmd = new RerollCommand(this);
+        getCommand("reroll").setExecutor(rerollCmd);
+        getCommand("reroll").setTabCompleter(rerollCmd);
+        
+        RepairCommand repairCmd = new RepairCommand(this);
+        getCommand("repair").setExecutor(repairCmd);
+        getCommand("repair").setTabCompleter(repairCmd);
+        
         getCommand("reload").setExecutor(new ReloadCommand(this));
-        getCommand("aspect-give").setExecutor(new GiveCommand(this));
-        getCommand("give-event-aspect").setExecutor(new GiveEventAspectCommand(this));
-        getCommand("event").setExecutor(new EclipseCommand(this));
-        getCommand("trust").setExecutor(new TrustCommand(this, trustManager));
-        getCommand("withdraw").setExecutor(new WithdrawCommand(this));
-        getCommand("leaveevent").setExecutor(new LeaveEventCommand(this));
-        getCommand("eclipse").setExecutor(new EclipseCommand(this));
+        
+        GiveCommand giveCmd = new GiveCommand(this);
+        getCommand("aspect-give").setExecutor(giveCmd);
+        getCommand("aspect-give").setTabCompleter(giveCmd);
+        
+        GiveEventAspectCommand giveEventCmd = new GiveEventAspectCommand(this);
+        getCommand("give-event-aspect").setExecutor(giveEventCmd);
+        getCommand("give-event-aspect").setTabCompleter(giveEventCmd);
+        
+        // Event commands
+        EclipseCommand eclipseCmd = new EclipseCommand(this);
+        getCommand("eclipse").setExecutor(eclipseCmd);
+        getCommand("event").setExecutor(eclipseCmd);
+        
         getCommand("shadow").setExecutor(new ShadowCommand(this));
         getCommand("tempest").setExecutor(new TempestCommand(this));
-        getCommand("team").setExecutor(new TeamCommand(this, teamManager));
+        
+        // Particle command
+        ParticlesCommand particlesCmd = new ParticlesCommand(this);
+        getCommand("particles").setExecutor(particlesCmd);
+        getCommand("particles").setTabCompleter(particlesCmd);
+        
+        // Trust/Team/Withdraw commands
+        TrustCommand trustCmd = new TrustCommand(this, trustManager);
+        getCommand("trust").setExecutor(trustCmd);
+        getCommand("trust").setTabCompleter(trustCmd);
+        
+        WithdrawCommand withdrawCmd = new WithdrawCommand(this);
+        getCommand("withdraw").setExecutor(withdrawCmd);
+        getCommand("withdraw").setTabCompleter(withdrawCmd);
+        
+        getCommand("leaveevent").setExecutor(new LeaveEventCommand(this));
+        
+        TeamCommand teamCmd = new TeamCommand(this, teamManager);
+        getCommand("team").setExecutor(teamCmd);
+        getCommand("team").setTabCompleter(teamCmd);
     }
 
     private void registerTrustCommand() {

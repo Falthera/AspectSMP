@@ -655,4 +655,15 @@ public class VisualEffectsManager {
     public void setVignetteEnabled(boolean enabled) { this.vignetteEnabled = enabled; }
     public boolean isChromaticAberrationEnabled() { return chromaticAberrationEnabled; }
     public void setChromaticAberrationEnabled(boolean enabled) { this.chromaticAberrationEnabled = enabled; }
+
+    public void shutdown() {
+        enabled = false;
+        passiveEffectTasks.values().forEach(BukkitTask::cancel);
+        passiveEffectTasks.clear();
+        ambientTrailTasks.values().forEach(BukkitTask::cancel);
+        ambientTrailTasks.clear();
+        playerEffectState.clear();
+        particles.shutdown();
+        soundscapes.shutdown();
+    }
 }
