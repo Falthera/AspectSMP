@@ -15,6 +15,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
+import org.bukkit.inventory.meta.DataComponentTypes;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -589,7 +592,7 @@ public class TempestsFuryEvent extends BaseEvent {
             "§7Grants the §bStorm Aspect §7permanently.",
             "§b§lRight-click to activate Tempest Avatar."
         ));
-        meta.setCustomModelData(1005);
+        setCustomModelDataString(item, "stormheart");
         meta.setEnchantmentGlintOverride(true);
         item.setItemMeta(meta);
         return item;
@@ -598,4 +601,15 @@ public class TempestsFuryEvent extends BaseEvent {
     public boolean isCompleted() {
         return !active && phase == EventPhase.STORM_COMPLETED;
     }
+    private void setCustomModelDataString(ItemStack item, String modelDataString) {
+        CustomModelDataComponent cmd = item.getData(DataComponentTypes.CUSTOM_MODEL_DATA);
+        if (cmd == null) {
+            cmd = CustomModelDataComponent.customModelData().addString(modelDataString).build();
+        } else {
+            cmd = cmd.toBuilder().addString(modelDataString).build();
+        }
+        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, cmd);
+    }
 }
+
+

@@ -7,7 +7,7 @@
           "items": ["minecraft:heart_of_the_sea"],
           "components": {
             "minecraft:custom_model_data": {
-              "floats": [100.0]
+              "strings": ["heart_inferno"]
             }
           }
         }

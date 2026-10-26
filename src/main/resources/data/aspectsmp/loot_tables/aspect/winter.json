@@ -10,7 +10,7 @@
           "functions": [
             {
               "function": "minecraft:set_custom_model_data",
-              "floats": [109]
+              "strings": ["heart_winter"]
             },
             {
               "function": "minecraft:set_name",

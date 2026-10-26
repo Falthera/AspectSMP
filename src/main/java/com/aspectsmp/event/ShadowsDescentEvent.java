@@ -15,6 +15,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
+import org.bukkit.inventory.meta.DataComponentTypes;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -590,7 +593,7 @@ public class ShadowsDescentEvent extends BaseEvent {
             "§7Grants the §8Shadow Aspect §7permanently.",
             "§8§lRight-click to activate Shadow Meld."
         ));
-        meta.setCustomModelData(1004);
+        setCustomModelDataString(item, "shadowheart");
         meta.setEnchantmentGlintOverride(true);
         item.setItemMeta(meta);
         return item;
@@ -599,4 +602,15 @@ public class ShadowsDescentEvent extends BaseEvent {
     public boolean isCompleted() {
         return !active && phase == EventPhase.SHADOW_COMPLETED;
     }
+    private void setCustomModelDataString(ItemStack item, String modelDataString) {
+        CustomModelDataComponent cmd = item.getData(DataComponentTypes.CUSTOM_MODEL_DATA);
+        if (cmd == null) {
+            cmd = CustomModelDataComponent.customModelData().addString(modelDataString).build();
+        } else {
+            cmd = cmd.toBuilder().addString(modelDataString).build();
+        }
+        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, cmd);
+    }
 }
+
+

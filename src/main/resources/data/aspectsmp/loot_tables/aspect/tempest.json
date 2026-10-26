@@ -10,7 +10,7 @@
           "functions": [
             {
               "function": "minecraft:set_custom_model_data",
-              "floats": [102]
+              "strings": ["heart_tempest"]
             },
             {
               "function": "minecraft:set_name",

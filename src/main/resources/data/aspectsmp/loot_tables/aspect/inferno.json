@@ -10,7 +10,7 @@
           "functions": [
             {
               "function": "minecraft:set_custom_model_data",
-              "floats": [100]
+              "strings": ["heart_inferno"]
             },
             {
               "function": "minecraft:set_name",

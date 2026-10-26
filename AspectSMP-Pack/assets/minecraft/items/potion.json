@@ -1,15 +1,15 @@
 {
   "model": {
-    "type": "minecraft:range_dispatch",
+    "type": "minecraft:select",
     "property": "minecraft:custom_model_data",
     "index": 0,
     "fallback": {
       "type": "minecraft:model",
       "model": "minecraft:item/potion"
     },
-    "entries": [
+    "cases": [
       {
-        "threshold": 5,
+        "when": "stability_bottle",
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/stability_bottle"

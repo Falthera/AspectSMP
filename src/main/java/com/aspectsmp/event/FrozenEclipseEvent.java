@@ -20,6 +20,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
+import org.bukkit.inventory.meta.DataComponentTypes;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -694,7 +696,7 @@ public class FrozenEclipseEvent extends BaseEvent {
             "§7Grants the §bWinter Aspect §7permanently.",
             "§b§lRight-click to activate Absolute Zero."
         ));
-        meta.setCustomModelData(1002);
+        setCustomModelDataString(item, "frostheart");
         meta.setEnchantmentGlintOverride(true);
         item.setItemMeta(meta);
         return item;
@@ -710,7 +712,16 @@ public class FrozenEclipseEvent extends BaseEvent {
         participants.clear();
         guardiansDefeated = 0;
         frostMonarchEntity = null;
-        Bukkit.broadcastMessage("§cThe Frozen Eclipse event has ended.");
+        Bukkit.broadcastMessage("�cThe Frozen Eclipse event has ended.");
+    }
+    private void setCustomModelDataString(ItemStack item, String modelDataString) {
+        CustomModelDataComponent cmd = item.getData(DataComponentTypes.CUSTOM_MODEL_DATA);
+        if (cmd == null) {
+            cmd = CustomModelDataComponent.customModelData().addString(modelDataString).build();
+        } else {
+            cmd = cmd.toBuilder().addString(modelDataString).build();
+        }
+        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, cmd);
     }
 
     private BukkitTask guardianSpawnTask;

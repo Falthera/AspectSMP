@@ -1,50 +1,57 @@
 {
   "model": {
-    "type": "minecraft:range_dispatch",
+    "type": "minecraft:select",
     "property": "minecraft:custom_model_data",
     "index": 0,
     "fallback": {
       "type": "minecraft:model",
       "model": "minecraft:item/nether_star"
     },
-    "entries": [
+    "cases": [
       {
-        "threshold": 1,
+        "when": "catalyst",
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/catalyst"
         }
       },
       {
-        "threshold": 2,
+        "when": "resonator",
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/resonator"
         }
       },
       {
-        "threshold": 4,
+        "when": "restoration",
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/restoration"
+        }
+      },
+      {
+        "when": "reforging",
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/reforging"
         }
       },
       {
-        "threshold": 1002,
+        "when": "frostheart",
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/frostheart"
         }
       },
       {
-        "threshold": 1004,
+        "when": "shadowheart",
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/shadowheart"
         }
       },
       {
-        "threshold": 1005,
+        "when": "stormheart",
         "model": {
           "type": "minecraft:model",
           "model": "aspectsmp:item/stormheart"
