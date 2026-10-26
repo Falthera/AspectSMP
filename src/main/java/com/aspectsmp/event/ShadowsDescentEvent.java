@@ -16,8 +16,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.components.CustomModelDataComponent;
+import io.papermc.paper.datacomponent.item.CustomModelData;
 import io.papermc.paper.datacomponent.DataComponentTypes;
+import org.bukkit.Color;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -603,13 +604,16 @@ public class ShadowsDescentEvent extends BaseEvent {
         return !active && phase == EventPhase.SHADOW_COMPLETED;
     }
     private void setCustomModelDataString(ItemStack item, String modelDataString) {
-        CustomModelDataComponent cmd = item.getData(DataComponentTypes.CUSTOM_MODEL_DATA);
-        if (cmd == null) {
-            cmd = CustomModelDataComponent.customModelData().addString(modelDataString).build();
-        } else {
-            cmd = cmd.toBuilder().addString(modelDataString).build();
+        CustomModelData cmd = item.getData(DataComponentTypes.CUSTOM_MODEL_DATA);
+        CustomModelData.Builder builder = CustomModelData.customModelData();
+        if (cmd != null) {
+            for (String s : cmd.strings()) builder.addString(s);
+            for (Float f : cmd.floats()) builder.addFloat(f);
+            for (Boolean b : cmd.flags()) builder.addFlag(b);
+            for (org.bukkit.Color c : cmd.colors()) builder.addColor(c);
         }
-        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, cmd);
+        builder.addString(modelDataString);
+        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, builder.build());
     }
 }
 
