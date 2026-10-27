@@ -12,12 +12,12 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DynamicSoundscapes {
 
     private final AspectSMP plugin;
     private final Map<UUID, Map<String, BukkitTask>> activeSoundscapes = new ConcurrentHashMap<>();
-    private final Random random = new Random();
 
     public DynamicSoundscapes(AspectSMP plugin) {
         this.plugin = plugin;
@@ -120,51 +120,51 @@ public class DynamicSoundscapes {
 
         switch (aspect) {
             case INFERNO -> {
-                if (tick % 80 == 0) playSound(loc, Sound.BLOCK_FIRE_AMBIENT, 0.1f, 1.0f + random.nextFloat() * 0.5f);
-                if (stability < 30 && tick % 30 == 0) playSound(loc, Sound.ENTITY_BLAZE_AMBIENT, 0.15f, 0.5f + random.nextFloat() * 0.5f);
+                if (tick % 80 == 0) playSound(loc, Sound.BLOCK_FIRE_AMBIENT, 0.1f, 1.0f + ThreadLocalRandom.current().nextFloat() * 0.5f);
+                if (stability < 30 && tick % 30 == 0) playSound(loc, Sound.ENTITY_BLAZE_AMBIENT, 0.15f, 0.5f + ThreadLocalRandom.current().nextFloat() * 0.5f);
             }
             case TIDE -> {
-                if (tick % 60 == 0) playSound(loc, Sound.BLOCK_WATER_AMBIENT, 0.1f, 0.8f + random.nextFloat() * 0.4f);
+                if (tick % 60 == 0) playSound(loc, Sound.BLOCK_WATER_AMBIENT, 0.1f, 0.8f + ThreadLocalRandom.current().nextFloat() * 0.4f);
                 if (stability < 30 && tick % 25 == 0) playSound(loc, Sound.ENTITY_GUARDIAN_AMBIENT, 0.15f, 0.7f);
             }
             case TEMPEST -> {
-                if (tick % 100 == 0) playSound(loc, Sound.ENTITY_BREEZE_WIND_BURST, 0.1f, 0.5f + random.nextFloat() * 0.5f);
-                if (stability < 30 && tick % 20 == 0) playSound(loc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.1f, 0.5f + random.nextFloat());
+                if (tick % 100 == 0) playSound(loc, Sound.ENTITY_BREEZE_WIND_BURST, 0.1f, 0.5f + ThreadLocalRandom.current().nextFloat() * 0.5f);
+                if (stability < 30 && tick % 20 == 0) playSound(loc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.1f, 0.5f + ThreadLocalRandom.current().nextFloat());
             }
             case RIFT -> {
-                if (tick % 120 == 0) playSound(loc, Sound.BLOCK_PORTAL_AMBIENT, 0.1f, 0.5f + random.nextFloat() * 0.5f);
-                if (stability < 30 && tick % 30 == 0) playSound(loc, Sound.ENTITY_ENDERMAN_TELEPORT, 0.15f, 0.3f + random.nextFloat() * 0.5f);
+                if (tick % 120 == 0) playSound(loc, Sound.BLOCK_PORTAL_AMBIENT, 0.1f, 0.5f + ThreadLocalRandom.current().nextFloat() * 0.5f);
+                if (stability < 30 && tick % 30 == 0) playSound(loc, Sound.ENTITY_ENDERMAN_TELEPORT, 0.15f, 0.3f + ThreadLocalRandom.current().nextFloat() * 0.5f);
             }
             case VITALITY -> {
-                if (tick % 80 == 0) playSound(loc, Sound.BLOCK_DRY_GRASS_AMBIENT, 0.1f, 1.0f + random.nextFloat() * 0.5f);
+                if (tick % 80 == 0) playSound(loc, Sound.BLOCK_DRY_GRASS_AMBIENT, 0.1f, 1.0f + ThreadLocalRandom.current().nextFloat() * 0.5f);
                 if (stability >= 100 && tick % 60 == 0) playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 0.15f, 1.5f);
             }
             case WAR -> {
-                if (tick % 100 == 0) playSound(loc, Sound.ENTITY_IRON_GOLEM_STEP, 0.08f, 0.5f + random.nextFloat() * 0.5f);
-                if (stability < 30 && tick % 20 == 0) playSound(loc, Sound.ENTITY_RAVAGER_ROAR, 0.1f, 0.3f + random.nextFloat() * 0.4f);
+                if (tick % 100 == 0) playSound(loc, Sound.ENTITY_IRON_GOLEM_STEP, 0.08f, 0.5f + ThreadLocalRandom.current().nextFloat() * 0.5f);
+                if (stability < 30 && tick % 20 == 0) playSound(loc, Sound.ENTITY_RAVAGER_ROAR, 0.1f, 0.3f + ThreadLocalRandom.current().nextFloat() * 0.4f);
             }
             case COSMOS -> {
-                if (tick % 150 == 0) playSound(loc, Sound.BLOCK_BEACON_AMBIENT, 0.1f, 0.3f + random.nextFloat() * 0.4f);
+                if (tick % 150 == 0) playSound(loc, Sound.BLOCK_BEACON_AMBIENT, 0.1f, 0.3f + ThreadLocalRandom.current().nextFloat() * 0.4f);
                 if (stability >= 100 && tick % 80 == 0) playSound(loc, Sound.ENTITY_ENDER_DRAGON_DEATH, 0.15f, 0.5f);
             }
             case FORTUNE -> {
-                if (tick % 80 == 0) playSound(loc, Sound.BLOCK_NOTE_BLOCK_BELL, 0.08f, 1.0f + random.nextFloat() * 1.0f);
+                if (tick % 80 == 0) playSound(loc, Sound.BLOCK_NOTE_BLOCK_BELL, 0.08f, 1.0f + ThreadLocalRandom.current().nextFloat() * 1.0f);
                 if (stability >= 100 && tick % 60 == 0) playSound(loc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.15f, 2.0f);
             }
             case CLOUD -> {
-                if (tick % 80 == 0) playSound(loc, Sound.ENTITY_BREEZE_IDLE_GROUND, 0.1f, 0.5f + random.nextFloat() * 0.5f);
+                if (tick % 80 == 0) playSound(loc, Sound.ENTITY_BREEZE_IDLE_GROUND, 0.1f, 0.5f + ThreadLocalRandom.current().nextFloat() * 0.5f);
                 if (stability < 30 && tick % 30 == 0) playSound(loc, Sound.ENTITY_BREEZE_INHALE, 0.15f, 0.5f);
             }
             case WINTER -> {
-                if (tick % 100 == 0) playSound(loc, Sound.BLOCK_SNOW_STEP, 0.1f, 0.5f + random.nextFloat() * 0.5f);
-                if (stability < 30 && tick % 25 == 0) playSound(loc, Sound.BLOCK_GLASS_BREAK, 0.1f, 0.5f + random.nextFloat() * 0.5f);
+                if (tick % 100 == 0) playSound(loc, Sound.BLOCK_SNOW_STEP, 0.1f, 0.5f + ThreadLocalRandom.current().nextFloat() * 0.5f);
+                if (stability < 30 && tick % 25 == 0) playSound(loc, Sound.BLOCK_GLASS_BREAK, 0.1f, 0.5f + ThreadLocalRandom.current().nextFloat() * 0.5f);
             }
             case SHADOW -> {
-                if (tick % 120 == 0) playSound(loc, Sound.BLOCK_SCULK_BREAK, 0.08f, 0.3f + random.nextFloat() * 0.4f);
+                if (tick % 120 == 0) playSound(loc, Sound.BLOCK_SCULK_BREAK, 0.08f, 0.3f + ThreadLocalRandom.current().nextFloat() * 0.4f);
                 if (stability < 30 && tick % 20 == 0) playSound(loc, Sound.ENTITY_WARDEN_HEARTBEAT, 0.15f, 0.5f);
             }
             case STORM -> {
-                if (tick % 80 == 0) playSound(loc, Sound.ENTITY_BREEZE_WIND_BURST, 0.1f, 0.5f + random.nextFloat() * 0.5f);
+                if (tick % 80 == 0) playSound(loc, Sound.ENTITY_BREEZE_WIND_BURST, 0.1f, 0.5f + ThreadLocalRandom.current().nextFloat() * 0.5f);
                 if (stability < 30 && tick % 20 == 0) playSound(loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 0.1f, 0.5f);
             }
         }
@@ -186,7 +186,7 @@ public class DynamicSoundscapes {
         Location loc = player.getLocation();
         
         // Layer 1: Base cast sound
-        float pitch = 0.8f + tier * 0.15f + random.nextFloat() * 0.2f;
+        float pitch = 0.8f + tier * 0.15f + ThreadLocalRandom.current().nextFloat() * 0.2f;
         playSound(player, theme.getCastSound(), 0.8f, pitch);
         
         // Layer 2: Elemental layer
@@ -199,7 +199,7 @@ public class DynamicSoundscapes {
                 @Override
                 public void run() {
                     if (!player.isOnline()) return;
-                    float p = 0.5f + layer * 0.3f + random.nextFloat() * 0.2f;
+                    float p = 0.5f + layer * 0.3f + ThreadLocalRandom.current().nextFloat() * 0.2f;
                     playSound(player, theme.getCastSound(), 0.3f, p);
                 }
             }.runTaskLater(plugin, layer * 3L);
@@ -240,7 +240,7 @@ public class DynamicSoundscapes {
     public void playImpactSound(Theme theme, Location impactLoc, int tier, boolean isCritical) {
         // Layer 1: Base impact
         float volume = 0.8f + tier * 0.15f;
-        float pitch = 0.8f + random.nextFloat() * 0.4f;
+        float pitch = 0.8f + ThreadLocalRandom.current().nextFloat() * 0.4f;
         if (isCritical) { volume *= 1.5f; pitch += 0.3f; }
         playSound(impactLoc, theme.getImpactSound(), volume, pitch);
 
@@ -287,7 +287,7 @@ public class DynamicSoundscapes {
         playImpactSound(theme, impactLoc, tier, isCritical);
         // Also play for the player
         if (player != null && player.isOnline()) {
-            playSound(player, theme.getImpactSound(), 0.5f, 1.0f + random.nextFloat() * 0.5f);
+            playSound(player, theme.getImpactSound(), 0.5f, 1.0f + ThreadLocalRandom.current().nextFloat() * 0.5f);
         }
     }
 
@@ -574,7 +574,7 @@ public class DynamicSoundscapes {
         if (isCritical) {
             playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 2.0f);
         }
-        playSound(player, theme.getImpactSound(), 0.5f, 1.0f + random.nextFloat() * 0.5f);
+        playSound(player, theme.getImpactSound(), 0.5f, 1.0f + ThreadLocalRandom.current().nextFloat() * 0.5f);
     }
 
     public void playKillSound(Player player, Theme theme) {

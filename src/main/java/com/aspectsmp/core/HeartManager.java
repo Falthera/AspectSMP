@@ -4,9 +4,11 @@ import com.aspectsmp.AspectSMP;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class HeartManager {
 
@@ -14,7 +16,6 @@ public class HeartManager {
 
     private final AspectSMP plugin;
     private final ConcurrentHashMap<UUID, CompletableFuture<Heart>> heartCache;
-    private final Random random = new Random();
 
     public HeartManager(AspectSMP plugin) {
         this.plugin = plugin;
@@ -38,7 +39,7 @@ public class HeartManager {
             CompletableFuture<Heart> loadFuture = plugin.getStorageManager().loadHeartAsync(id);
             return loadFuture.thenApplyAsync(heart -> {
                 if (heart == null) {
-                    AspectType randomAspect = ASPECTS[random.nextInt(ASPECTS.length)];
+                    AspectType randomAspect = ASPECTS[ThreadLocalRandom.current().nextInt(ASPECTS.length)];
                     heart = new Heart(id, randomAspect);
                 }
                 return heart;
@@ -55,7 +56,7 @@ public class HeartManager {
             CompletableFuture<Heart> loadFuture = plugin.getStorageManager().loadHeartAsync(id);
             return loadFuture.thenApplyAsync(heart -> {
                 if (heart == null) {
-                    AspectType randomAspect = ASPECTS[random.nextInt(ASPECTS.length)];
+                    AspectType randomAspect = ASPECTS[ThreadLocalRandom.current().nextInt(ASPECTS.length)];
                     heart = new Heart(id, randomAspect);
                 }
                 return heart;

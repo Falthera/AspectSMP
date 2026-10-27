@@ -28,6 +28,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
@@ -541,7 +542,7 @@ public class FrozenEclipseEvent extends BaseEvent {
         if (stage == 2) {
             frostMonarchEntity.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Integer.MAX_VALUE, 3, true, false));
             for (int i = 0; i < 4; i++) {
-                Location spawn = frostMonarchEntity.getLocation().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10);
+                Location spawn = frostMonarchEntity.getLocation().add(ThreadLocalRandom.current().nextInt(20) - 10, 0, ThreadLocalRandom.current().nextInt(20) - 10);
                 new GlacierTitan(plugin, spawn);
             }
         } else if (stage == 3) {
@@ -575,7 +576,7 @@ public class FrozenEclipseEvent extends BaseEvent {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (participants.contains(player.getUniqueId())) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, 4, true, false));
-                player.teleport(crucibleCenter.clone().add(new Random().nextInt(10) - 5, 0, new Random().nextInt(10) - 5));
+                player.teleport(crucibleCenter.clone().add(ThreadLocalRandom.current().nextInt(10) - 5, 0, ThreadLocalRandom.current().nextInt(10) - 5));
             }
         }
 
