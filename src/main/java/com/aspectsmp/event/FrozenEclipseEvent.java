@@ -32,6 +32,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class FrozenEclipseEvent extends BaseEvent {
 
@@ -69,7 +70,7 @@ public class FrozenEclipseEvent extends BaseEvent {
 
     public FrozenEclipseEvent(AspectSMP plugin) {
         super(plugin);
-        this.overworld = Bukkit.getWorlds().get(0);
+        this.overworld = Bukkit.getWorld("world");
     }
 
     public boolean isActive() {
@@ -161,7 +162,7 @@ public class FrozenEclipseEvent extends BaseEvent {
         startFrostEffects();
         schedulePhaseTransition(20L, this::sendJoinBroadcast);
         schedulePhaseTransition(200L, () -> {}); // Brief pause
-        schedulePhaseTransition(18000L, EventPhase.DEEP_FREEZE); // ~2.5 hours
+        schedulePhaseTransition(180000L, EventPhase.DEEP_FREEZE); // 2.5 hours = 180000 ticks
     }
 
     private void sendJoinBroadcast() {
@@ -350,9 +351,9 @@ public class FrozenEclipseEvent extends BaseEvent {
         frozenMonoliths.clear();
         for (int i = 0; i < REQUIRED_MONOLITHS; i++) {
             Location monolith = new Location(overworld,
-                new Random().nextInt(3000) - 1500,
+                ThreadLocalRandom.current().nextInt(3000) - 1500,
                 0,
-                new Random().nextInt(3000) - 1500
+                ThreadLocalRandom.current().nextInt(3000) - 1500
             );
             monolith.setY(overworld.getHighestBlockYAt(monolith) + 1);
             frozenMonoliths.add(monolith);
@@ -379,7 +380,7 @@ public class FrozenEclipseEvent extends BaseEvent {
                 if (tick % 200 == 0 && guardiansDefeated < guardiansRequired) {
                     for (Location monolith : frozenMonoliths) {
                         if (Math.random() < 0.4) {
-                            Location spawn = monolith.clone().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10);
+                            Location spawn = monolith.clone().add(ThreadLocalRandom.current().nextInt(20) - 10, 0, ThreadLocalRandom.current().nextInt(20) - 10);
                             int wave = guardiansDefeated < guardiansRequired / 3 ? 0 :
                                        guardiansDefeated < (guardiansRequired * 2) / 3 ? 1 : 2;
                             switch (wave) {
@@ -464,7 +465,7 @@ public class FrozenEclipseEvent extends BaseEvent {
                 if (tick % 300 == 0 && guardiansDefeated < guardiansRequired) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (player.getWorld().getEnvironment() == World.Environment.NORMAL && Math.random() < 0.2) {
-                            Location spawn = player.getLocation().add(10 + new Random().nextInt(20), 2, 10 + new Random().nextInt(20));
+                            Location spawn = player.getLocation().add(10 + ThreadLocalRandom.current().nextInt(20), 2, 10 + ThreadLocalRandom.current().nextInt(20));
                             spawn.getChunk().load();
                             int wave = guardiansDefeated < guardiansRequired / 3 ? 0 :
                                        guardiansDefeated < (guardiansRequired * 2) / 3 ? 1 : 2;
@@ -498,9 +499,9 @@ public class FrozenEclipseEvent extends BaseEvent {
 
     private void spawnFrostMonarch() {
         Location spawn = new Location(overworld,
-            new Random().nextInt(1000) - 500,
+            ThreadLocalRandom.current().nextInt(1000) - 500,
             0,
-            new Random().nextInt(1000) - 500
+            ThreadLocalRandom.current().nextInt(1000) - 500
         );
         spawn.setY(overworld.getHighestBlockYAt(spawn) + 20);
 

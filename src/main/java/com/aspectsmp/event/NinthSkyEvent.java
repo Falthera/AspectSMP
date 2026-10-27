@@ -21,6 +21,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -35,7 +36,7 @@ public class NinthSkyEvent extends BaseEvent {
     private volatile LivingEntity skyGuardianEntity;
     private final AtomicLong eventStartTime = new AtomicLong(0);
     private static final long EVENT_DURATION_MS = 7L * 24 * 60 * 60 * 1000;
-    private static final long PHASE_DELAY_HOURS = 2 * 60 * 60 * 1000; // 2 hours in ms
+    private static final long PHASE_DELAY_TICKS = 2L * 60 * 60 * 20; // 2 hours in ticks (20 ticks/sec)
     
     // Missing fields
     private final List<Location> riftLocations = new CopyOnWriteArrayList<>();
@@ -126,7 +127,7 @@ public class NinthSkyEvent extends BaseEvent {
             }
         }
 
-        schedulePhaseTransition(PHASE_DELAY_HOURS / 360, EventPhase.SKY_FRAGMENTS); // 20 seconds
+        schedulePhaseTransition(400L, EventPhase.SKY_FRAGMENTS); // 20 seconds = 400 ticks
         startGlobalEffects();
     }
 
@@ -212,7 +213,7 @@ public class NinthSkyEvent extends BaseEvent {
                 Bukkit.broadcastMessage("§7Defeat §bSky Wardens §7guarding them to collect fragments.");
                 Bukkit.broadcastMessage("§7Rifts will open periodically, spawning more Wardens.");
                 startFragmentPhase();
-                schedulePhaseTransition(PHASE_DELAY_HOURS, EventPhase.SKY_RIFTS_OPEN); // 2 hours
+                schedulePhaseTransition(PHASE_DELAY_TICKS, EventPhase.SKY_RIFTS_OPEN); // 2 hours
             }
             case SKY_RIFTS_OPEN -> {
                 Bukkit.broadcastMessage("§d§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -221,7 +222,7 @@ public class NinthSkyEvent extends BaseEvent {
                 Bukkit.broadcastMessage("§7Massive rifts open across the world! §bSky Wardens §7pour through.");
                 Bukkit.broadcastMessage("§7Collect remaining fragments before the storms consume all!");
                 openSkyRifts();
-                schedulePhaseTransition(PHASE_DELAY_HOURS + 7200000, EventPhase.SKY_STORMS); // 4 hours
+                schedulePhaseTransition(PHASE_DELAY_TICKS * 2, EventPhase.SKY_STORMS); // 4 hours
             }
             case SKY_STORMS -> {
                 Bukkit.broadcastMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -230,7 +231,7 @@ public class NinthSkyEvent extends BaseEvent {
                 Bukkit.broadcastMessage("§7Violent storms ravage the overworld. §bLevitation §7affects all!");
                 Bukkit.broadcastMessage("§7Survive the storms and prepare for the Guardian's arrival.");
                 startStorms();
-                schedulePhaseTransition(PHASE_DELAY_HOURS * 2 + 7200000, EventPhase.SKY_GUARDIAN); // 5.5 hours
+                schedulePhaseTransition(PHASE_DELAY_TICKS * 3, EventPhase.SKY_GUARDIAN); // 6 hours
             }
             case SKY_GUARDIAN -> {
                 Bukkit.broadcastMessage("§c§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -258,14 +259,14 @@ public class NinthSkyEvent extends BaseEvent {
         }
     }
 
-    private void schedulePhaseTransition(long delayMs, EventPhase nextPhase) {
+    private void schedulePhaseTransition(long delayTicks, EventPhase nextPhase) {
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
                 if (!isActive()) { cancel(); return; }
                 advancePhase(nextPhase);
             }
-        }.runTaskLater(plugin, delayMs / 50); // Convert ms to ticks (1 tick = 50ms)
+        }.runTaskLater(plugin, delayTicks);
         trackTask(task);
     }
 
@@ -282,7 +283,7 @@ public class NinthSkyEvent extends BaseEvent {
             }
         }.runTaskTimer(plugin, 0L, 200L); // Every 10 seconds
         trackTask(task);
-        schedulePhaseTransition(PHASE_DELAY_HOURS, EventPhase.SKY_RIFTS_OPEN);
+        schedulePhaseTransition(PHASE_DELAY_TICKS, EventPhase.SKY_RIFTS_OPEN);
     }
 
     private void spawnFragmentGuards() {
@@ -294,20 +295,20 @@ public class NinthSkyEvent extends BaseEvent {
 
         int spawnsThisTick = Math.min(2, MAX_MOB_SPAWNS - mobsSpawned.get());
         for (int i = 0; i < spawnsThisTick; i++) {
-            Player randomPlayer = overworldPlayers.get(new Random().nextInt(overworldPlayers.size()));
+            Player randomPlayer = overworldPlayers.get(ThreadLocalRandom.current().nextInt(overworldPlayers.size()));
             Location base = randomPlayer.getLocation();
             Location spawn = new Location(
                 base.getWorld(),
-                base.getX() + 15 + new Random().nextInt(30) - 15,
+                base.getX() + 15 + ThreadLocalRandom.current().nextInt(30) - 15,
                 0,
-                base.getZ() + 15 + new Random().nextInt(30) - 15
+                base.getZ() + 15 + ThreadLocalRandom.current().nextInt(30) - 15
             );
             int safeY = spawn.getWorld().getHighestBlockYAt(spawn) + 1;
             spawn.setY(safeY);
             if (spawn.getBlock().getType().isSolid()) spawn.setY(safeY + 1);
             if (mobsSpawned.get() >= MAX_MOB_SPAWNS) break;
             mobsSpawned.incrementAndGet();
-            switch (new Random().nextInt(3)) {
+            switch (ThreadLocalRandom.current().nextInt(3)) {
                 case 0 -> new CloudWraith(plugin, spawn);
                 case 1 -> new StormSentinel(plugin, spawn);
                 case 2 -> new TempestPhantom(plugin, spawn);
@@ -316,13 +317,13 @@ public class NinthSkyEvent extends BaseEvent {
     }
 
     private void openSkyRifts() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         riftLocations.clear();
         for (int i = 0; i < 12; i++) {
             Location rift = new Location(overworld,
-                new Random().nextInt(2000) - 1000,
+                ThreadLocalRandom.current().nextInt(2000) - 1000,
                 0,
-                new Random().nextInt(2000) - 1000
+                ThreadLocalRandom.current().nextInt(2000) - 1000
             );
             rift.setY(overworld.getHighestBlockYAt(rift) + 2);
             riftLocations.add(rift);
@@ -341,7 +342,7 @@ public class NinthSkyEvent extends BaseEvent {
                 for (Location rift : riftLocations) {
                     if (Math.random() < 0.3 && mobsSpawned.get() < MAX_MOB_SPAWNS) {
                         mobsSpawned.incrementAndGet();
-                        new CloudWraith(plugin, rift.clone().add(new Random().nextInt(10) - 5, 0, new Random().nextInt(10) - 5));
+                        new CloudWraith(plugin, rift.clone().add(ThreadLocalRandom.current().nextInt(10) - 5, 0, ThreadLocalRandom.current().nextInt(10) - 5));
                     }
                 }
             }
@@ -350,13 +351,13 @@ public class NinthSkyEvent extends BaseEvent {
     }
 
     private void startStorms() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         stormLocations.clear();
         for (int i = 0; i < 8; i++) {
             Location storm = new Location(overworld,
-                new Random().nextInt(2000) - 1000,
+                ThreadLocalRandom.current().nextInt(2000) - 1000,
                 255,
-                new Random().nextInt(2000) - 1000
+                ThreadLocalRandom.current().nextInt(2000) - 1000
             );
             stormLocations.add(storm);
         }
@@ -398,10 +399,10 @@ public class NinthSkyEvent extends BaseEvent {
                 if (!isActive() || phase.get() != EventPhase.SKY_STORMS) { cancel(); return; }
                 ticks++;
                 if (ticks % 300 == 0 && mobsSpawned.get() < MAX_MOB_SPAWNS) {
-                    Location storm = stormLocations.get(new Random().nextInt(stormLocations.size()));
+                    Location storm = stormLocations.get(ThreadLocalRandom.current().nextInt(stormLocations.size()));
                     mobsSpawned.addAndGet(2);
-                    new StormSentinel(plugin, storm.clone().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10));
-                    new TempestPhantom(plugin, storm.clone().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10));
+                    new StormSentinel(plugin, storm.clone().add(ThreadLocalRandom.current().nextInt(20) - 10, 0, ThreadLocalRandom.current().nextInt(20) - 10));
+                    new TempestPhantom(plugin, storm.clone().add(ThreadLocalRandom.current().nextInt(20) - 10, 0, ThreadLocalRandom.current().nextInt(20) - 10));
                 }
             }
         }.runTaskTimer(plugin, 0L, 1L);
@@ -409,11 +410,11 @@ public class NinthSkyEvent extends BaseEvent {
     }
 
     private void spawnSkyGuardian() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         Location spawn = new Location(overworld,
-            new Random().nextInt(1000) - 500,
+            ThreadLocalRandom.current().nextInt(1000) - 500,
             255,
-            new Random().nextInt(1000) - 500
+            ThreadLocalRandom.current().nextInt(1000) - 500
         );
         spawn.setY(overworld.getHighestBlockYAt(spawn) + 50);
 
@@ -447,7 +448,7 @@ public class NinthSkyEvent extends BaseEvent {
     }
 
     private void startConvergence() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         BukkitTask convergenceTask = new BukkitRunnable() {
             int tick = 0;
             @Override
@@ -502,7 +503,7 @@ public class NinthSkyEvent extends BaseEvent {
         }.runTaskTimer(plugin, 0L, 20L);
         trackTask(checkTask);
 
-        schedulePhaseTransition(1800000L, EventPhase.SKY_COMPLETED); // 30 minutes
+        schedulePhaseTransition(36000L, EventPhase.SKY_COMPLETED); // 30 minutes = 36000 ticks
     }
 
     public void collectFragment(Player player) {

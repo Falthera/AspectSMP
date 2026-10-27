@@ -533,6 +533,15 @@ public class VisualEffectsManager {
                 screenEffects.ultimateScreenFlash(player, theme);
                 break;
 
+            case "fortune:kings_jackpot":
+                spawnUltimateSpiral(world, center, Particle.END_ROD, 5.0, 40, 0.1);
+                spawnUltimateRing(world, center, theme, 0.0, Particle.HAPPY_VILLAGER, 4.0, 50);
+                spawnUltimateColumn(world, center, theme, Particle.HAPPY_VILLAGER, 3.5, 45, 0.05);
+                spawnUltimateRing(world, center, theme, 1.5, Particle.END_ROD, 3.0, 30);
+                soundscapes.playUltimateSound(player, theme);
+                screenEffects.ultimateScreenFlash(player, theme);
+                break;
+
             default:
                 soundscapes.playUltimateSound(player, theme);
                 screenEffects.ultimateScreenFlash(player, theme);

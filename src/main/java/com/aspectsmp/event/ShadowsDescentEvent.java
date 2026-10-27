@@ -24,6 +24,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ShadowsDescentEvent extends BaseEvent {
 
@@ -226,7 +227,7 @@ public class ShadowsDescentEvent extends BaseEvent {
                 Bukkit.broadcastMessage("\u00a77Defeat \u00a78Shadow Stalkers \u00a77guarding them to collect fragments.");
                 Bukkit.broadcastMessage("\u00a77Rifts will open periodically, spawning more Stalkers.");
                 startFragmentPhase();
-                schedulePhaseTransition(20000L, EventPhase.SHADOW_RIFTS);
+                schedulePhaseTransition(144000L, EventPhase.SHADOW_RIFTS); // 2 hours
             }
             case SHADOW_RIFTS -> {
                 Bukkit.broadcastMessage("\u00a78\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -235,7 +236,7 @@ public class ShadowsDescentEvent extends BaseEvent {
                 Bukkit.broadcastMessage("\u00a77Rifts open across the world! \u00a78Shadow Stalkers \u00a77pour through.");
                 Bukkit.broadcastMessage("\u00a77Collect remaining fragments before the darkness consumes all!");
                 openShadowRifts();
-                schedulePhaseTransition(30000L, EventPhase.SHADOW_STALKERS);
+                schedulePhaseTransition(144000L, EventPhase.SHADOW_STALKERS); // 2 hours
             }
             case SHADOW_STALKERS -> {
                 Bukkit.broadcastMessage("\u00a78\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -244,7 +245,7 @@ public class ShadowsDescentEvent extends BaseEvent {
                 Bukkit.broadcastMessage("\u00a77Elite shadow entities hunt players across the world.");
                 Bukkit.broadcastMessage("\u00a77Blindness stacks accumulate in the dark. Stay in light!");
                 startStalkers();
-                schedulePhaseTransition(40000L, EventPhase.SHADOW_LORD);
+                schedulePhaseTransition(144000L, EventPhase.SHADOW_LORD); // 2 hours
             }
             case SHADOW_LORD -> {
                 Bukkit.broadcastMessage("\u00a7c\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -285,7 +286,7 @@ public class ShadowsDescentEvent extends BaseEvent {
                 spawnFragmentGuards();
             }
         }.runTaskTimer(plugin, 0L, 200L);
-        schedulePhaseTransition(20000L, EventPhase.SHADOW_RIFTS);
+        schedulePhaseTransition(144000L, EventPhase.SHADOW_RIFTS);
     }
 
     private void spawnFragmentGuards() {
@@ -298,13 +299,13 @@ public class ShadowsDescentEvent extends BaseEvent {
 
         int spawnsThisTick = Math.min(2, MAX_MOB_SPAWNS - mobsSpawned);
         for (int i = 0; i < spawnsThisTick; i++) {
-            Player randomPlayer = overworldPlayers.get(new Random().nextInt(overworldPlayers.size()));
+            Player randomPlayer = overworldPlayers.get(ThreadLocalRandom.current().nextInt(overworldPlayers.size()));
             Location base = randomPlayer.getLocation();
             Location spawn = new Location(
                 base.getWorld(),
-                base.getX() + 15 + new Random().nextInt(30) - 15,
+                base.getX() + 15 + ThreadLocalRandom.current().nextInt(30) - 15,
                 0,
-                base.getZ() + 15 + new Random().nextInt(30) - 15
+                base.getZ() + 15 + ThreadLocalRandom.current().nextInt(30) - 15
             );
             int safeY = spawn.getWorld().getHighestBlockYAt(spawn) + 1;
             spawn.setY(safeY);
@@ -312,7 +313,7 @@ public class ShadowsDescentEvent extends BaseEvent {
             if (mobsSpawned >= MAX_MOB_SPAWNS) break;
             mobsSpawned++;
             // Shadow-themed mobs
-            switch (new Random().nextInt(3)) {
+            switch (ThreadLocalRandom.current().nextInt(3)) {
                 case 0 -> new CloudWraith(plugin, spawn); // Reuse as shadow wraith
                 case 1 -> new StormSentinel(plugin, spawn); // Reuse as shadow sentinel
                 case 2 -> new TempestPhantom(plugin, spawn); // Reuse as shadow phantom
@@ -321,13 +322,13 @@ public class ShadowsDescentEvent extends BaseEvent {
     }
 
     private void openShadowRifts() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         riftLocations.clear();
         for (int i = 0; i < 10; i++) {
             Location rift = new Location(overworld,
-                new Random().nextInt(2000) - 1000,
+                ThreadLocalRandom.current().nextInt(2000) - 1000,
                 0,
-                new Random().nextInt(2000) - 1000
+                ThreadLocalRandom.current().nextInt(2000) - 1000
             );
             rift.setY(overworld.getHighestBlockYAt(rift) + 2);
             riftLocations.add(rift);
@@ -346,7 +347,7 @@ public class ShadowsDescentEvent extends BaseEvent {
                 for (Location rift : riftLocations) {
                     if (Math.random() < 0.25 && mobsSpawned < MAX_MOB_SPAWNS) {
                         mobsSpawned++;
-                        new CloudWraith(plugin, rift.clone().add(new Random().nextInt(10) - 5, 0, new Random().nextInt(10) - 5));
+                        new CloudWraith(plugin, rift.clone().add(ThreadLocalRandom.current().nextInt(10) - 5, 0, ThreadLocalRandom.current().nextInt(10) - 5));
                     }
                 }
             }
@@ -354,13 +355,13 @@ public class ShadowsDescentEvent extends BaseEvent {
     }
 
     private void startStalkers() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         stalkerLocations.clear();
         for (int i = 0; i < 8; i++) {
             Location stalker = new Location(overworld,
-                new Random().nextInt(2000) - 1000,
+                ThreadLocalRandom.current().nextInt(2000) - 1000,
                 0,
-                new Random().nextInt(2000) - 1000
+                ThreadLocalRandom.current().nextInt(2000) - 1000
             );
             stalker.setY(overworld.getHighestBlockYAt(stalker) + 2);
             stalkerLocations.add(stalker);
@@ -403,21 +404,21 @@ public class ShadowsDescentEvent extends BaseEvent {
                 if (!active || phase != EventPhase.SHADOW_STALKERS) { cancel(); return; }
                 ticks++;
                 if (ticks % 300 == 0 && mobsSpawned < MAX_MOB_SPAWNS) {
-                    Location stalker = stalkerLocations.get(new Random().nextInt(stalkerLocations.size()));
+                    Location stalker = stalkerLocations.get(ThreadLocalRandom.current().nextInt(stalkerLocations.size()));
                     mobsSpawned += 2;
-                    new StormSentinel(plugin, stalker.clone().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10));
-                    new TempestPhantom(plugin, stalker.clone().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10));
+                    new StormSentinel(plugin, stalker.clone().add(ThreadLocalRandom.current().nextInt(20) - 10, 0, ThreadLocalRandom.current().nextInt(20) - 10));
+                    new TempestPhantom(plugin, stalker.clone().add(ThreadLocalRandom.current().nextInt(20) - 10, 0, ThreadLocalRandom.current().nextInt(20) - 10));
                 }
             }
         }.runTaskTimer(plugin, 0L, 1L);
     }
 
     private void spawnShadowLord() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         Location spawn = new Location(overworld,
-            new Random().nextInt(1000) - 500,
+            ThreadLocalRandom.current().nextInt(1000) - 500,
             0,
-            new Random().nextInt(1000) - 500
+            ThreadLocalRandom.current().nextInt(1000) - 500
         );
         spawn.setY(overworld.getHighestBlockYAt(spawn) + 50);
 
@@ -457,7 +458,7 @@ public class ShadowsDescentEvent extends BaseEvent {
     }
 
     private void startConvergence() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         convergenceTask = new BukkitRunnable() {
             int tick = 0;
             @Override
@@ -510,7 +511,7 @@ public class ShadowsDescentEvent extends BaseEvent {
             }
         }.runTaskTimer(plugin, 0L, 20L);
 
-        schedulePhaseTransition(60000L, EventPhase.SHADOW_COMPLETED);
+        schedulePhaseTransition(36000L, EventPhase.SHADOW_COMPLETED); // 30 minutes
     }
 
     public void collectFragment(Player player) {

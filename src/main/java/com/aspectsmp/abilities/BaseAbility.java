@@ -16,13 +16,42 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Fox;
 import org.bukkit.entity.Panda;
+import org.bukkit.entity.Bee;
+import org.bukkit.entity.IronGolem;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Dolphin;
+import org.bukkit.entity.Llama;
+import org.bukkit.entity.TraderLlama;
+import org.bukkit.entity.Piglin;
+import org.bukkit.entity.PolarBear;
+import org.bukkit.entity.Cow;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Donkey;
+import org.bukkit.entity.Mule;
+import org.bukkit.entity.Turtle;
+import org.bukkit.entity.Parrot;
+import org.bukkit.entity.Cat;
+import org.bukkit.entity.Frog;
+import org.bukkit.entity.Sniffer;
+import org.bukkit.entity.Camel;
+import org.bukkit.entity.Goat;
+import org.bukkit.entity.Strider;
+import org.bukkit.entity.Axolotl;
+import org.bukkit.entity.GlowSquid;
+import org.bukkit.entity.Squid;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.List;
 import java.util.ArrayList;
@@ -32,13 +61,11 @@ import org.bukkit.potion.PotionEffectType;
 public abstract class BaseAbility implements Ability {
 
     protected void damageIgnoreArmor(LivingEntity target, double amount, Entity source) {
-    if (target instanceof Animals) {
-        if (target instanceof Wolf || target instanceof Fox || target instanceof Panda) {
-            // Neutral mobs that can be hit
-        } else {
-            return;
+        if (target instanceof Animals) {
+            if (isPassiveAnimal(target)) {
+                return;
+            }
         }
-    }
         // True damage that bypasses armor - use lightning damage type from registry
         try {
             var lightningType = org.bukkit.Registry.DAMAGE_TYPE.get(org.bukkit.NamespacedKey.minecraft("lightning"));
@@ -68,14 +95,14 @@ public abstract class BaseAbility implements Ability {
     }
 
     protected void applyCooldown(Player player, String abilityId, long durationMillis) {
-        Heart heart = com.aspectsmp.AspectSMP.getInstance().getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        Heart heart = com.aspectsmp.AspectSMP.getInstance().getHeartManager().getHeart(player).join();
         if (heart != null) {
             heart.getCooldowns().put(abilityId, System.currentTimeMillis() + durationMillis);
         }
     }
 
     protected boolean isOnCooldown(Player player, String abilityId) {
-        Heart heart = com.aspectsmp.AspectSMP.getInstance().getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        Heart heart = com.aspectsmp.AspectSMP.getInstance().getHeartManager().getHeart(player).join();
         if (heart == null) return true;
         return heart.getCooldowns().getOrDefault(abilityId, 0L) > System.currentTimeMillis();
     }
@@ -233,8 +260,36 @@ public abstract class BaseAbility implements Ability {
         return Math.max(0.6, Math.min(1.4, multiplier));
     }
 
+    private boolean isPassiveAnimal(LivingEntity entity) {
+        Set<Class<? extends Animals>> passiveAnimals = new HashSet<>();
+        passiveAnimals.add(Cow.class);
+        passiveAnimals.add(Pig.class);
+        passiveAnimals.add(Sheep.class);
+        passiveAnimals.add(Chicken.class);
+        passiveAnimals.add(Rabbit.class);
+        passiveAnimals.add(Horse.class);
+        passiveAnimals.add(Donkey.class);
+        passiveAnimals.add(Mule.class);
+        passiveAnimals.add(Turtle.class);
+        passiveAnimals.add(Parrot.class);
+        passiveAnimals.add(Cat.class);
+        passiveAnimals.add(Frog.class);
+        passiveAnimals.add(Sniffer.class);
+        passiveAnimals.add(Camel.class);
+        passiveAnimals.add(Goat.class);
+        passiveAnimals.add(Strider.class);
+        passiveAnimals.add(Axolotl.class);
+
+        for (Class<? extends Animals> passiveClass : passiveAnimals) {
+            if (passiveClass.isInstance(entity)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected void generateEssence(Player player, int amount) {
-        Heart heart = com.aspectsmp.AspectSMP.getInstance().getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        Heart heart = com.aspectsmp.AspectSMP.getInstance().getHeartManager().getHeart(player).join();
         if (heart != null) {
             heart.addEssence(amount);
         }

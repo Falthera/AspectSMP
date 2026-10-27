@@ -24,6 +24,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class TempestsFuryEvent extends BaseEvent {
 
@@ -228,7 +229,7 @@ public class TempestsFuryEvent extends BaseEvent {
                 Bukkit.broadcastMessage("\u00a77Defeat \u00a7bWind Walkers \u00a77guarding them to collect fragments.");
                 Bukkit.broadcastMessage("\u00a77Gust rifts will open periodically, spawning more Walkers.");
                 startFragmentPhase();
-                schedulePhaseTransition(20000L, EventPhase.STORM_GUSTS);
+                schedulePhaseTransition(144000L, EventPhase.STORM_GUSTS); // 2 hours
             }
             case STORM_GUSTS -> {
                 Bukkit.broadcastMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -237,7 +238,7 @@ public class TempestsFuryEvent extends BaseEvent {
                 Bukkit.broadcastMessage("\u00a77Rifts open across the world! \u00a7bWind Walkers \u00a77pour through.");
                 Bukkit.broadcastMessage("\u00a77Collect remaining fragments before the cyclones form!");
                 openGustRifts();
-                schedulePhaseTransition(30000L, EventPhase.STORM_CYCLONES);
+                schedulePhaseTransition(144000L, EventPhase.STORM_CYCLONES); // 2 hours
             }
             case STORM_CYCLONES -> {
                 Bukkit.broadcastMessage("\u00a7b\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -246,7 +247,7 @@ public class TempestsFuryEvent extends BaseEvent {
                 Bukkit.broadcastMessage("\u00a77Colossal cyclones ravage the overworld! \u00a7bLevitation\u00a77 affects all!");
                 Bukkit.broadcastMessage("\u00a77Speed stacks accumulate. Survive the winds and prepare for the Titan!");
                 startCyclones();
-                schedulePhaseTransition(40000L, EventPhase.STORM_TITAN);
+                schedulePhaseTransition(144000L, EventPhase.STORM_TITAN); // 2 hours
             }
             case STORM_TITAN -> {
                 Bukkit.broadcastMessage("\u00a7c\u00a7l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -287,7 +288,7 @@ public class TempestsFuryEvent extends BaseEvent {
                 spawnFragmentGuards();
             }
         }.runTaskTimer(plugin, 0L, 200L);
-        schedulePhaseTransition(20000L, EventPhase.STORM_GUSTS);
+        schedulePhaseTransition(144000L, EventPhase.STORM_GUSTS);
     }
 
     private void spawnFragmentGuards() {
@@ -300,20 +301,20 @@ public class TempestsFuryEvent extends BaseEvent {
 
         int spawnsThisTick = Math.min(2, MAX_MOB_SPAWNS - mobsSpawned);
         for (int i = 0; i < spawnsThisTick; i++) {
-            Player randomPlayer = overworldPlayers.get(new Random().nextInt(overworldPlayers.size()));
+            Player randomPlayer = overworldPlayers.get(ThreadLocalRandom.current().nextInt(overworldPlayers.size()));
             Location base = randomPlayer.getLocation();
             Location spawn = new Location(
                 base.getWorld(),
-                base.getX() + 15 + new Random().nextInt(30) - 15,
+                base.getX() + 15 + ThreadLocalRandom.current().nextInt(30) - 15,
                 0,
-                base.getZ() + 15 + new Random().nextInt(30) - 15
+                base.getZ() + 15 + ThreadLocalRandom.current().nextInt(30) - 15
             );
             int safeY = spawn.getWorld().getHighestBlockYAt(spawn) + 1;
             spawn.setY(safeY);
             if (spawn.getBlock().getType().isSolid()) spawn.setY(safeY + 1);
             if (mobsSpawned >= MAX_MOB_SPAWNS) break;
             mobsSpawned++;
-            switch (new Random().nextInt(3)) {
+            switch (ThreadLocalRandom.current().nextInt(3)) {
                 case 0 -> new CloudWraith(plugin, spawn);
                 case 1 -> new StormSentinel(plugin, spawn);
                 case 2 -> new TempestPhantom(plugin, spawn);
@@ -322,13 +323,13 @@ public class TempestsFuryEvent extends BaseEvent {
     }
 
     private void openGustRifts() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         riftLocations.clear();
         for (int i = 0; i < 12; i++) {
             Location rift = new Location(overworld,
-                new Random().nextInt(2000) - 1000,
+                ThreadLocalRandom.current().nextInt(2000) - 1000,
                 0,
-                new Random().nextInt(2000) - 1000
+                ThreadLocalRandom.current().nextInt(2000) - 1000
             );
             rift.setY(overworld.getHighestBlockYAt(rift) + 2);
             riftLocations.add(rift);
@@ -347,7 +348,7 @@ public class TempestsFuryEvent extends BaseEvent {
                 for (Location rift : riftLocations) {
                     if (Math.random() < 0.3 && mobsSpawned < MAX_MOB_SPAWNS) {
                         mobsSpawned++;
-                        new StormSentinel(plugin, rift.clone().add(new Random().nextInt(10) - 5, 0, new Random().nextInt(10) - 5));
+                        new StormSentinel(plugin, rift.clone().add(ThreadLocalRandom.current().nextInt(10) - 5, 0, ThreadLocalRandom.current().nextInt(10) - 5));
                     }
                 }
             }
@@ -355,13 +356,13 @@ public class TempestsFuryEvent extends BaseEvent {
     }
 
     private void startCyclones() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         cycloneLocations.clear();
         for (int i = 0; i < 8; i++) {
             Location cyclone = new Location(overworld,
-                new Random().nextInt(2000) - 1000,
+                ThreadLocalRandom.current().nextInt(2000) - 1000,
                 255,
-                new Random().nextInt(2000) - 1000
+                ThreadLocalRandom.current().nextInt(2000) - 1000
             );
             cycloneLocations.add(cyclone);
         }
@@ -401,21 +402,21 @@ public class TempestsFuryEvent extends BaseEvent {
                 if (!active || phase != EventPhase.STORM_CYCLONES) { cancel(); return; }
                 ticks++;
                 if (ticks % 300 == 0 && mobsSpawned < MAX_MOB_SPAWNS) {
-                    Location cyclone = cycloneLocations.get(new Random().nextInt(cycloneLocations.size()));
+                    Location cyclone = cycloneLocations.get(ThreadLocalRandom.current().nextInt(cycloneLocations.size()));
                     mobsSpawned += 2;
-                    new StormSentinel(plugin, cyclone.clone().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10));
-                    new TempestPhantom(plugin, cyclone.clone().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10));
+                    new StormSentinel(plugin, cyclone.clone().add(ThreadLocalRandom.current().nextInt(20) - 10, 0, ThreadLocalRandom.current().nextInt(20) - 10));
+                    new TempestPhantom(plugin, cyclone.clone().add(ThreadLocalRandom.current().nextInt(20) - 10, 0, ThreadLocalRandom.current().nextInt(20) - 10));
                 }
             }
         }.runTaskTimer(plugin, 0L, 1L);
     }
 
     private void spawnStormTitan() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         Location spawn = new Location(overworld,
-            new Random().nextInt(1000) - 500,
+            ThreadLocalRandom.current().nextInt(1000) - 500,
             255,
-            new Random().nextInt(1000) - 500
+            ThreadLocalRandom.current().nextInt(1000) - 500
         );
         spawn.setY(overworld.getHighestBlockYAt(spawn) + 50);
 
@@ -455,7 +456,7 @@ public class TempestsFuryEvent extends BaseEvent {
     }
 
     private void startConvergence() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         convergenceTask = new BukkitRunnable() {
             int tick = 0;
             @Override
@@ -508,7 +509,7 @@ public class TempestsFuryEvent extends BaseEvent {
             }
         }.runTaskTimer(plugin, 0L, 20L);
 
-        schedulePhaseTransition(60000L, EventPhase.STORM_COMPLETED);
+        schedulePhaseTransition(36000L, EventPhase.STORM_COMPLETED); // 30 minutes
     }
 
     public void collectFragment(Player player) {

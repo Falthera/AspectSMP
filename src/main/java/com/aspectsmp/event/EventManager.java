@@ -10,14 +10,14 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class EventManager implements CommandExecutor, TabCompleter {
 
     private final AspectSMP plugin;
     private final ConcurrentHashMap<String, BaseEvent> activeEvents = new ConcurrentHashMap<>();
-    private final AtomicBoolean eventActive = new AtomicBoolean(false);
+    private final AtomicReference<BaseEvent> currentEvent = new AtomicReference<>();
     private final AtomicLong globalCooldownEnd = new AtomicLong(0);
     private static final long DEFAULT_COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes
 
@@ -46,7 +46,11 @@ public class EventManager implements CommandExecutor, TabCompleter {
     }
 
     public boolean isAnyEventActive() {
-        return eventActive.get();
+        return currentEvent.get() != null;
+    }
+
+    public BaseEvent getCurrentEvent() {
+        return currentEvent.get();
     }
 
     public long getGlobalCooldownRemaining() {
@@ -63,36 +67,44 @@ public class EventManager implements CommandExecutor, TabCompleter {
         globalCooldownEnd.set(System.currentTimeMillis() + cooldownMs);
     }
 
-    public void startNinthSkyEvent() {
-        if (!tryStartEvent("ninth_sky")) return;
+    public boolean startNinthSkyEvent() {
+        if (!tryStartEvent("ninth_sky")) return false;
         NinthSkyEvent event = new NinthSkyEvent(plugin);
+        if (!currentEvent.compareAndSet(null, event)) return false;
         activeEvents.put("ninth_sky", event);
         event.startEvent();
+        return true;
     }
 
-    public void startFrozenEclipseEvent() {
-        if (!tryStartEvent("frozen_eclipse")) return;
+    public boolean startFrozenEclipseEvent() {
+        if (!tryStartEvent("frozen_eclipse")) return false;
         FrozenEclipseEvent event = new FrozenEclipseEvent(plugin);
+        if (!currentEvent.compareAndSet(null, event)) return false;
         activeEvents.put("frozen_eclipse", event);
         event.startEvent();
+        return true;
     }
 
-    public void startShadowsDescentEvent() {
-        if (!tryStartEvent("shadows_descent")) return;
+    public boolean startShadowsDescentEvent() {
+        if (!tryStartEvent("shadows_descent")) return false;
         ShadowsDescentEvent event = new ShadowsDescentEvent(plugin);
+        if (!currentEvent.compareAndSet(null, event)) return false;
         activeEvents.put("shadows_descent", event);
         event.startEvent();
+        return true;
     }
 
-    public void startTempestsFuryEvent() {
-        if (!tryStartEvent("tempests_fury")) return;
+    public boolean startTempestsFuryEvent() {
+        if (!tryStartEvent("tempests_fury")) return false;
         TempestsFuryEvent event = new TempestsFuryEvent(plugin);
+        if (!currentEvent.compareAndSet(null, event)) return false;
         activeEvents.put("tempests_fury", event);
         event.startEvent();
+        return true;
     }
 
     private boolean tryStartEvent(String eventName) {
-        if (eventActive.get()) {
+        if (currentEvent.get() != null) {
             return false;
         }
         if (isGlobalCooldownActive()) {
@@ -101,7 +113,8 @@ public class EventManager implements CommandExecutor, TabCompleter {
         if (!activeEvents.isEmpty()) {
             return false;
         }
-        return eventActive.compareAndSet(false, true);
+        // Note: We don't set currentEvent here; the specific start method will do it after creating the event
+        return true;
     }
 
     public void stopActiveEvents() {
@@ -112,7 +125,7 @@ public class EventManager implements CommandExecutor, TabCompleter {
             }
         }
         activeEvents.clear();
-        eventActive.set(false);
+        currentEvent.set(null);
         setGlobalCooldown();
     }
 
@@ -129,29 +142,25 @@ public class EventManager implements CommandExecutor, TabCompleter {
         }
         String eventName = String.join("_", args).toLowerCase();
         if (eventName.equals("the_awakening") || eventName.equals("awakening") || eventName.equals("ninth_sky")) {
-            if (tryStartEvent("ninth_sky")) {
-                startNinthSkyEvent();
+            if (startNinthSkyEvent()) {
                 sender.sendMessage("§aStarted The Awakening of the Ninth Sky event!");
             } else {
                 sender.sendMessage("§cAnother event is active or global cooldown is in effect.");
             }
         } else if (eventName.equals("the_frozen_eclipse") || eventName.equals("frozen_eclipse") || eventName.equals("eclipse")) {
-            if (tryStartEvent("frozen_eclipse")) {
-                startFrozenEclipseEvent();
+            if (startFrozenEclipseEvent()) {
                 sender.sendMessage("§aStarted The Frozen Eclipse event!");
             } else {
                 sender.sendMessage("§cAnother event is active or global cooldown is in effect.");
             }
         } else if (eventName.equals("shadows_descent") || eventName.equals("shadow_descent") || eventName.equals("shadow")) {
-            if (tryStartEvent("shadows_descent")) {
-                startShadowsDescentEvent();
+            if (startShadowsDescentEvent()) {
                 sender.sendMessage("§aStarted The Shadow's Descent event!");
             } else {
                 sender.sendMessage("§cAnother event is active or global cooldown is in effect.");
             }
         } else if (eventName.equals("tempests_fury") || eventName.equals("tempest_fury") || eventName.equals("storm")) {
-            if (tryStartEvent("tempests_fury")) {
-                startTempestsFuryEvent();
+            if (startTempestsFuryEvent()) {
                 sender.sendMessage("§aStarted The Tempest's Fury event!");
             } else {
                 sender.sendMessage("§cAnother event is active or global cooldown is in effect.");

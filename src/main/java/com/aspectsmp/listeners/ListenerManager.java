@@ -9,6 +9,7 @@ import com.aspectsmp.items.*;
 import com.aspectsmp.core.RuleModifier;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -36,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ListenerManager implements Listener {
 
@@ -74,7 +76,10 @@ public class ListenerManager implements Listener {
                     }
                 }
                 
-                for (Map.Entry<UUID, Map<UUID, Set<PotionEffectType>>> outerEntry : activeTrustEffectMap.entrySet()) {
+                // Iterate over a copy to avoid ConcurrentModificationException
+                Map<UUID, Map<UUID, Set<PotionEffectType>>> activeTrustEffectMapCopy = new ConcurrentHashMap<>(activeTrustEffectMap);
+                
+                for (Map.Entry<UUID, Map<UUID, Set<PotionEffectType>>> outerEntry : activeTrustEffectMapCopy.entrySet()) {
                     UUID thrusterUuid = outerEntry.getKey();
                     Map<UUID, Set<PotionEffectType>> oldAllyMap = outerEntry.getValue();
                     Map<UUID, Set<PotionEffectType>> newAllyMap = newTrustEffectMap.get(thrusterUuid);
@@ -114,46 +119,59 @@ public class ListenerManager implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Player player : plugin.getServer().getOnlinePlayers()) {
-                    boolean hasCloudheart = false;
-                    for (ItemStack item : player.getInventory().getContents()) {
-                        if (CustomItem.isCustomItem(item, "cloudheart")) {
-                            hasCloudheart = true;
-                            break;
+                // Run heavy inventory checks asynchronously
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                    for (Player player : plugin.getServer().getOnlinePlayers()) {
+                        boolean hasCloudheart = false;
+                        for (ItemStack item : player.getInventory().getContents()) {
+                            if (CustomItem.isCustomItem(item, "cloudheart")) {
+                                hasCloudheart = true;
+                                break;
+                            }
+                        }
+                        if (!hasCloudheart) {
+                            ItemStack offHand = player.getInventory().getItemInOffHand();
+                            if (CustomItem.isCustomItem(offHand, "cloudheart")) {
+                                hasCloudheart = true;
+                            }
+                        }
+
+                        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+                        if (heart == null) continue;
+
+                        if (hasCloudheart && heart.getAspect() != AspectType.CLOUD) {
+                            int previousTier = heart.getTier();
+                            heart.setAspect(AspectType.CLOUD);
+                            heart.setTier(previousTier >= 2 ? previousTier : 1);
+                            heart.setCloudUnlocked(true);
+                            plugin.getHeartManager().saveHeart(heart);
+                            
+                            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                                if (player.isOnline()) {
+                                    player.sendMessage("§b§lThe Cloudheart pulses... You are bound to the Cloud Aspect!");
+                                    plugin.getScoreboardManager().updatePlayer(player);
+                                    HeartOfTheSea.ensureBound(player);
+                                }
+                            });
+                        } else if (!hasCloudheart && heart.getAspect() == AspectType.CLOUD) {
+                            AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
+                                    .filter(a -> a != AspectType.CLOUD && a != AspectType.WINTER)
+                                    .toArray(AspectType[]::new);
+                            AspectType random = nonEvent[ThreadLocalRandom.current().nextInt(nonEvent.length)];
+                            heart.setAspect(random);
+                            heart.setCloudUnlocked(false);
+                            plugin.getHeartManager().saveHeart(heart);
+                            
+                            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                                if (player.isOnline()) {
+                                    player.sendMessage("§c§lThe Cloudheart has been lost... The Cloud Aspect fades.");
+                                    plugin.getScoreboardManager().updatePlayer(player);
+                                    HeartOfTheSea.ensureBound(player);
+                                }
+                            });
                         }
                     }
-                    if (!hasCloudheart) {
-                        ItemStack offHand = player.getInventory().getItemInOffHand();
-                        if (CustomItem.isCustomItem(offHand, "cloudheart")) {
-                            hasCloudheart = true;
-                        }
-                    }
-
-                    Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
-                    if (heart == null) continue;
-
-                    if (hasCloudheart && heart.getAspect() != AspectType.CLOUD) {
-                        int previousTier = heart.getTier();
-                        heart.setAspect(AspectType.CLOUD);
-                        heart.setTier(previousTier >= 2 ? previousTier : 1);
-                        heart.setCloudUnlocked(true);
-                        plugin.getHeartManager().saveHeart(heart);
-                        player.sendMessage("§b§lThe Cloudheart pulses... You are bound to the Cloud Aspect!");
-                        plugin.getScoreboardManager().updatePlayer(player);
-                        HeartOfTheSea.ensureBound(player);
-                    } else if (!hasCloudheart && heart.getAspect() == AspectType.CLOUD) {
-                        AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
-                                .filter(a -> a != AspectType.CLOUD && a != AspectType.WINTER)
-                                .toArray(AspectType[]::new);
-                        AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
-                        heart.setAspect(random);
-                        heart.setCloudUnlocked(false);
-                        plugin.getHeartManager().saveHeart(heart);
-                        player.sendMessage("§c§lThe Cloudheart has been lost... The Cloud Aspect fades.");
-                        plugin.getScoreboardManager().updatePlayer(player);
-                        HeartOfTheSea.ensureBound(player);
-                    }
-                }
+                });
             }
         }.runTaskTimer(plugin, 20L, 20L);
     }
@@ -249,7 +267,7 @@ public class ListenerManager implements Listener {
         player.removeMetadata("revival_shield", com.aspectsmp.AspectSMP.getInstance());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         Heart heart = plugin.getHeartManager().getOrCreateHeart(player.getUniqueId()).join();
@@ -294,7 +312,7 @@ public class ListenerManager implements Listener {
             AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
                     .filter(a -> !a.isEventAspect())
                     .toArray(AspectType[]::new);
-            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+            AspectType random = nonEvent[ThreadLocalRandom.current().nextInt(nonEvent.length)];
             heart.setAspect(random);
             heart.setCloudUnlocked(false);
             player.sendMessage("§cThe Aspect of the Cloud has been removed. Win the Ninth Sky event to unlock it.");
@@ -314,7 +332,7 @@ public class ListenerManager implements Listener {
             AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
                     .filter(a -> !a.isEventAspect())
                     .toArray(AspectType[]::new);
-            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+            AspectType random = nonEvent[ThreadLocalRandom.current().nextInt(nonEvent.length)];
             heart.setAspect(random);
             heart.setCloudUnlocked(false);
             player.sendMessage("§cThe Aspect of Shadow has been removed. Win the Shadow's Descent event to unlock it.");
@@ -334,7 +352,7 @@ public class ListenerManager implements Listener {
             AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
                     .filter(a -> !a.isEventAspect())
                     .toArray(AspectType[]::new);
-            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+            AspectType random = nonEvent[ThreadLocalRandom.current().nextInt(nonEvent.length)];
             heart.setAspect(random);
             heart.setWinterUnlocked(false);
             player.sendMessage("§cThe Aspect of Storm has been removed. Win the Tempest's Fury event to unlock it.");
@@ -356,7 +374,7 @@ public class ListenerManager implements Listener {
             AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
                     .filter(a -> !a.isEventAspect())
                     .toArray(AspectType[]::new);
-            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+            AspectType random = nonEvent[ThreadLocalRandom.current().nextInt(nonEvent.length)];
             heart.setAspect(random);
             heart.setWinterUnlocked(false);
             player.sendMessage("§cThe Aspect of Winter has been removed. Win the Frozen Eclipse event to unlock it.");
@@ -368,7 +386,7 @@ public class ListenerManager implements Listener {
             AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
                     .filter(a -> !a.isEventAspect())
                     .toArray(AspectType[]::new);
-            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+            AspectType random = nonEvent[ThreadLocalRandom.current().nextInt(nonEvent.length)];
             heart.setAspect(random);
             heart.setCloudUnlocked(false);
             player.sendMessage("§cThe Aspect of Shadow has been removed. Win the Shadow event to unlock it.");
@@ -380,7 +398,7 @@ public class ListenerManager implements Listener {
             AspectType[] nonEvent = java.util.Arrays.stream(AspectType.values())
                     .filter(a -> !a.isEventAspect())
                     .toArray(AspectType[]::new);
-            AspectType random = nonEvent[new java.util.Random().nextInt(nonEvent.length)];
+            AspectType random = nonEvent[ThreadLocalRandom.current().nextInt(nonEvent.length)];
             heart.setAspect(random);
             heart.setWinterUnlocked(false);
             player.sendMessage("§cThe Aspect of Storm has been removed. Win the Storm event to unlock it.");
@@ -404,7 +422,7 @@ public class ListenerManager implements Listener {
         }, 20L);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             Player player = event.getPlayer();
@@ -419,7 +437,7 @@ public class ListenerManager implements Listener {
         }, 20L);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
@@ -429,6 +447,9 @@ public class ListenerManager implements Listener {
         plugin.getScoreboardManager().onPlayerQuit(player);
         plugin.getCombatManager().handleLogout(player);
         removeTrustBuffs(player);
+        
+        // Clean up trust effect map to prevent memory leak
+        activeTrustEffectMap.remove(player.getUniqueId());
         
         // Clean up shadow stealth teams
         com.aspectsmp.core.ShadowRuleModifier shadowModifier = 
@@ -468,7 +489,7 @@ public class ListenerManager implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
@@ -797,7 +818,7 @@ public class ListenerManager implements Listener {
         plugin.getVisualEffectsManager().playStabilityChangeVisuals(player, oldStability, heart.getStability());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof org.bukkit.entity.Player player)) return;
         
@@ -836,7 +857,7 @@ public class ListenerManager implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerKill(org.bukkit.event.entity.PlayerDeathEvent event) {
         if (event.getEntity().getKiller() instanceof Player killer) {
             Heart heart = plugin.getHeartManager().getHeart(killer.getUniqueId()).orElse(null);
@@ -852,7 +873,7 @@ public class ListenerManager implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerDeath(org.bukkit.event.entity.EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player && event.getCause() == org.bukkit.event.entity.EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
             if (player.getHealth() - event.getFinalDamage() <= 0) {
@@ -867,7 +888,7 @@ public class ListenerManager implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         
@@ -879,7 +900,7 @@ public class ListenerManager implements Listener {
             if (frozenEclipse != null && frozenEclipse.isActive() && frozenEclipse.getPhase() == com.aspectsmp.event.EventPhase.FROZEN_CRUCIBLE) {
                 if (frozenEclipse.getParticipants().contains(player.getUniqueId())) {
                     event.setCancelled(true);
-                    World overworld = Bukkit.getWorlds().get(0);
+                    World overworld = Bukkit.getWorld("world");
                     if (overworld != null) {
                         player.teleport(overworld.getSpawnLocation());
                     }
@@ -896,7 +917,7 @@ public class ListenerManager implements Listener {
         }
         
         if (heart.getAspect() == AspectType.RIFT && event.getCause() != EntityDamageEvent.DamageCause.VOID) {
-            if (new java.util.Random().nextDouble() < 0.2 && !player.hasMetadata("rift_blink_cd")) {
+            if (ThreadLocalRandom.current().nextDouble() < 0.2 && !player.hasMetadata("rift_blink_cd")) {
                 org.bukkit.Location loc = player.getLocation().getDirection().multiply(5).toLocation(player.getWorld());
                 if (loc.getBlock().getType().isAir()) {
                     player.teleport(loc);
@@ -938,7 +959,7 @@ public class ListenerManager implements Listener {
             return;
         }
         
-        if (new java.util.Random().nextDouble() < 0.5) {
+        if (ThreadLocalRandom.current().nextDouble() < 0.5) {
             event.setDropItems(false);
             player.getWorld().dropItemNaturally(event.getBlock().getLocation().add(0.5, 0.5, 0.5), new org.bukkit.inventory.ItemStack(org.bukkit.Material.GOLD_INGOT, 1));
         }
