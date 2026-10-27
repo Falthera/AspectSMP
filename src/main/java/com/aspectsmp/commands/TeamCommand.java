@@ -272,18 +272,30 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-            completions.addAll(List.of("create", "invite", "join", "leave", "kick", "disband", "info", "list"));
+            String input = args[0].toLowerCase(Locale.ROOT);
+            for (String sub : List.of("create", "invite", "join", "leave", "kick", "disband", "info", "list")) {
+                if (sub.startsWith(input)) {
+                    completions.add(sub);
+                }
+            }
         } else if (args.length == 2) {
             String sub = args[0].toLowerCase(Locale.ROOT);
+            String input = args[1].toLowerCase(Locale.ROOT);
             if (sub.equals("invite") || sub.equals("kick")) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (!p.getUniqueId().equals(((Player) sender).getUniqueId())) {
-                        completions.add(p.getName());
+                        String name = p.getName();
+                        if (name.toLowerCase(Locale.ROOT).startsWith(input)) {
+                            completions.add(name);
+                        }
                     }
                 }
             } else if (sub.equals("join")) {
                 for (Team team : teamManager.getAllTeams()) {
-                    completions.add(team.getName());
+                    String name = team.getName();
+                    if (name.toLowerCase(Locale.ROOT).startsWith(input)) {
+                        completions.add(name);
+                    }
                 }
             }
         }

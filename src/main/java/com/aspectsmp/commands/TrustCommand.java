@@ -147,18 +147,28 @@ public class TrustCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-            completions.addAll(List.of("add", "remove", "clear", "list"));
+            String input = args[0].toLowerCase(Locale.ROOT);
+            for (String sub : List.of("add", "remove", "clear", "list")) {
+                if (sub.startsWith(input)) {
+                    completions.add(sub);
+                }
+            }
         } else if (args.length == 2 && "add".equals(args[0].toLowerCase(Locale.ROOT))) {
+            String input = args[1].toLowerCase(Locale.ROOT);
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (!p.getUniqueId().equals(((Player) sender).getUniqueId())) {
-                    completions.add(p.getName());
+                    String name = p.getName();
+                    if (name.toLowerCase(Locale.ROOT).startsWith(input)) {
+                        completions.add(name);
+                    }
                 }
             }
         } else if (args.length == 2 && "remove".equals(args[0].toLowerCase(Locale.ROOT))) {
+            String input = args[1].toLowerCase(Locale.ROOT);
             Set<UUID> trusted = trustManager.getTrusted(((Player) sender).getUniqueId());
             for (UUID uuid : trusted) {
                 String name = Bukkit.getOfflinePlayer(uuid).getName();
-                if (name != null) {
+                if (name != null && name.toLowerCase(Locale.ROOT).startsWith(input)) {
                     completions.add(name);
                 }
             }

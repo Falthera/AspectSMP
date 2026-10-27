@@ -459,4 +459,17 @@ public class EventEffects {
             default -> Color.WHITE;
         };
     }
+
+    public void shutdown() {
+        playerBossBars.forEach((uuid, bar) -> {
+            try {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player != null && player.isOnline()) {
+                    player.hideBossBar(bar);
+                }
+            } catch (Exception ignored) {}
+        });
+        playerBossBars.clear();
+        lastPlayerLocations.clear();
+    }
 }

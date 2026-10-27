@@ -614,6 +614,16 @@ public class TempestsFuryEvent extends BaseEvent {
         builder.addString(modelDataString);
         item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, builder.build());
     }
+
+    @Override
+    public void saveState() {
+        // Save event state to storage
+    }
+
+    @Override
+    public void loadState() {
+        // Load event state from storage
+    }
 }
 
 

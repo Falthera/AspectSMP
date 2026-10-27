@@ -37,7 +37,6 @@ public class LeaveEventCommand implements CommandExecutor {
         String eventName = "";
         Location returnLoc = plugin.getEventJoinLocation(player.getUniqueId());
 
-        // Check Ninth Sky Event
         NinthSkyEvent ninthSky = plugin.getEventManager().getNinthSkyEvent();
         if (ninthSky != null && ninthSky.isActive() && ninthSky.getParticipants().contains(player.getUniqueId())) {
             ninthSky.getParticipants().remove(player.getUniqueId());
@@ -45,7 +44,6 @@ public class LeaveEventCommand implements CommandExecutor {
             eventName = "Awakening of the Ninth Sky";
         }
 
-        // Check Frozen Eclipse Event
         FrozenEclipseEvent frozenEclipse = plugin.getEventManager().getFrozenEclipseEvent();
         if (frozenEclipse != null && frozenEclipse.isActive() && frozenEclipse.getParticipants().contains(player.getUniqueId())) {
             frozenEclipse.getParticipants().remove(player.getUniqueId());
@@ -53,7 +51,6 @@ public class LeaveEventCommand implements CommandExecutor {
             eventName = "Frozen Eclipse";
         }
 
-        // Check Shadow's Descent Event
         ShadowsDescentEvent shadowsDescent = plugin.getEventManager().getShadowsDescentEvent();
         if (shadowsDescent != null && shadowsDescent.isActive() && shadowsDescent.getParticipants().contains(player.getUniqueId())) {
             shadowsDescent.getParticipants().remove(player.getUniqueId());
@@ -61,7 +58,6 @@ public class LeaveEventCommand implements CommandExecutor {
             eventName = "Shadow's Descent";
         }
 
-        // Check Tempest's Fury Event
         TempestsFuryEvent tempestsFury = plugin.getEventManager().getTempestsFuryEvent();
         if (tempestsFury != null && tempestsFury.isActive() && tempestsFury.getParticipants().contains(player.getUniqueId())) {
             tempestsFury.getParticipants().remove(player.getUniqueId());
@@ -79,7 +75,6 @@ public class LeaveEventCommand implements CommandExecutor {
         
         plugin.removeEventJoinLocation(player.getUniqueId());
 
-        // Teleport back to original location or overworld spawn
         Location targetLoc = returnLoc != null ? returnLoc : getOverworldSpawn();
         if (targetLoc != null) {
             player.teleport(targetLoc);
@@ -92,7 +87,7 @@ public class LeaveEventCommand implements CommandExecutor {
     }
 
     private Location getOverworldSpawn() {
-        World overworld = Bukkit.getWorlds().get(0);
+        World overworld = Bukkit.getWorld("world");
         if (overworld != null) {
             Location spawn = overworld.getSpawnLocation();
             int safeY = overworld.getHighestBlockYAt(spawn);

@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class VisualEffectsManager {
@@ -20,6 +21,8 @@ public class VisualEffectsManager {
     private final AspectSMP plugin;
     private final Map<UUID, BukkitTask> passiveEffectTasks = new ConcurrentHashMap<>();
     private final Map<UUID, BukkitTask> ambientTrailTasks = new ConcurrentHashMap<>();
+    private final Map<UUID, BukkitTask> orbitEffectTasks = new ConcurrentHashMap<>();
+    private final Map<UUID, BukkitTask> trailEffectTasks = new ConcurrentHashMap<>();
     private final Map<UUID, Map<String, Object>> playerEffectState = new ConcurrentHashMap<>();
     private final AspectVisualThemes themes;
     private final ScreenEffectsAPI screenEffects;
@@ -66,22 +69,36 @@ public class VisualEffectsManager {
 
     public void startPassiveEffects(Player player) {
         if (!enabled) return;
-        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+        
+        // Use async API properly - join on the future
+        CompletableFuture<Heart> heartFuture = plugin.getHeartManager().getHeart(player);
+        if (heartFuture == null) return;
+        
+        Heart heart;
+        try {
+            heart = heartFuture.join();
+        } catch (Exception e) {
+            return;
+        }
+        
         if (heart == null || heart.isDormant()) return;
 
         AspectType aspect = heart.getAspect();
         AspectVisualThemes.Theme theme = themes.getTheme(aspect);
+
+        // Cancel any existing tasks before starting new ones
+        stopPassiveEffects(player);
 
         // Use the new advanced passive aura system
         particles.startPassiveAura(player, theme, heart.getStability());
         
         // Start orbit effect based on tier
         if (heart.getTier() >= 2) {
-            particles.startOrbitEffect(player, theme, heart.getTier());
+            startOrbitEffect(player, theme, heart.getTier());
         }
         
         // Start trail effect
-        particles.startTrailEffect(player, theme);
+        startTrailEffect(player, theme);
 
         // Start ambient soundscape
         soundscapes.startAmbientSoundscape(player, theme, heart.getStability());
@@ -93,7 +110,17 @@ public class VisualEffectsManager {
             public void run() {
                 if (!player.isOnline() || !enabled) { cancel(); return; }
                 
-                Heart currentHeart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
+                CompletableFuture<Heart> currentHeartFuture = plugin.getHeartManager().getHeart(player);
+                if (currentHeartFuture == null) { cancel(); return; }
+                
+                Heart currentHeart;
+                try {
+                    currentHeart = currentHeartFuture.join();
+                } catch (Exception e) {
+                    cancel();
+                    return;
+                }
+                
                 if (currentHeart == null || currentHeart.isDormant()) {
                     cancel();
                     return;
@@ -143,6 +170,11 @@ public class VisualEffectsManager {
     }
 
     private void startAmbientTrail(Player player, AspectVisualThemes.Theme theme) {
+        // Don't create duplicate task if one already exists
+        if (ambientTrailTasks.containsKey(player.getUniqueId())) {
+            return;
+        }
+        
         BukkitTask trailTask = new BukkitRunnable() {
             Location lastLoc = player.getLocation();
             @Override
@@ -161,12 +193,109 @@ public class VisualEffectsManager {
         ambientTrailTasks.put(player.getUniqueId(), trailTask);
     }
 
+    public void startOrbitEffect(Player player, AspectVisualThemes.Theme theme, int tier) {
+        UUID id = player.getUniqueId();
+        // Cancel existing orbit task if any
+        stopOrbitEffect(player);
+        
+        BukkitTask task = new BukkitRunnable() {
+            double angle = 0;
+            double verticalAngle = 0;
+            int tick = 0;
+            @Override
+            public void run() {
+                if (!player.isOnline() || player.isDead()) { cancel(); return; }
+
+                Location loc = player.getLocation().add(0, 1.5, 0);
+                int maxParticles = 4 + tier;
+                int particlesPerTick = Math.max(1, maxParticles / 2);
+                
+                for (int i = 0; i < particlesPerTick; i++) {
+                    int idx = (tick + i) % maxParticles;
+                    double a = angle + (idx * Math.PI * 2 / maxParticles);
+                    double radius = 1.0 + tier * 0.3;
+                    double y = Math.sin(verticalAngle + idx) * 0.5;
+                    
+                    Vector v = new Vector(Math.cos(a) * radius, y, Math.sin(a) * radius);
+                    loc.add(v);
+                    player.getWorld().spawnParticle(theme.getOrbitParticle(), loc, 1, 0, 0, 0, theme.getOrbitSpeed());
+                    loc.subtract(v);
+                }
+
+                angle += theme.getOrbitSpeed();
+                verticalAngle += 0.02;
+                tick++;
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
+
+        orbitEffectTasks.put(id, task);
+    }
+
+    public void stopOrbitEffect(Player player) {
+        BukkitTask task = orbitEffectTasks.remove(player.getUniqueId());
+        if (task != null) task.cancel();
+        particles.stopOrbitEffect(player.getUniqueId());
+    }
+
+    public void startTrailEffect(Player player, AspectVisualThemes.Theme theme) {
+        UUID id = player.getUniqueId();
+        // Cancel existing trail task if any
+        stopTrailEffect(player);
+        
+        Location[] lastLoc = { player.getLocation() };
+
+        BukkitTask task = new BukkitRunnable() {
+            int tick = 0;
+            @Override
+            public void run() {
+                if (!player.isOnline() || player.isDead()) { cancel(); return; }
+
+                Location loc = player.getLocation();
+                
+                // Only spawn if moved
+                if (loc.distance(lastLoc[0]) > 0.2) {
+                    int trailCount = Math.min(theme.getTrailParticleCount(), 3);
+                    for (int i = 0; i < trailCount; i++) {
+                        Vector offset = new Vector(
+                            (Math.random() - 0.5) * 0.3,
+                            Math.random() * 1.0,
+                            (Math.random() - 0.5) * 0.3
+                        );
+                        loc.add(offset);
+                        player.getWorld().spawnParticle(theme.getTrailParticle(), loc, 1, 0, 0, 0, theme.getTrailSpeed());
+                        loc.subtract(offset);
+                    }
+                    
+                    // TRAIL particle toward last location (every 3 ticks)
+                    if (theme.getTrailParticleAlt() != null && tick % 3 == 0) {
+                        // Use particle builder API
+                        loc.getWorld().spawnParticle(theme.getTrailParticleAlt(), loc, 1, 0, 0, 0, 0);
+                    }
+                    
+                    lastLoc[0] = loc.clone();
+                }
+                tick++;
+            }
+        }.runTaskTimer(plugin, 0L, 2L);
+
+        trailEffectTasks.put(id, task);
+    }
+
+    public void stopTrailEffect(Player player) {
+        BukkitTask task = trailEffectTasks.remove(player.getUniqueId());
+        if (task != null) task.cancel();
+        particles.stopTrailEffect(player.getUniqueId());
+    }
+
     public void stopPassiveEffects(Player player) {
         BukkitTask passive = passiveEffectTasks.remove(player.getUniqueId());
         if (passive != null) passive.cancel();
 
         BukkitTask trail = ambientTrailTasks.remove(player.getUniqueId());
         if (trail != null) trail.cancel();
+
+        stopOrbitEffect(player);
+        stopTrailEffect(player);
 
         particles.clearPlayer(player);
         soundscapes.clearPlayer(player);
@@ -662,6 +791,10 @@ public class VisualEffectsManager {
         passiveEffectTasks.clear();
         ambientTrailTasks.values().forEach(BukkitTask::cancel);
         ambientTrailTasks.clear();
+        orbitEffectTasks.values().forEach(BukkitTask::cancel);
+        orbitEffectTasks.clear();
+        trailEffectTasks.values().forEach(BukkitTask::cancel);
+        trailEffectTasks.clear();
         playerEffectState.clear();
         particles.shutdown();
         soundscapes.shutdown();

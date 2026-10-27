@@ -113,8 +113,8 @@ private static void setCustomModelDataString(ItemStack item, String modelDataStr
         return ownerStr != null && ownerStr.equals(player.getUniqueId().toString());
     }
 
-    public static void ensureBound(Player player) {
-        Heart heart = AspectSMP.getInstance().getHeartManager().getOrCreateHeart(player.getUniqueId());
+public static void ensureBound(Player player) {
+        Heart heart = AspectSMP.getInstance().getHeartManager().getOrCreateHeart(player.getUniqueId()).join();
         if (heart == null) return;
 
         boolean foundAny = false;

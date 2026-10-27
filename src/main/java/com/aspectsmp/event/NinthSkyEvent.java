@@ -12,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,51 +19,66 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class NinthSkyEvent extends BaseEvent {
 
-    private EventPhase phase = EventPhase.SKY_AWAKENS;
-    private boolean active = false;
-    private final Set<UUID> participants = new HashSet<>();
-    private int fragmentsCollected = 0;
+    private final AtomicReference<EventPhase> phase = new AtomicReference<>(EventPhase.SKY_AWAKENS);
+    private final AtomicInteger fragmentsCollected = new AtomicInteger(0);
     private static final int REQUIRED_FRAGMENTS = 50;
     private static final int MAX_MOB_SPAWNS = 500;
-    private int mobsSpawned = 0;
-    private LivingEntity skyGuardianEntity;
-    private BukkitTask skyEffectsTask;
-    private BukkitTask mobSpamTask;
-    private BukkitTask convergenceTask;
-    private final List<BukkitTask> scheduledTransitions = new ArrayList<>();
-    private final List<Location> riftLocations = new ArrayList<>();
-    private final List<Location> stormLocations = new ArrayList<>();
-    private int stormIntensity = 0;
-    private long eventStartTime = 0;
-    private static final long EVENT_DURATION_MS = 7L * 24 * 60 * 60 * 1000; // 7 days
+    private final AtomicInteger mobsSpawned = new AtomicInteger(0);
+    private volatile LivingEntity skyGuardianEntity;
+    private final AtomicLong eventStartTime = new AtomicLong(0);
+    private static final long EVENT_DURATION_MS = 7L * 24 * 60 * 60 * 1000;
+    private static final long PHASE_DELAY_HOURS = 2 * 60 * 60 * 1000; // 2 hours in ms
+    
+    // Missing fields
+    private final List<Location> riftLocations = new CopyOnWriteArrayList<>();
+    private final List<Location> stormLocations = new CopyOnWriteArrayList<>();
+    private final AtomicInteger stormIntensity = new AtomicInteger(0);
 
     public NinthSkyEvent(AspectSMP plugin) {
         super(plugin);
     }
 
-    public boolean isActive() {
-        return active;
+    @Override
+    public EventPhase getPhase() {
+        return phase.get();
     }
 
-    public EventPhase getPhase() {
-        return phase;
+    @Override
+    public void setPhase(EventPhase phase) {
+        this.phase.set(phase);
+    }
+
+    @Override
+    public boolean isActive() {
+        return active.get();
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        this.active.set(active);
     }
 
     public LivingEntity getSkyGuardianEntity() {
         return skyGuardianEntity;
     }
 
+    @Override
     public Set<UUID> getParticipants() {
-        return participants;
+        return super.getParticipants();
     }
 
+    @Override
     public void startEvent() {
-        if (active) return;
-        
-        // Check if Cloud Aspect is already claimed
+        if (isActive()) return;
+
         if (plugin.isAspectClaimed(AspectType.CLOUD)) {
             UUID holder = plugin.getAspectHolder(AspectType.CLOUD);
             Player holderPlayer = Bukkit.getPlayer(holder);
@@ -73,21 +87,21 @@ public class NinthSkyEvent extends BaseEvent {
             Bukkit.broadcastMessage("§cThe Awakening of the Ninth Sky cannot begin.");
             return;
         }
-        
-        active = true;
-        phase = EventPhase.SKY_AWAKENS;
-        fragmentsCollected = 0;
-        mobsSpawned = 0;
-        participants.clear();
+
+        setActive(true);
+        phase.set(EventPhase.SKY_AWAKENS);
+        fragmentsCollected.set(0);
+        mobsSpawned.set(0);
+        getParticipants().clear();
         skyGuardianEntity = null;
         riftLocations.clear();
         stormLocations.clear();
-        stormIntensity = 0;
-        eventStartTime = System.currentTimeMillis();
+        stormIntensity.set(0);
+        eventStartTime.set(System.currentTimeMillis());
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getWorld().getEnvironment() == World.Environment.NORMAL) {
-                participants.add(player.getUniqueId());
+                addParticipant(player.getUniqueId());
             }
         }
 
@@ -112,54 +126,33 @@ public class NinthSkyEvent extends BaseEvent {
             }
         }
 
-        schedulePhaseTransition(200L, EventPhase.SKY_FRAGMENTS);
+        schedulePhaseTransition(PHASE_DELAY_HOURS / 360, EventPhase.SKY_FRAGMENTS); // 20 seconds
         startGlobalEffects();
     }
 
+    @Override
     public void stopEvent() {
-        active = false;
-        cancelAllTasks();
-        participants.clear();
-        fragmentsCollected = 0;
-        mobsSpawned = 0;
+        setActive(false);
+        stopAllTasks();
+        getParticipants().clear();
+        fragmentsCollected.set(0);
+        mobsSpawned.set(0);
         skyGuardianEntity = null;
         riftLocations.clear();
         stormLocations.clear();
         Bukkit.broadcastMessage("§cThe Awakening of the Ninth Sky has been stopped by an admin.");
     }
 
-    private void cancelAllTasks() {
-        if (skyEffectsTask != null) skyEffectsTask.cancel();
-        if (mobSpamTask != null) mobSpamTask.cancel();
-        if (convergenceTask != null) convergenceTask.cancel();
-        for (BukkitTask task : scheduledTransitions) {
-            task.cancel();
-        }
-        scheduledTransitions.clear();
-    }
-
-    private void schedulePhaseTransition(long delay, EventPhase nextPhase) {
-        BukkitTask task = new BukkitRunnable() {
-            @Override
-            public void run() {
-                scheduledTransitions.remove(this);
-                if (!active) { cancel(); return; }
-                advancePhase(nextPhase);
-            }
-        }.runTaskLater(plugin, delay);
-        scheduledTransitions.add(task);
-    }
-
     private void startGlobalEffects() {
-        skyEffectsTask = new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             int tick = 0;
             @Override
             public void run() {
-                if (!active) { cancel(); return; }
+                if (!isActive()) { cancel(); return; }
                 tick++;
 
-                if (System.currentTimeMillis() - eventStartTime > EVENT_DURATION_MS) {
-                    if (phase != EventPhase.SKY_COMPLETED) {
+                if (System.currentTimeMillis() - eventStartTime.get() > EVENT_DURATION_MS) {
+                    if (phase.get() != EventPhase.SKY_COMPLETED) {
                         advancePhase(EventPhase.SKY_COMPLETED);
                     }
                     cancel();
@@ -169,7 +162,7 @@ public class NinthSkyEvent extends BaseEvent {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getWorld().getEnvironment() != World.Environment.NORMAL) continue;
 
-                    if (phase == EventPhase.SKY_FRAGMENTS || phase == EventPhase.SKY_RIFTS_OPEN) {
+                    if (phase.get() == EventPhase.SKY_FRAGMENTS || phase.get() == EventPhase.SKY_RIFTS_OPEN) {
                         if (tick % 40 == 0) {
                             player.getWorld().spawnParticle(org.bukkit.Particle.END_ROD,
                                 player.getLocation().add(0, 2, 0), 3, 2, 1, 2, 0.01);
@@ -178,7 +171,7 @@ public class NinthSkyEvent extends BaseEvent {
                         }
                     }
 
-                    if (phase == EventPhase.SKY_STORMS || phase == EventPhase.SKY_GUARDIAN || phase == EventPhase.SKY_CONVERGENCE) {
+                    if (phase.get() == EventPhase.SKY_STORMS || phase.get() == EventPhase.SKY_GUARDIAN || phase.get() == EventPhase.SKY_CONVERGENCE) {
                         if (tick % 20 == 0) {
                             player.getWorld().spawnParticle(org.bukkit.Particle.END_ROD,
                                 player.getLocation().add(0, 3, 0), 5, 3, 2, 3, 0.02);
@@ -191,21 +184,21 @@ public class NinthSkyEvent extends BaseEvent {
                         }
                     }
 
-                    if (phase == EventPhase.SKY_CONVERGENCE) {
+                    if (phase.get() == EventPhase.SKY_CONVERGENCE) {
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BREEZE_WIND_BURST, 0.3f, 0.5f);
                     }
                 }
             }
         }.runTaskTimer(plugin, 0L, 1L);
+        trackTask(task);
     }
 
     public void advancePhase(EventPhase next) {
-        for (BukkitTask task : scheduledTransitions) { task.cancel(); }
-        scheduledTransitions.clear();
+        for (BukkitTask task : getActiveTasks()) { task.cancel(); }
+        stopAllTasks();
 
-        this.phase = next;
+        phase.set(next);
         
-        // Play visual effects for all online players
         for (Player player : Bukkit.getOnlinePlayers()) {
             plugin.getVisualEffectsManager().playEventPhaseTransition(player, next, AspectType.CLOUD);
         }
@@ -219,16 +212,16 @@ public class NinthSkyEvent extends BaseEvent {
                 Bukkit.broadcastMessage("§7Defeat §bSky Wardens §7guarding them to collect fragments.");
                 Bukkit.broadcastMessage("§7Rifts will open periodically, spawning more Wardens.");
                 startFragmentPhase();
-                schedulePhaseTransition(20000L, EventPhase.SKY_RIFTS_OPEN); // ~2.7 hours
+                schedulePhaseTransition(PHASE_DELAY_HOURS, EventPhase.SKY_RIFTS_OPEN); // 2 hours
             }
             case SKY_RIFTS_OPEN -> {
                 Bukkit.broadcastMessage("§d§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                Bukkit.broadcastMessage("§d§l   THE SKY RIFS TEAR OPEN - STORMS APPROACH");
+                Bukkit.broadcastMessage("§d§l   THE SKY RIFTS TEAR OPEN - STORMS APPROACH");
                 Bukkit.broadcastMessage("§d§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 Bukkit.broadcastMessage("§7Massive rifts open across the world! §bSky Wardens §7pour through.");
                 Bukkit.broadcastMessage("§7Collect remaining fragments before the storms consume all!");
                 openSkyRifts();
-                schedulePhaseTransition(30000L, EventPhase.SKY_STORMS); // ~4 hours
+                schedulePhaseTransition(PHASE_DELAY_HOURS + 7200000, EventPhase.SKY_STORMS); // 4 hours
             }
             case SKY_STORMS -> {
                 Bukkit.broadcastMessage("§b§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -237,7 +230,7 @@ public class NinthSkyEvent extends BaseEvent {
                 Bukkit.broadcastMessage("§7Violent storms ravage the overworld. §bLevitation §7affects all!");
                 Bukkit.broadcastMessage("§7Survive the storms and prepare for the Guardian's arrival.");
                 startStorms();
-                schedulePhaseTransition(40000L, EventPhase.SKY_GUARDIAN); // ~5.5 hours
+                schedulePhaseTransition(PHASE_DELAY_HOURS * 2 + 7200000, EventPhase.SKY_GUARDIAN); // 5.5 hours
             }
             case SKY_GUARDIAN -> {
                 Bukkit.broadcastMessage("§c§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -259,37 +252,47 @@ public class NinthSkyEvent extends BaseEvent {
                 Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 Bukkit.broadcastMessage("§a§l   THE NINTH SKY HAS BEEN CONQUERED!");
                 Bukkit.broadcastMessage("§a§l━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                active = false;
+                setActive(false);
             }
             default -> {}
         }
     }
 
-    private void startFragmentPhase() {
-        mobSpamTask = new BukkitRunnable() {
+    private void schedulePhaseTransition(long delayMs, EventPhase nextPhase) {
+        BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!active || phase != EventPhase.SKY_FRAGMENTS && phase != EventPhase.SKY_RIFTS_OPEN) {
+                if (!isActive()) { cancel(); return; }
+                advancePhase(nextPhase);
+            }
+        }.runTaskLater(plugin, delayMs / 50); // Convert ms to ticks (1 tick = 50ms)
+        trackTask(task);
+    }
+
+    private void startFragmentPhase() {
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!isActive() || (phase.get() != EventPhase.SKY_FRAGMENTS && phase.get() != EventPhase.SKY_RIFTS_OPEN)) {
                     cancel();
-                    mobSpamTask = null;
                     return;
                 }
-                if (mobsSpawned >= MAX_MOB_SPAWNS) return;
+                if (mobsSpawned.get() >= MAX_MOB_SPAWNS) return;
                 spawnFragmentGuards();
             }
         }.runTaskTimer(plugin, 0L, 200L); // Every 10 seconds
-        schedulePhaseTransition(20000L, EventPhase.SKY_RIFTS_OPEN);
+        trackTask(task);
+        schedulePhaseTransition(PHASE_DELAY_HOURS, EventPhase.SKY_RIFTS_OPEN);
     }
 
     private void spawnFragmentGuards() {
-        @SuppressWarnings("unchecked")
-        List<Player> overworldPlayers = (List<Player>) Bukkit.getOnlinePlayers().stream()
+        List<Player> overworldPlayers = Bukkit.getOnlinePlayers().stream()
             .filter(p -> p.getWorld().getEnvironment() == World.Environment.NORMAL)
-            .filter(p -> participants.contains(p.getUniqueId()))
-            .toList();
+            .filter(p -> getParticipants().contains(p.getUniqueId()))
+            .collect(java.util.stream.Collectors.toList());
         if (overworldPlayers.isEmpty()) return;
 
-        int spawnsThisTick = Math.min(2, MAX_MOB_SPAWNS - mobsSpawned);
+        int spawnsThisTick = Math.min(2, MAX_MOB_SPAWNS - mobsSpawned.get());
         for (int i = 0; i < spawnsThisTick; i++) {
             Player randomPlayer = overworldPlayers.get(new Random().nextInt(overworldPlayers.size()));
             Location base = randomPlayer.getLocation();
@@ -302,8 +305,8 @@ public class NinthSkyEvent extends BaseEvent {
             int safeY = spawn.getWorld().getHighestBlockYAt(spawn) + 1;
             spawn.setY(safeY);
             if (spawn.getBlock().getType().isSolid()) spawn.setY(safeY + 1);
-            if (mobsSpawned >= MAX_MOB_SPAWNS) break;
-            mobsSpawned++;
+            if (mobsSpawned.get() >= MAX_MOB_SPAWNS) break;
+            mobsSpawned.incrementAndGet();
             switch (new Random().nextInt(3)) {
                 case 0 -> new CloudWraith(plugin, spawn);
                 case 1 -> new StormSentinel(plugin, spawn);
@@ -329,21 +332,21 @@ public class NinthSkyEvent extends BaseEvent {
         }
         Bukkit.broadcastMessage("§d§l" + riftLocations.size() + " SKY RIFTS HAVE OPENED! §7Find them and defeat the Wardens within!");
 
-        // Spawn extra wardens at rifts
-        new BukkitRunnable() {
+        BukkitTask task = new BukkitRunnable() {
             int ticks = 0;
             @Override
             public void run() {
-                if (!active || phase != EventPhase.SKY_RIFTS_OPEN) { cancel(); return; }
+                if (!isActive() || phase.get() != EventPhase.SKY_RIFTS_OPEN) { cancel(); return; }
                 ticks++;
                 for (Location rift : riftLocations) {
-                    if (Math.random() < 0.3 && mobsSpawned < MAX_MOB_SPAWNS) {
-                        mobsSpawned++;
+                    if (Math.random() < 0.3 && mobsSpawned.get() < MAX_MOB_SPAWNS) {
+                        mobsSpawned.incrementAndGet();
                         new CloudWraith(plugin, rift.clone().add(new Random().nextInt(10) - 5, 0, new Random().nextInt(10) - 5));
                     }
                 }
             }
         }.runTaskTimer(plugin, 0L, 100L);
+        trackTask(task);
     }
 
     private void startStorms() {
@@ -358,25 +361,26 @@ public class NinthSkyEvent extends BaseEvent {
             stormLocations.add(storm);
         }
 
-        new BukkitRunnable() {
+        BukkitTask stormTask = new BukkitRunnable() {
             int tick = 0;
             @Override
             public void run() {
-                if (!active || phase != EventPhase.SKY_STORMS && phase != EventPhase.SKY_GUARDIAN) { cancel(); return; }
+                if (!isActive() || (phase.get() != EventPhase.SKY_STORMS && phase.get() != EventPhase.SKY_GUARDIAN)) { cancel(); return; }
                 tick++;
-                stormIntensity = Math.min(3, tick / 2000);
+                stormIntensity.set(Math.min(3, tick / 2000));
 
                 for (Location storm : stormLocations) {
-                    storm.getWorld().spawnParticle(org.bukkit.Particle.CLOUD, storm, 50 + stormIntensity * 20, 20, 10, 20, 0.05);
-                    storm.getWorld().spawnParticle(org.bukkit.Particle.END_ROD, storm, 30 + stormIntensity * 10, 15, 5, 15, 0.03);
-                    storm.getWorld().spawnParticle(org.bukkit.Particle.ELECTRIC_SPARK, storm, 10 + stormIntensity * 5, 10, 5, 10, 0.02);
+                    int intensity = stormIntensity.get();
+                    storm.getWorld().spawnParticle(org.bukkit.Particle.CLOUD, storm, 50 + intensity * 20, 20, 10, 20, 0.05);
+                    storm.getWorld().spawnParticle(org.bukkit.Particle.END_ROD, storm, 30 + intensity * 10, 15, 5, 15, 0.03);
+                    storm.getWorld().spawnParticle(org.bukkit.Particle.ELECTRIC_SPARK, storm, 10 + intensity * 5, 10, 5, 10, 0.02);
 
                     if (tick % 40 == 0) {
                         for (Player player : Bukkit.getOnlinePlayers()) {
                             if (player.getWorld() == storm.getWorld() && player.getLocation().distanceSquared(storm) < 2500) {
                                 player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-                                    org.bukkit.potion.PotionEffectType.LEVITATION, 60, stormIntensity, true, false), true);
-                                if (stormIntensity >= 2 && tick % 80 == 0) {
+                                    org.bukkit.potion.PotionEffectType.LEVITATION, 60, intensity, true, false), true);
+                                if (intensity >= 2 && tick % 80 == 0) {
                                     player.damage(1.0);
                                 }
                             }
@@ -385,22 +389,23 @@ public class NinthSkyEvent extends BaseEvent {
                 }
             }
         }.runTaskTimer(plugin, 0L, 1L);
+        trackTask(stormTask);
 
-        // Spawn elite wardens in storms
-        new BukkitRunnable() {
+        BukkitTask spawnTask = new BukkitRunnable() {
             int ticks = 0;
             @Override
             public void run() {
-                if (!active || phase != EventPhase.SKY_STORMS) { cancel(); return; }
+                if (!isActive() || phase.get() != EventPhase.SKY_STORMS) { cancel(); return; }
                 ticks++;
-                if (ticks % 300 == 0 && mobsSpawned < MAX_MOB_SPAWNS) {
+                if (ticks % 300 == 0 && mobsSpawned.get() < MAX_MOB_SPAWNS) {
                     Location storm = stormLocations.get(new Random().nextInt(stormLocations.size()));
-                    mobsSpawned += 2;
+                    mobsSpawned.addAndGet(2);
                     new StormSentinel(plugin, storm.clone().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10));
                     new TempestPhantom(plugin, storm.clone().add(new Random().nextInt(20) - 10, 0, new Random().nextInt(20) - 10));
                 }
             }
         }.runTaskTimer(plugin, 0L, 1L);
+        trackTask(spawnTask);
     }
 
     private void spawnSkyGuardian() {
@@ -422,12 +427,11 @@ public class NinthSkyEvent extends BaseEvent {
         SkyGuardian guardian = new SkyGuardian(plugin, spawn);
         skyGuardianEntity = guardian.getEntity();
 
-        // Guardian enrage over time
-        new BukkitRunnable() {
+        BukkitTask enrageTask = new BukkitRunnable() {
             int ticks = 0;
             @Override
             public void run() {
-                if (!active || skyGuardianEntity == null || skyGuardianEntity.isDead()) { cancel(); return; }
+                if (!isActive() || skyGuardianEntity == null || skyGuardianEntity.isDead()) { cancel(); return; }
                 ticks++;
                 if (ticks % 2400 == 0) { // Every 2 minutes
                     double hpPercent = skyGuardianEntity.getHealth() / skyGuardianEntity.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getBaseValue();
@@ -439,22 +443,20 @@ public class NinthSkyEvent extends BaseEvent {
                 }
             }
         }.runTaskTimer(plugin, 0L, 1L);
-
-        // Auto-advance to convergence after guardian dies (handled in onEntityDeath)
+        trackTask(enrageTask);
     }
 
     private void startConvergence() {
         World overworld = Bukkit.getWorlds().get(0);
-        convergenceTask = new BukkitRunnable() {
+        BukkitTask convergenceTask = new BukkitRunnable() {
             int tick = 0;
             @Override
             public void run() {
-                if (!active || phase != EventPhase.SKY_CONVERGENCE) { cancel(); return; }
+                if (!isActive() || phase.get() != EventPhase.SKY_CONVERGENCE) { cancel(); return; }
                 tick++;
 
-                // Convergence points - players must stand in them
                 if (tick % 600 == 0) { // Every 30 seconds
-                    int livingParticipants = (int) participants.stream()
+                    int livingParticipants = (int) getParticipants().stream()
                         .map(Bukkit::getPlayer)
                         .filter(Objects::nonNull)
                         .filter(p -> p.isOnline() && p.getWorld().getEnvironment() == World.Environment.NORMAL)
@@ -470,22 +472,21 @@ public class NinthSkyEvent extends BaseEvent {
                     Bukkit.broadcastMessage("§e§lConvergence active: §a" + livingParticipants + " §esurvivors remain.");
                 }
 
-                // Particles at convergence
                 for (Location rift : riftLocations) {
                     rift.getWorld().spawnParticle(org.bukkit.Particle.END_ROD, rift, 100, 10, 20, 10, 0.2);
                     rift.getWorld().spawnParticle(org.bukkit.Particle.CLOUD, rift, 50, 10, 10, 10, 0.1);
                 }
             }
         }.runTaskTimer(plugin, 0L, 1L);
+        trackTask(convergenceTask);
 
-        // Convergence completion check - players at rift locations
-        new BukkitRunnable() {
+        BukkitTask checkTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!active || phase != EventPhase.SKY_CONVERGENCE) { cancel(); return; }
+                if (!isActive() || phase.get() != EventPhase.SKY_CONVERGENCE) { cancel(); return; }
                 int atConvergence = 0;
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (!participants.contains(player.getUniqueId())) continue;
+                    if (!getParticipants().contains(player.getUniqueId())) continue;
                     for (Location rift : riftLocations) {
                         if (player.getLocation().distanceSquared(rift) <= 100) {
                             atConvergence++;
@@ -493,38 +494,39 @@ public class NinthSkyEvent extends BaseEvent {
                         }
                     }
                 }
-                if (atConvergence >= Math.max(1, participants.size() / 2)) {
-                    // Enough players at convergence - event completes!
+                if (atConvergence >= Math.max(1, getParticipants().size() / 2)) {
                     Bukkit.broadcastMessage("§a§lTHE CONVERGENCE IS COMPLETE!");
                     Bukkit.broadcastMessage("§7The Ninth Sky stabilizes... The worthy shall claim their reward.");
-                    // Winner logic handled by Sky Guardian death
                 }
             }
         }.runTaskTimer(plugin, 0L, 20L);
+        trackTask(checkTask);
 
-        // Auto-complete after 30 minutes if guardian dead
-        schedulePhaseTransition(60000L, EventPhase.SKY_COMPLETED);
+        schedulePhaseTransition(1800000L, EventPhase.SKY_COMPLETED); // 30 minutes
     }
 
     public void collectFragment(Player player) {
-        if (!active || (phase != EventPhase.SKY_FRAGMENTS && phase != EventPhase.SKY_RIFTS_OPEN)) return;
-        if (!participants.contains(player.getUniqueId())) return;
-        fragmentsCollected++;
-        player.sendMessage("§aSky Fragment collected! §7(" + fragmentsCollected + "/" + REQUIRED_FRAGMENTS + ")");
+        if (!isActive() || (phase.get() != EventPhase.SKY_FRAGMENTS && phase.get() != EventPhase.SKY_RIFTS_OPEN)) return;
+        if (!getParticipants().contains(player.getUniqueId())) return;
+        int collected = fragmentsCollected.incrementAndGet();
+        player.sendMessage("§aSky Fragment collected! §7(" + collected + "/" + REQUIRED_FRAGMENTS + ")");
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
 
-        if (fragmentsCollected >= REQUIRED_FRAGMENTS) {
+        if (collected >= REQUIRED_FRAGMENTS) {
             Bukkit.broadcastMessage("§e§lALL SKY FRAGMENTS RECOVERED!");
             Bukkit.broadcastMessage("§7The Sky Rifts begin to open...");
-            if (mobSpamTask != null) { mobSpamTask.cancel(); mobSpamTask = null; }
-            if (phase == EventPhase.SKY_FRAGMENTS) advancePhase(EventPhase.SKY_RIFTS_OPEN);
+            if (phase.get() == EventPhase.SKY_FRAGMENTS) advancePhase(EventPhase.SKY_RIFTS_OPEN);
         }
     }
 
-    public void addParticipant(Player player) {
-        if (active && (phase == EventPhase.SKY_AWAKENS || phase == EventPhase.SKY_FRAGMENTS || phase == EventPhase.SKY_RIFTS_OPEN)) {
-            participants.add(player.getUniqueId());
-            player.sendMessage("§eYou have joined the Awakening of the Ninth Sky!");
+    @Override
+    public void addParticipant(UUID uuid) {
+        if (isActive() && (phase.get() == EventPhase.SKY_AWAKENS || phase.get() == EventPhase.SKY_FRAGMENTS || phase.get() == EventPhase.SKY_RIFTS_OPEN)) {
+            getParticipants().add(uuid);
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                player.sendMessage("§eYou have joined the Awakening of the Ninth Sky!");
+            }
         }
     }
 
@@ -542,7 +544,6 @@ public class NinthSkyEvent extends BaseEvent {
         heart.getCooldowns().clear();
         plugin.getHeartManager().saveHeart(heart);
 
-        // Claim the aspect for this player
         plugin.claimAspect(AspectType.CLOUD, winner.getUniqueId());
 
         ItemStack cloudheart = new Cloudheart().createItemStack();
@@ -568,7 +569,6 @@ public class NinthSkyEvent extends BaseEvent {
             winner.getWorld().spawnParticle(org.bukkit.Particle.CLOUD, winner.getLocation().add(0, 1, 0), 30, 1, 1, 1, 0.05);
         }
         
-        // Play visual effects for winner
         int tier = heart != null ? heart.getTier() : 2;
         plugin.getVisualEffectsManager().playHeartUpgradeVisuals(winner, tier);
         plugin.getVisualEffectsManager().playGlobalEventAnnouncement(
@@ -579,11 +579,20 @@ public class NinthSkyEvent extends BaseEvent {
     }
 
     public boolean isCompleted() {
-        return !active && phase == EventPhase.SKY_COMPLETED;
+        return !isActive() && phase.get() == EventPhase.SKY_COMPLETED;
     }
 
     public void enforceCloudheartRules() {
         // Enforce Cloudheart rules - only the holder can use it during the event
-        // Implementation can be expanded as needed
+    }
+
+    @Override
+    public void saveState() {
+        // Save event state to storage
+    }
+
+    @Override
+    public void loadState() {
+        // Load event state from storage
     }
 }

@@ -22,6 +22,11 @@ public class EclipseCommand implements CommandExecutor {
             return true;
         }
 
+        if (plugin.getEventManager() == null) {
+            player.sendMessage("§cEvent system is not available.");
+            return true;
+        }
+
         FrozenEclipseEvent eclipse = plugin.getEventManager().getFrozenEclipseEvent();
         if (eclipse == null || !eclipse.isActive()) {
             player.sendMessage("§cThere is no active Frozen Eclipse event.");
@@ -34,13 +39,11 @@ public class EclipseCommand implements CommandExecutor {
             return true;
         }
 
-        // Check if player already left this event
         if (plugin.hasEventJoinLocation(player.getUniqueId())) {
             player.sendMessage("§cYou have already left this event and cannot rejoin.");
             return true;
         }
 
-        // Save player's current location for /leaveevent
         plugin.setEventJoinLocation(player.getUniqueId(), player.getLocation());
         
         eclipse.addParticipant(player);

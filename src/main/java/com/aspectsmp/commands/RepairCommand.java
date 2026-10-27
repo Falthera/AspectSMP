@@ -11,10 +11,13 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RepairCommand implements CommandExecutor, TabCompleter {
 
     private final AspectSMP plugin;
+    private final ConcurrentHashMap<String, Long> cooldowns = new ConcurrentHashMap<>();
+    private static final long COOLDOWN_MS = 5000L; // 5 seconds
 
     public RepairCommand(AspectSMP plugin) {
         this.plugin = plugin;
@@ -27,19 +30,27 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        String senderName = sender.getName();
+        long now = System.currentTimeMillis();
+        Long lastUse = cooldowns.get(senderName);
+        if (lastUse != null && now - lastUse < COOLDOWN_MS) {
+            long remaining = (COOLDOWN_MS - (now - lastUse)) / 1000;
+            sender.sendMessage("§cCommand on cooldown. Wait " + remaining + "s.");
+            return true;
+        }
+        cooldowns.put(senderName, now);
+
         Player target = args.length > 0 ? Bukkit.getPlayerExact(args[0]) : null;
         if (target == null) {
             sender.sendMessage("§cPlayer not found.");
             return true;
         }
 
-        var heartOptional = plugin.getHeartManager().getHeart(target.getUniqueId());
-        if (heartOptional.isEmpty()) {
+        Heart heart = plugin.getHeartManager().getHeart(target.getUniqueId()).orElse(null);
+        if (heart == null) {
             sender.sendMessage("§cPlayer has no Heart.");
             return true;
         }
-
-        Heart heart = heartOptional.get();
         heart.setDormant(false);
         heart.setStability(50);
         plugin.getHeartManager().saveHeart(heart);
@@ -52,7 +63,13 @@ public class RepairCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            Bukkit.getOnlinePlayers().forEach(p -> completions.add(p.getName()));
+            String input = args[0].toLowerCase(java.util.Locale.ROOT);
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String name = p.getName();
+                if (name.toLowerCase(java.util.Locale.ROOT).startsWith(input)) {
+                    completions.add(name);
+                }
+            }
         }
         return completions;
     }

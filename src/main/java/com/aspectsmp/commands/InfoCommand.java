@@ -30,7 +30,7 @@ public class InfoCommand implements CommandExecutor, TabCompleter {
         }
 
         Player subject = target != null ? target : (Player) sender;
-        Heart heart = plugin.getHeartManager().getHeart(subject);
+        Heart heart = plugin.getHeartManager().getHeart(subject).join();
 
         if (heart == null) {
             sender.sendMessage("§cPlayer has no Heart.");
@@ -49,7 +49,13 @@ public class InfoCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            Bukkit.getOnlinePlayers().forEach(p -> completions.add(p.getName()));
+            String input = args[0].toLowerCase(Locale.ROOT);
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String name = p.getName();
+                if (name.toLowerCase(Locale.ROOT).startsWith(input)) {
+                    completions.add(name);
+                }
+            }
         }
         return completions;
     }

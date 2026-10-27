@@ -21,6 +21,12 @@ public class Ability2Command implements CommandExecutor {
             sender.sendMessage("§cOnly players can use this.");
             return true;
         }
+        
+        if (!player.hasPermission("aspect.ability2")) {
+            player.sendMessage("§cYou do not have permission to use this ability.");
+            return true;
+        }
+
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null || heart.isDormant() || heart.getTier() < 2) {
             player.sendMessage("§cYou need Tier 2 to use this ability!");

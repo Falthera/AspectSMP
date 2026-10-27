@@ -22,6 +22,11 @@ public class ShadowCommand implements CommandExecutor {
             return true;
         }
 
+        if (plugin.getEventManager() == null) {
+            player.sendMessage("§cEvent system is not available.");
+            return true;
+        }
+
         ShadowsDescentEvent shadow = plugin.getEventManager().getShadowsDescentEvent();
         if (shadow == null || !shadow.isActive()) {
             player.sendMessage("§cThere is no active Shadow's Descent event.");
@@ -35,13 +40,11 @@ public class ShadowCommand implements CommandExecutor {
             return true;
         }
 
-        // Check if player already left this event
         if (plugin.hasEventJoinLocation(player.getUniqueId())) {
             player.sendMessage("§cYou have already left this event and cannot rejoin.");
             return true;
         }
 
-        // Save player's current location for /leaveevent
         plugin.setEventJoinLocation(player.getUniqueId(), player.getLocation());
         
         shadow.addParticipant(player);

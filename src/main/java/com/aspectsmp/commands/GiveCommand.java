@@ -13,10 +13,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GiveCommand implements CommandExecutor, TabCompleter {
 
     private final AspectSMP plugin;
+    private final ConcurrentHashMap<String, Long> cooldowns = new ConcurrentHashMap<>();
+    private static final long COOLDOWN_MS = 5000L; // 5 seconds
 
     public GiveCommand(AspectSMP plugin) {
         this.plugin = plugin;
@@ -28,6 +31,16 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage("§cNo permission.");
             return true;
         }
+
+        String senderName = sender.getName();
+        long now = System.currentTimeMillis();
+        Long lastUse = cooldowns.get(senderName);
+        if (lastUse != null && now - lastUse < COOLDOWN_MS) {
+            long remaining = (COOLDOWN_MS - (now - lastUse)) / 1000;
+            sender.sendMessage("§cCommand on cooldown. Wait " + remaining + "s.");
+            return true;
+        }
+        cooldowns.put(senderName, now);
 
         if (args.length < 2) {
             sender.sendMessage("§cUsage: /aspect-give <player> <catalyst|resonator|restoration|reforging|stability>");
@@ -64,9 +77,20 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            Bukkit.getOnlinePlayers().forEach(p -> completions.add(p.getName()));
+            String input = args[0].toLowerCase(Locale.ROOT);
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String name = p.getName();
+                if (name.toLowerCase(Locale.ROOT).startsWith(input)) {
+                    completions.add(name);
+                }
+            }
         } else if (args.length == 2) {
-            completions.addAll(List.of("catalyst", "resonator", "restoration", "reforging", "stability"));
+            String input = args[1].toLowerCase(Locale.ROOT);
+            for (String item : List.of("catalyst", "resonator", "restoration", "reforging", "stability")) {
+                if (item.startsWith(input)) {
+                    completions.add(item);
+                }
+            }
         }
         return completions;
     }

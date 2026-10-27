@@ -298,6 +298,20 @@ public class ParticleEffects {
         // Handled by stopPassiveAura since we use same map
     }
 
+    public void stopOrbitEffect(UUID playerId) {
+        List<BukkitTask> tasks = activeAnimations.get(playerId);
+        if (tasks != null) {
+            for (BukkitTask task : tasks) {
+                task.cancel();
+            }
+            activeAnimations.remove(playerId);
+        }
+    }
+
+    public void stopTrailEffect(UUID playerId) {
+        stopOrbitEffect(playerId);
+    }
+
     // ═════════════════════════════════════════════════════════════════════
     // CAST EFFECTS - Ability charging/casting (OPTIMIZED)
     // ═════════════════════════════════════════════════════════════════════

@@ -34,7 +34,7 @@ public class GuiManager implements Listener {
     }
 
     public void openHeartGUI(Player player) {
-        Heart heart = plugin.getHeartManager().getHeart(player);
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         
         Inventory inv = Bukkit.createInventory(new HeartHolder(), 54, "§dYour Heart");
@@ -81,7 +81,7 @@ public class GuiManager implements Listener {
     }
 
     public void openAspectDetailGUI(Player player, AspectType aspect) {
-        Heart heart = plugin.getHeartManager().getHeart(player);
+        Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null) return;
         
         Inventory inv = Bukkit.createInventory(new AspectDetailHolder(), 54, "§b" + aspect.getDisplayName() + " Aspect");

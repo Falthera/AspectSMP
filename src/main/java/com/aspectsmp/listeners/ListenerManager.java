@@ -252,7 +252,7 @@ public class ListenerManager implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        Heart heart = plugin.getHeartManager().getOrCreateHeart(player.getUniqueId());
+        Heart heart = plugin.getHeartManager().getOrCreateHeart(player.getUniqueId()).join();
         
         boolean hasCloudheart = false;
         boolean hasShadowheart = false;
@@ -346,7 +346,7 @@ public class ListenerManager implements Listener {
             if (ninthSky.isActive() && player.getWorld().getEnvironment() == World.Environment.NORMAL) {
                 // Save location for /leaveevent
                 plugin.setEventJoinLocation(player.getUniqueId(), player.getLocation());
-                ninthSky.addParticipant(player);
+                ninthSky.addParticipant(player.getUniqueId());
                 player.sendMessage("§eYou have joined the Awakening of the Ninth Sky event!");
             }
         }

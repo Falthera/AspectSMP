@@ -13,10 +13,13 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
 
     private final AspectSMP plugin;
+    private final ConcurrentHashMap<String, Long> cooldowns = new ConcurrentHashMap<>();
+    private static final long COOLDOWN_MS = 5000L; // 5 seconds
 
     public GiveEventAspectCommand(AspectSMP plugin) {
         this.plugin = plugin;
@@ -28,6 +31,16 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage("§cNo permission.");
             return true;
         }
+
+        String senderName = sender.getName();
+        long now = System.currentTimeMillis();
+        Long lastUse = cooldowns.get(senderName);
+        if (lastUse != null && now - lastUse < COOLDOWN_MS) {
+            long remaining = (COOLDOWN_MS - (now - lastUse)) / 1000;
+            sender.sendMessage("§cCommand on cooldown. Wait " + remaining + "s.");
+            return true;
+        }
+        cooldowns.put(senderName, now);
 
         if (args.length < 2) {
             sender.sendMessage("§cUsage: /give-event-aspect <player> <winter|shadow|storm|cloud>");
@@ -63,8 +76,8 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
         heart.setAspect(aspect);
         if (aspect == AspectType.WINTER) heart.setWinterUnlocked(true);
         if (aspect == AspectType.CLOUD) heart.setCloudUnlocked(true);
-        if (aspect == AspectType.SHADOW) heart.setCloudUnlocked(true); // reuse field
-        if (aspect == AspectType.STORM) heart.setWinterUnlocked(true); // reuse field
+        if (aspect == AspectType.SHADOW) heart.setCloudUnlocked(true);
+        if (aspect == AspectType.STORM) heart.setWinterUnlocked(true);
         heart.setStability(100);
         heart.setDormant(false);
         heart.getCooldowns().clear();
@@ -80,9 +93,20 @@ public class GiveEventAspectCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            Bukkit.getOnlinePlayers().forEach(p -> completions.add(p.getName()));
+            String input = args[0].toLowerCase(Locale.ROOT);
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                String name = p.getName();
+                if (name.toLowerCase(Locale.ROOT).startsWith(input)) {
+                    completions.add(name);
+                }
+            }
         } else if (args.length == 2) {
-            completions.addAll(List.of("winter", "shadow", "storm", "cloud"));
+            String input = args[1].toLowerCase(Locale.ROOT);
+            for (String aspect : List.of("winter", "shadow", "storm", "cloud")) {
+                if (aspect.startsWith(input)) {
+                    completions.add(aspect);
+                }
+            }
         }
         return completions;
     }

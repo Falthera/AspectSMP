@@ -17,15 +17,24 @@ import java.util.Locale;
 public class ParticlesCommand implements CommandExecutor, TabCompleter {
 
     private final AspectSMP plugin;
+    private int cachedQuality;
+    private boolean configDirty;
 
     public ParticlesCommand(AspectSMP plugin) {
         this.plugin = plugin;
+        this.cachedQuality = plugin.getConfig().getInt("visual-effects.particle-quality", 3);
+        this.configDirty = false;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("§cOnly players can use this command.");
+            return true;
+        }
+
+        if (!player.hasPermission("aspect.particles")) {
+            player.sendMessage("§cYou do not have permission to use this command.");
             return true;
         }
 
@@ -73,13 +82,12 @@ public class ParticlesCommand implements CommandExecutor, TabCompleter {
     }
 
     private void showParticleInfo(Player player) {
-        int quality = plugin.getConfig().getInt("visual-effects.particle-quality", 3);
         var levels = plugin.getConfig().getConfigurationSection("visual-effects.particle-quality-levels");
-        
+
         player.sendMessage("§b§l=== Particle Settings ===");
-        player.sendMessage("§7Current Quality: §f" + quality + " §7(" + (levels != null ? levels.getString(quality + ".name") : "Unknown") + "§7)");
+        player.sendMessage("§7Current Quality: §f" + cachedQuality + " §7(" + (levels != null ? levels.getString(cachedQuality + ".name") : "Unknown") + "§7)");
         player.sendMessage("");
-        
+
         if (levels != null) {
             for (String key : levels.getKeys(false)) {
                 var level = levels.getConfigurationSection(key);
@@ -94,23 +102,23 @@ public class ParticlesCommand implements CommandExecutor, TabCompleter {
                     boolean chromatic = level.getBoolean("chromatic", false);
                     boolean vignette = level.getBoolean("vignette", false);
                     boolean screenShake = level.getBoolean("screen-shake", false);
-                    
-                    String marker = (Integer.parseInt(key) == quality) ? "§a► " : "§7  ";
+
+                    String marker = (Integer.parseInt(key) == cachedQuality) ? "§a► " : "§7  ";
                     player.sendMessage(marker + "§e" + name + " §7(Quality " + key + "): §f" + maxParticles + " max particles");
                     player.sendMessage("§7    Trails: " + (trails ? "§a✓" : "§c✗") + " §7Orbit: " + (orbit ? "§a✓" : "§c✗") + " §7Ambient: " + (ambient ? "§a✓" : "§c✗"));
                     player.sendMessage("§7    Impacts: " + (impacts ? "§a✓" : "§c✗") + " §7Ultimates: " + (ultimates ? "§a✓" : "§c✗") + " §7Chromatic: " + (chromatic ? "§a✓" : "§c✗") + " §7Vignette: " + (vignette ? "§a✓" : "§c✗") + " §7ScreenShake: " + (screenShake ? "§a✓" : "§c✗"));
                 }
             }
         }
-        
+
         player.sendMessage("");
         player.sendMessage("§7Commands: §f/particles quality <1-5> §7| §f/particles toggle <feature> §7| §f/particles reset");
     }
 
     private void setPlayerQuality(Player player, int quality) {
-        // Store per-player quality preference
+        cachedQuality = quality;
         plugin.getConfig().set("visual-effects.particle-quality", quality);
-        plugin.saveConfig();
+        configDirty = true;
         player.sendMessage("§aParticle quality set to §e" + quality + " §a(" + getQualityName(quality) + "§a)");
         player.sendMessage("§7Note: This is a server-wide setting. For per-player settings, use /particles toggle");
     }
@@ -120,6 +128,9 @@ public class ParticlesCommand implements CommandExecutor, TabCompleter {
     }
 
     private void resetToDefault(Player player) {
+        cachedQuality = 3;
+        plugin.getConfig().set("visual-effects.particle-quality", 3);
+        configDirty = true;
         player.sendMessage("§aParticle settings reset to defaults (Quality 3 - Medium)");
     }
 
@@ -149,15 +160,37 @@ public class ParticlesCommand implements CommandExecutor, TabCompleter {
         };
     }
 
+    public void saveIfDirty() {
+        if (configDirty) {
+            plugin.saveConfig();
+            configDirty = false;
+        }
+    }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            completions.addAll(List.of("quality", "toggle", "reset", "help"));
+            String input = args[0].toLowerCase(Locale.ROOT);
+            for (String sub : List.of("quality", "toggle", "reset", "help")) {
+                if (sub.startsWith(input)) {
+                    completions.add(sub);
+                }
+            }
         } else if (args.length == 2 && args[0].equalsIgnoreCase("quality")) {
-            completions.addAll(List.of("1", "2", "3", "4", "5"));
+            String input = args[1];
+            for (String quality : List.of("1", "2", "3", "4", "5")) {
+                if (quality.startsWith(input)) {
+                    completions.add(quality);
+                }
+            }
         } else if (args.length == 2 && args[0].equalsIgnoreCase("toggle")) {
-            completions.addAll(List.of("trails", "orbit", "ambient", "impacts", "ultimates", "screen-shake", "vignette", "chromatic"));
+            String input = args[1].toLowerCase(Locale.ROOT);
+            for (String feature : List.of("trails", "orbit", "ambient", "impacts", "ultimates", "screen-shake", "vignette", "chromatic")) {
+                if (feature.startsWith(input)) {
+                    completions.add(feature);
+                }
+            }
         }
         return completions;
     }

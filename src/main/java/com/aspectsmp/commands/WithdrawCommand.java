@@ -56,8 +56,13 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
     @Override
     public java.util.List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
-            return java.util.Collections.singletonList("stability");
+            String input = args[0].toLowerCase(java.util.Locale.ROOT);
+            java.util.List<String> completions = new java.util.ArrayList<>();
+            if ("stability".startsWith(input)) {
+                completions.add("stability");
+            }
+            return completions;
         }
-        return java.util.Collections.emptyList();
+        return new java.util.ArrayList<>();
     }
 }

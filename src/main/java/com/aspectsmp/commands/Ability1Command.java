@@ -21,6 +21,12 @@ public class Ability1Command implements CommandExecutor {
             sender.sendMessage("§cOnly players can use this.");
             return true;
         }
+        
+        if (!player.hasPermission("aspect.ability1")) {
+            player.sendMessage("§cYou do not have permission to use this ability.");
+            return true;
+        }
+
         Heart heart = plugin.getHeartManager().getHeart(player.getUniqueId()).orElse(null);
         if (heart == null || heart.isDormant()) {
             player.sendMessage("§cYou need a Heart to use abilities!");

@@ -729,4 +729,14 @@ public class FrozenEclipseEvent extends BaseEvent {
     }
 
     private BukkitTask guardianSpawnTask;
+
+    @Override
+    public void saveState() {
+        // Save event state to storage
+    }
+
+    @Override
+    public void loadState() {
+        // Load event state from storage
+    }
 }
