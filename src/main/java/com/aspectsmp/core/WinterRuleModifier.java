@@ -17,10 +17,10 @@ public class WinterRuleModifier implements RuleModifier {
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
         if (cause == EntityDamageEvent.DamageCause.FREEZE) {
-            return damage * 0.3;
+            return damage * 0.3; // 70% freeze reduction (was same)
         }
         if (cause == EntityDamageEvent.DamageCause.LIGHTNING) {
-            return damage * 0.5;
+            return damage * 0.5; // 50% lightning reduction
         }
         return damage;
     }
@@ -40,13 +40,15 @@ public class WinterRuleModifier implements RuleModifier {
             world.getBiome(loc).getKey().toString().equals("minecraft:ice_spikes") ||
             world.getBiome(loc).getKey().toString().equals("minecraft:glacial_peaks") ||
             world.getBiome(loc).getKey().toString().equals("minecraft:frozen_peaks")) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0, true, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0, true, false, true), true); // Speed 1 (was Slowness)
         }
         lastColdCheck.put(player.getUniqueId(), now);
     }
 
     @Override
     public void applyPassive(Player player) {
+        // Balanced: Resistance 1 + Fire Resistance (was just Resistance)
         player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 60, 0, true, false, true), true);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 60, 0, false, false, true), true);
     }
 }

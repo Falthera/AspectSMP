@@ -10,7 +10,10 @@ public class CosmosRuleModifier implements RuleModifier {
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
         if (cause == EntityDamageEvent.DamageCause.FALL) {
-            return damage * 0.5;
+            return damage * 0.5; // 50% fall damage reduction (was same)
+        }
+        if (cause == EntityDamageEvent.DamageCause.VOID) {
+            return 0; // Void immunity (20 PP)
         }
         return damage;
     }
@@ -25,7 +28,8 @@ public class CosmosRuleModifier implements RuleModifier {
     @Override
     public void applyPassive(Player player) {
         if (player.getLocation().getY() > 100) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 60, 0, false, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 60, 0, false, false, true), true); // Night Vision
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 60, 0, false, false, true), true); // Slow Falling
         }
     }
 }

@@ -22,10 +22,13 @@ public class ShadowRuleModifier implements RuleModifier {
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
         if (cause == EntityDamageEvent.DamageCause.VOID) {
-            return damage * 0.5;
+            return damage * 0.5; // 50% void reduction
         }
         if (cause == EntityDamageEvent.DamageCause.FALL) {
-            return damage * 0.7;
+            return damage * 0.7; // 30% fall reduction
+        }
+        if (cause == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+            return damage * 1.05; // 5% damage bonus (was none)
         }
         return damage;
     }
@@ -49,12 +52,12 @@ public class ShadowRuleModifier implements RuleModifier {
     public void applyPassive(Player player) {
         if (player.getLocation().getBlock().getLightLevel() < 5) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 60, 0, true, false), true);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0, true, false), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0, true, false), true); // Speed 1
         }
     }
 
     private void applyStealthEffects(Player player) {
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        org.bukkit.scoreboard.Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         Team team = scoreboard.getTeam("shadow_stealth_" + player.getUniqueId());
         
         if (team == null) {
@@ -65,14 +68,13 @@ public class ShadowRuleModifier implements RuleModifier {
         }
         
         team.addEntry(player.getName());
-        stealthTeams.put(player.getUniqueId(), team);
         
         // Hide held item by setting it to air in offhand temporarily
         // This is handled client-side via the invisibility effect
     }
 
     private void removeStealthEffects(Player player) {
-        Team team = stealthTeams.remove(player.getUniqueId());
+        Team team = stealthTeams.get(player.getUniqueId());
         if (team != null) {
             team.removeEntry(player.getName());
             try {

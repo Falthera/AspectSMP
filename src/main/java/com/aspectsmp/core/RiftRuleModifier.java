@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RiftRuleModifier implements RuleModifier {
 
     private final Map<UUID, Long> lastVoidProtect = new ConcurrentHashMap<>();
-    private static final long VOID_PROTECTION_DURATION = 5000;
+    private static final long VOID_PROTECTION_DURATION = 10000; // was 5000
 
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
@@ -41,8 +41,8 @@ public class RiftRuleModifier implements RuleModifier {
     @Override
     public void applyPassive(Player player) {
         if (player.getLocation().getY() < 64 || player.getLocation().getBlock().getLightLevel() < 5) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 60, 0, false, false, true), true);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0, false, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 60, 0, false, false, true), true); // Night Vision
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0, false, false, true), true); // Speed 1
         }
     }
 }

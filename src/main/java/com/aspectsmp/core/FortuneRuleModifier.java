@@ -10,7 +10,7 @@ public class FortuneRuleModifier implements RuleModifier {
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
         if (cause == EntityDamageEvent.DamageCause.CONTACT) {
-            return damage * 0.3;
+            return damage * 0.5;
         }
         return damage;
     }
@@ -21,7 +21,7 @@ public class FortuneRuleModifier implements RuleModifier {
 
     @Override
     public void applyPassive(Player player) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 80, 1, false, false, true), true);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, 80, 0, false, false, true), true);
         player.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, 80, 0, false, false, true), true);
     }
 }

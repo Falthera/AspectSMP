@@ -30,11 +30,9 @@ public class StormRuleModifier implements RuleModifier {
         if (last != null && now - last < WIND_COOLDOWN_MS) return;
 
         if (player.getLocation().getY() > 100 || player.getWorld().hasStorm()) {
-            // Give speed boost instead of levitation (wind push)
             player.addPotionEffect(new org.bukkit.potion.PotionEffect(
-                org.bukkit.potion.PotionEffectType.SPEED, 40, 1, true, false), true);
-            // Wind gust - small horizontal push
-            org.bukkit.util.Vector wind = player.getLocation().getDirection().multiply(0.5).setY(0.2);
+                org.bukkit.potion.PotionEffectType.SPEED, 40, 0, true, false), true);
+            org.bukkit.util.Vector wind = player.getLocation().getDirection().multiply(0.3).setY(0.1);
             player.setVelocity(player.getVelocity().add(wind));
             lastWind.put(player.getUniqueId(), now);
         }
@@ -43,8 +41,10 @@ public class StormRuleModifier implements RuleModifier {
     @Override
     public void applyPassive(Player player) {
         if (player.getLocation().getY() > 80 || player.getWorld().hasStorm()) {
-            player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, 60, 1, true, false), true);
-            player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 60, 0, true, false), true);
+            player.addPotionEffect(new org.bukkit.potion.PotionEffect(
+                org.bukkit.potion.PotionEffectType.JUMP_BOOST, 60, 0, true, false), true);
+            player.addPotionEffect(new org.bukkit.potion.PotionEffect(
+                org.bukkit.potion.PotionEffectType.SPEED, 60, 0, true, false), true);
         }
     }
 }

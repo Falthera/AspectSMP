@@ -10,10 +10,10 @@ public class CloudRuleModifier implements RuleModifier {
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
         if (cause == EntityDamageEvent.DamageCause.FALL) {
-            return 0;
+            return 0; // Full fall immunity (20 PP)
         }
         if (cause == EntityDamageEvent.DamageCause.LIGHTNING) {
-            return damage * 0.3;
+            return damage * 0.3; // 70% lightning reduction (was 30% dmg = 70% reduction)
         }
         return damage;
     }
@@ -25,7 +25,7 @@ public class CloudRuleModifier implements RuleModifier {
     @Override
     public void applyPassive(Player player) {
         if (player.getLocation().getY() > 100) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0, false, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0, false, false, true), true); // Speed 1
         }
     }
 }

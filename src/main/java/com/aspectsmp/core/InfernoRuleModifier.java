@@ -12,10 +12,10 @@ public class InfernoRuleModifier implements RuleModifier {
         if (cause == EntityDamageEvent.DamageCause.FIRE ||
             cause == EntityDamageEvent.DamageCause.FIRE_TICK ||
             cause == EntityDamageEvent.DamageCause.LAVA) {
-            return 0;
+            return 0; // Full fire immunity (20 PP)
         }
         if (cause == EntityDamageEvent.DamageCause.ENTITY_ATTACK || cause == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
-            return damage * 1.15;
+            return damage * 1.1; // 10% damage bonus (was 15%)
         }
         return damage;
     }
@@ -30,8 +30,8 @@ public class InfernoRuleModifier implements RuleModifier {
         if (player.getLocation().getBlock().getBiome().getKey().toString().contains("nether") ||
             player.getLocation().getBlock().getBiome().getKey().toString().contains("desert") ||
             player.getLocation().getBlock().getBiome().getKey().toString().contains("badlands")) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 60, 0, false, false, true), true);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 80, 0, false, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 60, 0, false, false, true), true); // Str 1
+            player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 60, 0, false, false, true), true); // Fire Res 1 (was 80 ticks)
         }
     }
 }

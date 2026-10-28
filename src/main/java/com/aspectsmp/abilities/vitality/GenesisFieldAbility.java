@@ -2,13 +2,13 @@ package com.aspectsmp.abilities.vitality;
 
 import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
+import com.aspectsmp.AspectSMP;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-
-import java.util.List;
+import org.bukkit.Location;
 
 public class GenesisFieldAbility extends BaseAbility {
 
@@ -53,28 +53,31 @@ public class GenesisFieldAbility extends BaseAbility {
             int ticks = 0;
             @Override
             public void run() {
-                if (!player.isOnline() || ticks >= 80) {
+                if (!player.isOnline() || ticks >= 40) {
                     cancel();
                     return;
                 }
                 ticks += 20;
                 loc.getWorld().spawnParticle(Particle.HEART, loc.clone().add(Math.random() - 0.5, 0.5, Math.random() - 0.5), 10);
                 for (Entity entity : loc.getWorld().getEntities()) {
-                    if (entity instanceof Player target && entity.getLocation().distanceSquared(loc) <= 36) {
+                    if (entity instanceof Player target && entity.getLocation().distanceSquared(loc) <= 64) {
                         if (target == player || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(player.getUniqueId(), target.getUniqueId()) || com.aspectsmp.AspectSMP.getInstance().getTrustManager().isTrusted(target.getUniqueId(), player.getUniqueId())) {
-                            target.heal(3.0 * getPowerMultiplier(player, heart));
+                            target.heal(4.0 * getPowerMultiplier(player, heart));
                         }
                     }
                 }
             }
         }.runTaskTimer(com.aspectsmp.AspectSMP.getInstance(), 0L, 20L);
 
-        applyCooldown(player, getId(), getCooldownDuration(heart));
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.REGENERATION, 300, 1), true);
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.RESISTANCE, 300, 0), true);
+
+        applyCooldown(player, getId(), 120000L);
         return true;
     }
 
     @Override
     protected long getCooldownBase() {
-        return 90000L;
+        return 120000L;
     }
 }

@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TideRuleModifier implements RuleModifier {
 
     private final Map<UUID, Long> lastHeal = new ConcurrentHashMap<>();
-    private static final long HEAL_COOLDOWN_MS = 1000;
+    private static final long HEAL_COOLDOWN_MS = 2000;
 
     @Override
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
@@ -20,10 +20,10 @@ public class TideRuleModifier implements RuleModifier {
             return 0;
         }
         if (cause == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-            return damage * 1.1;
+            return damage * 1.05;
         }
         if (cause == EntityDamageEvent.DamageCause.FIRE || cause == EntityDamageEvent.DamageCause.FIRE_TICK) {
-            return damage * 0.7;
+            return damage * 0.8;
         }
         return damage;
     }

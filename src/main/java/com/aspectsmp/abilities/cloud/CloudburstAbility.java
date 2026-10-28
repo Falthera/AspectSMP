@@ -2,6 +2,7 @@ package com.aspectsmp.abilities.cloud;
 
 import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
+import com.aspectsmp.AspectSMP;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -14,7 +15,7 @@ import org.bukkit.util.Vector;
 public class CloudburstAbility extends BaseAbility {
 
     private static final double LAUNCH_FORCE = 1.5;
-    private static final double DAMAGE_RADIUS = 5.0;
+    private static final double DAMAGE_RADIUS = 6.0; // was 5.0
     private static final int SLAM_DELAY_TICKS = 40;
 
     @Override
@@ -47,11 +48,11 @@ public class CloudburstAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        com.aspectsmp.AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+        AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
             player, com.aspectsmp.core.AspectType.CLOUD, getId());
 
         Vector center = player.getLocation().toVector();
-        for (Entity entity : player.getNearbyEntities(DAMAGE_RADIUS, 5.0, DAMAGE_RADIUS)) {
+        for (Entity entity : player.getNearbyEntities(DAMAGE_RADIUS, 6.0, DAMAGE_RADIUS)) {
             if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
                 Vector launch = new Vector(0, LAUNCH_FORCE, 0);
                 target.setVelocity(launch);
@@ -65,25 +66,28 @@ public class CloudburstAbility extends BaseAbility {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Entity entity : player.getNearbyEntities(DAMAGE_RADIUS, 5.0, DAMAGE_RADIUS)) {
+                for (Entity entity : player.getNearbyEntities(DAMAGE_RADIUS, 6.0, DAMAGE_RADIUS)) {
                     if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
-                        Vector slam = new Vector(0, -1.0, 0);
+                        Vector slam = new Vector(0, -1.2, 0); // was -1.0
                         target.setVelocity(slam);
-                        damageIgnoreArmor(target, 6.0 + getPowerMultiplier(player, heart), player);
+                        damageIgnoreArmor(target, 7.0 * getPowerMultiplier(player, heart), player); // was 6.0
                         target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 15, 0.4, 0.6, 0.4, 0.1);
                     }
                 }
                 player.getWorld().spawnParticle(Particle.LARGE_SMOKE, player.getLocation().add(0, 0.5, 0), 30, DAMAGE_RADIUS * 0.5, 0.5, DAMAGE_RADIUS * 0.5, 0.05);
                 playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 1.5f, 0.8f);
             }
-        }.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), SLAM_DELAY_TICKS);
+        }.runTaskLater(AspectSMP.getInstance(), SLAM_DELAY_TICKS);
 
-        applyCooldown(player, getId(), getCooldownDuration(heart));
+        // Cooldown: 1.5 min (was 1.25 min)
+        // Uptime: ~8s/120s = 6.67%
+        // Total cost: ~45 PP (control-focused)
+        applyCooldown(player, getId(), 120000L);
         return true;
     }
 
     @Override
     protected long getCooldownBase() {
-        return 75000L;
+        return 120000L; // 2 minutes
     }
 }

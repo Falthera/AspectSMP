@@ -31,7 +31,7 @@ public class VitalityRuleModifier implements RuleModifier {
             return 0;
         }
         if (cause == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-            return damage * 0.9;
+            return damage * 0.85;
         }
         return damage;
     }

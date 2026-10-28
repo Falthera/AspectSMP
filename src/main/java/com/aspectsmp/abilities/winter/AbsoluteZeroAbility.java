@@ -2,19 +2,22 @@ package com.aspectsmp.abilities.winter;
 
 import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
+import com.aspectsmp.AspectSMP;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class AbsoluteZeroAbility extends BaseAbility {
 
     private static final double RADIUS = 6.0;
-    private static final int FREEZE_DURATION_TICKS = 80;
+    private static final int FREEZE_DURATION_TICKS = 60; // was 80
 
     @Override
     public String getId() {
@@ -46,14 +49,16 @@ public class AbsoluteZeroAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        com.aspectsmp.AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+        AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
             player, com.aspectsmp.core.AspectType.WINTER, getId());
 
         Vector center = player.getLocation().toVector();
         for (Entity entity : player.getNearbyEntities(RADIUS, 5.0, RADIUS)) {
             if (entity instanceof LivingEntity target && target != player && !(target instanceof org.bukkit.entity.Villager)) {
-                target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS, FREEZE_DURATION_TICKS, 2));
-                target.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST, FREEZE_DURATION_TICKS, 2));
+                target.addPotionEffect(new org.bukkit.potion.PotionEffect(
+                    org.bukkit.potion.PotionEffectType.SLOWNESS, FREEZE_DURATION_TICKS, 1), true); // was 2
+                target.addPotionEffect(new org.bukkit.potion.PotionEffect(
+                    org.bukkit.potion.PotionEffectType.JUMP_BOOST, FREEZE_DURATION_TICKS, 1), true); // was 2
                 target.setFreezeTicks(FREEZE_DURATION_TICKS);
                 target.getWorld().spawnParticle(Particle.CRIT, target.getLocation().add(0, 1, 0), 25, 0.4, 0.8, 0.4, 0.1);
             }
@@ -69,14 +74,23 @@ public class AbsoluteZeroAbility extends BaseAbility {
                 player.getWorld().spawnParticle(Particle.CRIT, player.getLocation().add(0, 0.5, 0), 30, RADIUS * 0.5, 0.5, RADIUS * 0.5, 0.05);
                 player.getWorld().playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 1.5f, 0.8f);
             }
-        }.runTaskLater(com.aspectsmp.AspectSMP.getInstance(), 20L);
+        }.runTaskLater(AspectSMP.getInstance(), 20L);
 
-        applyCooldown(player, getId(), getCooldownDuration(heart));
+        // Self-buff: Resistance 1 + Fire Resistance for 10s
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
+            org.bukkit.potion.PotionEffectType.RESISTANCE, 200, 0), true);
+        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
+            org.bukkit.potion.PotionEffectType.FIRE_RESISTANCE, 200, 0), true);
+
+        // Cooldown: 2 min (was 1.67 min)
+        // Uptime: 4s/120s = 3.33%
+        // Total cost: ~45 PP (control-focused)
+        applyCooldown(player, getId(), 120000L);
         return true;
     }
 
     @Override
     protected long getCooldownBase() {
-        return 100000L;
+        return 120000L; // 2 minutes
     }
 }

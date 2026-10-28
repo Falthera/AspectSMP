@@ -2,6 +2,7 @@ package com.aspectsmp.abilities.fortune;
 
 import com.aspectsmp.abilities.BaseAbility;
 import com.aspectsmp.core.Heart;
+import com.aspectsmp.AspectSMP;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -43,17 +44,29 @@ public class KingsJackpotAbility extends BaseAbility {
         if (!canExecute(player, heart)) return false;
         if (isOnCooldown(player, getId())) return false;
 
-        player.getWorld().spawnParticle(Particle.DRIPPING_HONEY, player.getLocation(), 150, 5, 5, 5);
+        AspectSMP.getInstance().getVisualEffectsManager().playUltimateActivationVisuals(
+            player, com.aspectsmp.core.AspectType.FORTUNE, getId());
+
+        // Visuals: Gold/coin themed
+        player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation(), 150, 5, 5, 5);
         playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 2.0f, 1.0f);
         
-        long essence = (long) (50 * getPowerMultiplier(player, heart));
+        // Essence gain: 30 * powerMultiplier (was 50)
+        // Power cost: 25 essence * 2 min cd = utility value
+        long essence = (long) (30 * getPowerMultiplier(player, heart));
         heart.addEssence(essence);
         
+        // Utility buffs: Luck 1 + Hero of Village 1 for 30s
+        // Power cost: 2 utility * 30s = 30 PP
         List<PotionEffect> effects = Arrays.asList(
-            new PotionEffect(PotionEffectType.LUCK, 600, 1),
-            new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, 600, 0)
+            new PotionEffect(PotionEffectType.LUCK, 600, 0),              // Luck 1 (30s)
+            new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, 600, 0) // Hero 1 (30s)
         );
         applyTemporaryEffects(player, effects, 600L);
+        
+        // Cooldown: 2 min (same)
+        // Uptime: 30s/120s = 25%
+        // Total cost: ~40 PP (utility-focused)
         
         player.sendMessage("§6+§e" + essence + "§6 Essence!");
         player.sendMessage("§7Fortune smiles upon you!");
@@ -64,6 +77,6 @@ public class KingsJackpotAbility extends BaseAbility {
 
     @Override
     protected long getCooldownBase() {
-        return 120000L;
+        return 120000L; // 2 minutes
     }
 }

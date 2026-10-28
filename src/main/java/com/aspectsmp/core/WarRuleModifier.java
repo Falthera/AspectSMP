@@ -18,10 +18,10 @@ public class WarRuleModifier implements RuleModifier {
     public double modifyDamage(Player player, double damage, EntityDamageEvent.DamageCause cause) {
         long now = System.currentTimeMillis();
         if (lastCombat.containsKey(player.getUniqueId()) && now - lastCombat.get(player.getUniqueId()) < COMBAT_DURATION) {
-            return damage * 0.9;
+            return damage * 0.9; // 10% damage reduction in combat (was 0.9)
         }
         if (cause == EntityDamageEvent.DamageCause.ENTITY_ATTACK || cause == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
-            return damage * 1.2;
+            return damage * 1.1; // 10% damage bonus (was 1.2)
         }
         return damage;
     }
@@ -35,8 +35,8 @@ public class WarRuleModifier implements RuleModifier {
     public void applyPassive(Player player) {
         long now = System.currentTimeMillis();
         if (lastCombat.containsKey(player.getUniqueId()) && now - lastCombat.get(player.getUniqueId()) < COMBAT_DURATION) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 0, false, false, true), true);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 40, 0, false, false, true), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 0, false, false, true), true); // Str 1 (was 1)
+            player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 40, 0, false, false, true), true); // Resist 1 (was 1)
         }
     }
 
