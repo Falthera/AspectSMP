@@ -85,7 +85,11 @@ public class ScreenEffectsAPI {
                     float pitchShift = (float) ((Math.random() - 0.5) * currentIntensity * 5.0);
                     float yawShift = (float) ((Math.random() - 0.5) * currentIntensity * 5.0);
                     
-                    player.setVelocity(player.getVelocity().add(shake));
+                    Vector newVelocity = player.getVelocity().add(shake);
+                    // Validate velocity is finite before setting
+                    if (isFinite(newVelocity)) {
+                        player.setVelocity(newVelocity);
+                    }
                     
                     // Apply view punch via velocity manipulation
                     Location loc = player.getLocation();
@@ -94,7 +98,10 @@ public class ScreenEffectsAPI {
                     player.teleport(loc);
                 } else {
                     // Cosmetic only: just velocity nudge, no view rotation
-                    player.setVelocity(player.getVelocity().add(shake.multiply(0.3)));
+                    Vector newVelocity = player.getVelocity().add(shake.multiply(0.3));
+                    if (isFinite(newVelocity)) {
+                        player.setVelocity(newVelocity);
+                    }
                 }
                 
                 ticks++;
@@ -138,7 +145,10 @@ public class ScreenEffectsAPI {
                     (Math.random() - 0.5) * currentIntensity * 0.5
                 ));
                 
-                player.setVelocity(player.getVelocity().add(shake));
+                Vector newVelocity = player.getVelocity().add(shake);
+                if (isFinite(newVelocity)) {
+                    player.setVelocity(newVelocity);
+                }
                 ticks++;
             }
         }.runTaskTimer(plugin, 0L, 1L);
@@ -685,5 +695,9 @@ public class ScreenEffectsAPI {
         if (r > 200 && g > 200 && b < 100) return BossBar.Color.YELLOW;
         if (r > 100 && g < 100 && b > 100) return BossBar.Color.PURPLE;
         return BossBar.Color.WHITE;
+    }
+
+    private boolean isFinite(Vector vector) {
+        return Double.isFinite(vector.getX()) && Double.isFinite(vector.getY()) && Double.isFinite(vector.getZ());
     }
 }
