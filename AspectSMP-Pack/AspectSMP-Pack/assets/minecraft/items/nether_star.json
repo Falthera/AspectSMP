@@ -1,61 +1,40 @@
 {
   "model": {
-    "type": "minecraft:range_dispatch",
+    "type": "minecraft:select",
     "property": "minecraft:custom_model_data",
     "index": 0,
     "fallback": {
       "type": "minecraft:model",
       "model": "minecraft:item/nether_star"
     },
-    "entries": [
+    "cases": [
       {
-        "threshold": 1,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/catalyst"
-        }
+        "when": ["catalyst"],
+        "model": { "type": "minecraft:model", "model": "aspectsmp:item/catalyst" }
       },
       {
-        "threshold": 2,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/resonator"
-        }
+        "when": ["resonator"],
+        "model": { "type": "minecraft:model", "model": "aspectsmp:item/resonator" }
       },
       {
-        "threshold": 3,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/restoration"
-        }
+        "when": ["restoration"],
+        "model": { "type": "minecraft:model", "model": "aspectsmp:item/restoration" }
       },
       {
-        "threshold": 4,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/reforging"
-        }
+        "when": ["reforging"],
+        "model": { "type": "minecraft:model", "model": "aspectsmp:item/reforging" }
       },
       {
-        "threshold": 1002,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/frostheart"
-        }
+        "when": ["frostheart"],
+        "model": { "type": "minecraft:model", "model": "aspectsmp:item/frostheart" }
       },
       {
-        "threshold": 1004,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/shadowheart"
-        }
+        "when": ["shadowheart"],
+        "model": { "type": "minecraft:model", "model": "aspectsmp:item/shadowheart" }
       },
       {
-        "threshold": 1005,
-        "model": {
-          "type": "minecraft:model",
-          "model": "aspectsmp:item/stormheart"
-        }
+        "when": ["stormheart"],
+        "model": { "type": "minecraft:model", "model": "aspectsmp:item/stormheart" }
       }
     ]
   }
