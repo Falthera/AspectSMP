@@ -794,6 +794,29 @@ public class VisualEffectsManager {
     public boolean isChromaticAberrationEnabled() { return chromaticAberrationEnabled; }
     public void setChromaticAberrationEnabled(boolean enabled) { this.chromaticAberrationEnabled = enabled; }
 
+    public void cleanupPlayer(Player player) {
+        UUID id = player.getUniqueId();
+        
+        // Cancel passive effects
+        BukkitTask passiveTask = passiveEffectTasks.remove(id);
+        if (passiveTask != null) passiveTask.cancel();
+        
+        // Cancel ambient trail
+        BukkitTask trailTask = ambientTrailTasks.remove(id);
+        if (trailTask != null) trailTask.cancel();
+        
+        // Cancel orbit effect
+        BukkitTask orbitTask = orbitEffectTasks.remove(id);
+        if (orbitTask != null) orbitTask.cancel();
+        
+        // Cancel trail effect
+        BukkitTask trailEffect = trailEffectTasks.remove(id);
+        if (trailEffect != null) trailEffect.cancel();
+        
+        // Clear player effect state
+        playerEffectState.remove(id);
+    }
+
     public void shutdown() {
         enabled = false;
         passiveEffectTasks.values().forEach(BukkitTask::cancel);

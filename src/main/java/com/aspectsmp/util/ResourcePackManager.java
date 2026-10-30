@@ -3,6 +3,7 @@ package com.aspectsmp.util;
 import com.aspectsmp.AspectSMP;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -41,11 +42,11 @@ public class ResourcePackManager {
             "§b§lAspect SMP §7requires a resource pack for custom items and effects.");
         this.autoDownload = plugin.getConfig().getBoolean("resource-pack.auto-download", true);
         
-        if (enabled && (url.isEmpty() || autoDownload)) {
+if (enabled && (url.isEmpty() || autoDownload)) {
             extractEmbeddedPack();
         }
     }
-
+    
     private void extractEmbeddedPack() {
         try {
             packFile = new File(plugin.getDataFolder(), "AspectSMP-Pack.zip");
@@ -104,7 +105,15 @@ public class ResourcePackManager {
     }
     
     private String getPackDownloadUrl() {
-        return "http://" + Bukkit.getServer().getIp() + ":" + Bukkit.getServer().getPort() + "/packs/AspectSMP-Pack.zip";
+        String serverIp = Bukkit.getServer().getIp();
+        int serverPort = Bukkit.getServer().getPort();
+        
+        // If server IP is empty (0.0.0.0), try to get the external IP or use localhost
+        if (serverIp == null || serverIp.isEmpty() || serverIp.equals("0.0.0.0")) {
+            return "http://localhost:" + serverPort + "/packs/AspectSMP-Pack.zip";
+        }
+        
+        return "http://" + serverIp + ":" + serverPort + "/packs/AspectSMP-Pack.zip";
     }
     
     public void onResourcePackStatus(Player player, String status) {
@@ -129,6 +138,10 @@ public class ResourcePackManager {
                 plugin.getLogger().warning(player.getName() + " got invalid SHA-1 for resource pack");
             }
         }
+    }
+    
+    public void onResourcePackStatusEvent(PlayerResourcePackStatusEvent event) {
+        onResourcePackStatus(event.getPlayer(), event.getStatus().name().toLowerCase());
     }
     
     public void sendToAll() {
@@ -164,6 +177,10 @@ public class ResourcePackManager {
     
     public boolean isRequired() {
         return required;
+    }
+    
+    public Set<UUID> getPlayersWithPack() {
+        return playersWithPack;
     }
     
     private String calculateSha1(File file) throws IOException, NoSuchAlgorithmException {

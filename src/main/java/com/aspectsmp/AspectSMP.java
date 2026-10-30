@@ -556,6 +556,15 @@ public class AspectSMP extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        
+        if (visualEffectsManager != null) {
+            visualEffectsManager.cleanupPlayer(player);
+        }
+        
+        if (resourcePackManager != null) {
+            resourcePackManager.getPlayersWithPack().remove(player.getUniqueId());
+        }
+        
         if (musicManager != null) {
             musicManager.onPlayerQuit(player);
         }
