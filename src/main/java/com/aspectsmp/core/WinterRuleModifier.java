@@ -47,8 +47,7 @@ public class WinterRuleModifier implements RuleModifier {
 
     @Override
     public void applyPassive(Player player) {
-        // Balanced: Resistance 1 + Fire Resistance (was just Resistance)
-        player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 60, 0, true, false, true), true);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 60, 0, false, false, true), true);
+        // Winter weaving: Slow Falling for graceful movement through snow/ice
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 60, 0, true, false, true), true);
     }
 }
