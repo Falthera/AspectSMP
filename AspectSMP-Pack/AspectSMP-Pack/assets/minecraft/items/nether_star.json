@@ -1,40 +1,61 @@
 {
   "model": {
-    "type": "minecraft:select",
+    "type": "minecraft:range_dispatch",
     "property": "minecraft:custom_model_data",
     "index": 0,
     "fallback": {
       "type": "minecraft:model",
       "model": "minecraft:item/nether_star"
     },
-    "cases": [
+    "entries": [
       {
-        "when": ["catalyst"],
-        "model": { "type": "minecraft:model", "model": "aspectsmp:item/catalyst" }
+        "threshold": 1,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/catalyst"
+        }
       },
       {
-        "when": ["resonator"],
-        "model": { "type": "minecraft:model", "model": "aspectsmp:item/resonator" }
+        "threshold": 2,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/resonator"
+        }
       },
       {
-        "when": ["restoration"],
-        "model": { "type": "minecraft:model", "model": "aspectsmp:item/restoration" }
+        "threshold": 3,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/restoration"
+        }
       },
       {
-        "when": ["reforging"],
-        "model": { "type": "minecraft:model", "model": "aspectsmp:item/reforging" }
+        "threshold": 4,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/reforging"
+        }
       },
       {
-        "when": ["frostheart"],
-        "model": { "type": "minecraft:model", "model": "aspectsmp:item/frostheart" }
+        "threshold": 1002,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/frostheart"
+        }
       },
       {
-        "when": ["shadowheart"],
-        "model": { "type": "minecraft:model", "model": "aspectsmp:item/shadowheart" }
+        "threshold": 1004,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/shadowheart"
+        }
       },
       {
-        "when": ["stormheart"],
-        "model": { "type": "minecraft:model", "model": "aspectsmp:item/stormheart" }
+        "threshold": 110,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/stormheart"
+        }
       }
     ]
   }

@@ -35,7 +35,7 @@ public class Cloudheart extends CustomItem {
             Component.text("§7Hold this to wield the §bCloud Aspect§7."),
             Component.text("§cIf you lose it, the Aspect fades.")
         ));
-
+        meta.setCustomModelData(7);
         item.setItemMeta(meta);
     }
 
@@ -53,6 +53,7 @@ public class Cloudheart extends CustomItem {
             PersistentDataContainer pdc = meta.getPersistentDataContainer();
             pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "cloudheart");
             meta.addEnchant(Enchantment.WIND_BURST, 1, true);
+            meta.setCustomModelData(7);
             item.setItemMeta(meta);
         }
         return item;

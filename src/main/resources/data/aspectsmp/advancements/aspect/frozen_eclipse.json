@@ -1,0 +1,10 @@
+{
+  "criteria": {
+    "frozen_eclipse_win": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "aspectsmp:event/frozen_eclipse_winner"
+  }
+}

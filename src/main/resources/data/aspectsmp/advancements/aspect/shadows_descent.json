@@ -1,0 +1,10 @@
+{
+  "criteria": {
+    "shadows_descent_win": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "aspectsmp:event/shadows_descent_winner"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "criteria": {
+    "tempests_fury_win": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "aspectsmp:event/tempests_fury_winner"
+  }
+}

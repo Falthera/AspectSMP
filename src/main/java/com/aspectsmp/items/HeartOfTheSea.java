@@ -8,9 +8,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import io.papermc.paper.datacomponent.item.CustomModelData;
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import org.bukkit.Color;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -21,35 +18,22 @@ public class HeartOfTheSea {
     public static final NamespacedKey HEART_OF_THE_SEA_KEY = new NamespacedKey("aspectsmp", "heart_of_the_sea");
     public static final NamespacedKey BOUND_PLAYER_KEY = new NamespacedKey("aspectsmp", "bound_player");
 
-    private static String getCustomModelDataString(AspectType aspect) {
+    private static int getCustomModelDataInt(AspectType aspect) {
         return switch (aspect) {
-            case INFERNO -> "heart_inferno";
-            case TIDE -> "heart_tide";
-            case TEMPEST -> "heart_tempest";
-            case RIFT -> "heart_rift";
-            case VITALITY -> "heart_vitality";
-            case WAR -> "heart_war";
-            case COSMOS -> "heart_cosmos";
-            case FORTUNE -> "heart_fortune";
-            case CLOUD -> "heart_cloud";
-            case WINTER -> "heart_winter";
-            case SHADOW -> "heart_shadow";
-            case STORM -> "heart_storm";
-            default -> "heart_base"; // BASE
+            case INFERNO -> 100;
+            case TIDE -> 101;
+            case TEMPEST -> 102;
+            case RIFT -> 103;
+            case VITALITY -> 104;
+            case WAR -> 105;
+            case COSMOS -> 106;
+            case FORTUNE -> 107;
+            case CLOUD -> 108;
+            case WINTER -> 109;
+            case SHADOW -> 110;
+            case STORM -> 110;
+            default -> 112; // BASE
         };
-    }
-
-private static void setCustomModelDataString(ItemStack item, String modelDataString) {
-        CustomModelData cmd = item.getData(DataComponentTypes.CUSTOM_MODEL_DATA);
-        CustomModelData.Builder builder = CustomModelData.customModelData();
-        if (cmd != null) {
-            for (String s : cmd.strings()) builder.addString(s);
-            for (Float f : cmd.floats()) builder.addFloat(f);
-            for (Boolean b : cmd.flags()) builder.addFlag(b);
-            for (org.bukkit.Color c : cmd.colors()) builder.addColor(c);
-        }
-        builder.addString(modelDataString);
-        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, builder.build());
     }
 
     public static ItemStack create(Player player, AspectType aspect) {
@@ -57,7 +41,7 @@ private static void setCustomModelDataString(ItemStack item, String modelDataStr
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             meta.setDisplayName("\u00a7dHeart of the Sea \u00a77(" + aspect.getDisplayName() + " Heart)");
-            setCustomModelDataString(item, getCustomModelDataString(aspect));
+            meta.setCustomModelData(getCustomModelDataInt(aspect));
             Heart heart = AspectSMP.getInstance().getHeartManager().getHeart(player.getUniqueId()).orElse(null);
             int stability = heart != null ? heart.getStability() : 100;
             meta.lore(java.util.List.of(
@@ -80,7 +64,7 @@ private static void setCustomModelDataString(ItemStack item, String modelDataStr
         if (!pdc.has(HEART_OF_THE_SEA_KEY, PersistentDataType.STRING)) return;
         
         meta.setDisplayName("\u00a7dHeart of the Sea \u00a77(" + aspect.getDisplayName() + " Heart)");
-        setCustomModelDataString(item, getCustomModelDataString(aspect));
+        meta.setCustomModelData(getCustomModelDataInt(aspect));
         String ownerName = pdc.get(BOUND_PLAYER_KEY, PersistentDataType.STRING);
         Heart heart = null;
         if (ownerName != null) {

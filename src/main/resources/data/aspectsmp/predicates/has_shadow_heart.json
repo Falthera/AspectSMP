@@ -5,11 +5,11 @@
     "equipment": {
       "mainhand": {
         "items": "minecraft:heart_of_the_sea",
-        "components": { "minecraft:custom_model_data": { "strings": ["heart_shadow"] } }
-      },
-      "offhand": {
-        "items": "minecraft:heart_of_the_sea",
-        "components": { "minecraft:custom_model_data": { "strings": ["heart_shadow"] } }
+        "components": {
+          "minecraft:custom_model_data": {
+            "floats": [110]
+          }
+        }
       }
     }
   }

@@ -1,0 +1,10 @@
+{
+  "criteria": {
+    "ninth_sky_win": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "function": "aspectsmp:event/ninth_sky_winner"
+  }
+}

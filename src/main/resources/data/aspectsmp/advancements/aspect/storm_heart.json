@@ -1,0 +1,20 @@
+{
+  "criteria": {
+    "use_storm_heart": {
+      "trigger": "minecraft:item_used_on_block",
+      "conditions": {
+        "item": {
+          "items": "minecraft:heart_of_the_sea",
+          "components": {
+            "minecraft:custom_model_data": {
+              "floats": [110]
+            }
+          }
+        }
+      }
+    }
+  },
+  "rewards": {
+    "function": "aspectsmp:aspect/storm"
+  }
+}

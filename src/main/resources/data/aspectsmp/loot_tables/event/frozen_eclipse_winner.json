@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:entity",
+  "type": "minecraft:item",
   "pools": [
     {
       "rolls": 1,
@@ -10,11 +10,7 @@
           "functions": [
             {
               "function": "minecraft:set_custom_model_data",
-              "strings": ["frostheart"]
-            },
-            {
-              "function": "minecraft:set_name",
-              "name": {"translate": "item.aspectsmp.frostheart", "color": "aqua", "italic": false}
+              "floats": [1002]
             }
           ]
         }

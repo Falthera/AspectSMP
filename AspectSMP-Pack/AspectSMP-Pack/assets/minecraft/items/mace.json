@@ -1,16 +1,19 @@
 {
   "model": {
-    "type": "minecraft:select",
+    "type": "minecraft:range_dispatch",
     "property": "minecraft:custom_model_data",
     "index": 0,
     "fallback": {
       "type": "minecraft:model",
       "model": "minecraft:item/mace"
     },
-    "cases": [
+    "entries": [
       {
-        "when": ["cloudheart"],
-        "model": { "type": "minecraft:model", "model": "aspectsmp:item/cloudheart" }
+        "threshold": 7,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/cloudheart"
+        }
       }
     ]
   }

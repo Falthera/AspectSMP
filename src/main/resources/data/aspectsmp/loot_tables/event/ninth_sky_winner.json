@@ -1,20 +1,16 @@
 {
-  "type": "minecraft:entity",
+  "type": "minecraft:item",
   "pools": [
     {
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:nether_star",
+          "name": "minecraft:mace",
           "functions": [
             {
               "function": "minecraft:set_custom_model_data",
-              "strings": ["stormheart"]
-            },
-            {
-              "function": "minecraft:set_name",
-              "name": {"translate": "item.aspectsmp.stormheart", "color": "gold", "italic": false}
+              "floats": [7]
             }
           ]
         }

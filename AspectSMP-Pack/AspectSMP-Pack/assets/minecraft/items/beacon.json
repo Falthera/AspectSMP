@@ -1,16 +1,19 @@
 {
   "model": {
-    "type": "minecraft:select",
+    "type": "minecraft:range_dispatch",
     "property": "minecraft:custom_model_data",
     "index": 0,
     "fallback": {
       "type": "minecraft:model",
       "model": "minecraft:item/beacon"
     },
-    "cases": [
+    "entries": [
       {
-        "when": ["restoration"],
-        "model": { "type": "minecraft:model", "model": "aspectsmp:item/restoration" }
+        "threshold": 3,
+        "model": {
+          "type": "minecraft:model",
+          "model": "aspectsmp:item/restoration"
+        }
       }
     ]
   }
