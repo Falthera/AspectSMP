@@ -7,7 +7,7 @@
           "items": "minecraft:heart_of_the_sea",
           "components": {
             "minecraft:custom_model_data": {
-              "floats": [110]
+              "floats": [111]
             }
           }
         }

@@ -21,6 +21,7 @@ public class BottledEssence extends CustomItem {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§f§lBottled Essence");
         meta.lore(List.of(Component.text("§7Essence: §e" + amount), Component.text("§7Right-click to extract/inject")));
+        meta.setCustomModelData(6); // experience_bottle.json threshold 6 -> bottled_essence
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "bottled_essence");
         pdc.set(ESSENCE_STORED_KEY, PersistentDataType.LONG, amount);

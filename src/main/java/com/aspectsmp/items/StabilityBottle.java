@@ -37,6 +37,7 @@ public class StabilityBottle extends CustomItem {
             PersistentDataContainer pdc = meta.getPersistentDataContainer();
             pdc.set(ITEM_ID_KEY, PersistentDataType.STRING, "stability_bottle");
             pdc.set(STABILITY_KEY, PersistentDataType.INTEGER, stabilityAmount);
+            meta.setCustomModelData(5); // potion.json threshold 5 -> stability_bottle
             item.setItemMeta(meta);
         }
         return item;

@@ -31,7 +31,7 @@ public class HeartOfTheSea {
             case CLOUD -> 108;
             case WINTER -> 109;
             case SHADOW -> 110;
-            case STORM -> 110;
+            case STORM -> 111;
             default -> 112; // BASE
         };
     }
